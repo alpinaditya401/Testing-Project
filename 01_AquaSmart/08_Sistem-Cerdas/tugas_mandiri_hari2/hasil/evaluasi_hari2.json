@@ -1,0 +1,116 @@
+{
+  "seed": 42,
+  "sumber_data": "tugas_mandiri/fitur_dan_target.csv, hasil pembersihan dan audit Hari 1 (bukan data contoh modul, bukan CSV mentah 505.730 baris)",
+  "data_latih": 8525,
+  "data_uji": 2135,
+  "proporsi_kelas1_latih": 0.91,
+  "baseline_hari1_uji": {
+    "macro_f1": 0.895124068682883,
+    "balanced_accuracy": 0.9155455242815838,
+    "recall_alarm": 0.9660116834838024,
+    "accuracy": 0.9540983606557377
+  },
+  "baseline_hari1_classification_report": {
+    "Dalam ambang": {
+      "precision": 0.7730496453900709,
+      "recall": 0.8650793650793651,
+      "f1-score": 0.8164794007490637,
+      "support": 252.0
+    },
+    "Di luar ambang": {
+      "precision": 0.981651376146789,
+      "recall": 0.9660116834838024,
+      "f1-score": 0.9737687366167024,
+      "support": 1883.0
+    },
+    "accuracy": 0.9540983606557377,
+    "macro avg": {
+      "precision": 0.87735051076843,
+      "recall": 0.9155455242815838,
+      "f1-score": 0.895124068682883,
+      "support": 2135.0
+    },
+    "weighted avg": {
+      "precision": 0.9570295325164878,
+      "recall": 0.9540983606557377,
+      "f1-score": 0.9552034379569155,
+      "support": 2135.0
+    }
+  },
+  "perbandingan_model_cv": [
+    {
+      "model": "Logistic Regression",
+      "precision_alarm": "0.992 ± 0.011",
+      "recall_alarm": "0.825 ± 0.180",
+      "macro_f1": "0.739 ± 0.155"
+    },
+    {
+      "model": "Random Forest",
+      "precision_alarm": "0.974 ± 0.031",
+      "recall_alarm": "0.939 ± 0.064",
+      "macro_f1": "0.776 ± 0.114"
+    }
+  ],
+  "grid_search_best_params": {
+    "model__max_depth": 6,
+    "model__n_estimators": 100
+  },
+  "grid_search_best_macro_f1_cv": 0.798451912295032,
+  "threshold_sweep_latih": [
+    {
+      "threshold": 0.3,
+      "precision_alarm": 0.973155232784334,
+      "recall_alarm": 0.9677585762187259,
+      "macro_f1": 0.8410606630827115
+    },
+    {
+      "threshold": 0.4,
+      "precision_alarm": 0.9757536041939712,
+      "recall_alarm": 0.9601496002063451,
+      "macro_f1": 0.8356850540528225
+    },
+    {
+      "threshold": 0.5,
+      "precision_alarm": 0.9803181450525749,
+      "recall_alarm": 0.9378385349497034,
+      "macro_f1": 0.8121048329878452
+    },
+    {
+      "threshold": 0.6,
+      "precision_alarm": 0.982611058280125,
+      "recall_alarm": 0.9328088728398246,
+      "macro_f1": 0.8108310019394803
+    },
+    {
+      "threshold": 0.7,
+      "precision_alarm": 0.9850808122668877,
+      "recall_alarm": 0.9196543719370648,
+      "macro_f1": 0.797936006500003
+    },
+    {
+      "threshold": 0.8,
+      "precision_alarm": 0.9871959026888605,
+      "recall_alarm": 0.7954604075315966,
+      "macro_f1": 0.6672145355312945
+    },
+    {
+      "threshold": 0.9,
+      "precision_alarm": 0.9987935194760428,
+      "recall_alarm": 0.7473562032499356,
+      "macro_f1": 0.6461465450277447
+    }
+  ],
+  "threshold_terpilih": 0.3,
+  "model_final_uji": {
+    "macro_f1": 0.7011866860442102,
+    "balanced_accuracy": 0.6552634684604944,
+    "recall_alarm": 0.9851301115241635,
+    "accuracy": 0.9072599531615925
+  },
+  "catatan": [
+    "Data latih/uji sama persis dengan pembagian kronologis Hari 1 (purge 60 menit, random_state=42); hanya sumber CSV yang dipakai ulang, bukan pipeline dilatih ulang dari mentah.",
+    "Threshold dipilih dari macro F1 pada data LATIH (cross-validated predict_proba), data uji tetap disegel sampai baris \"Model final pada data uji\" di atas.",
+    "Kelas mayoritas di data ini adalah \"di luar ambang\" (~90%), kebalikan dari contoh modul (triase, Urgent minoritas); karena itu macro F1 dan balanced accuracy tetap dipakai sebagai metrik utama, bukan accuracy atau recall kelas alarm saja.",
+    "Hasil ini adalah status proksi ambang sensor, bukan bukti keamanan air, label ahli, atau bukti aktuasi perangkat fisik; lihat README repo bagian Status."
+  ]
+}

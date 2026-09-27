@@ -38,6 +38,7 @@
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.joblib
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.zip
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/qa/
+!/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri_hari2/
 
 # Salinan cadangan proses dan laporan praktikum yang memuat nama serta NIM
 # mahasiswa lain. Keduanya bukan bagian deliverable.
