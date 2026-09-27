@@ -6,7 +6,11 @@ Model), Bagian 1 — Machine Learning dan Deep Learning. Melanjutkan model Hari 
 berikutnya); tidak membuat project baru dan tidak memakai data contoh modul
 (triase klinik).
 
-Lihat `JAWABAN_TUGAS_MANDIRI_HARI_2.md` untuk jawaban Soal 1–3 secara lengkap.
+**Yang dikumpulkan: `Tugas_Mandiri_Hari_2_AquaSmart.docx`** — laporan jawaban
+Soal 1–3 dengan tabel dan gambar, format sama seperti
+`tugas_mandiri/Tugas_Mandiri_Hari_1_AquaSmart.docx`.
+`JAWABAN_TUGAS_MANDIRI_HARI_2.md` adalah sumber isinya dalam Markdown (lebih
+mudah ditinjau/diedit); keduanya berisi jawaban yang sama.
 
 ## Kenapa Bagian 1, bukan Bagian 2
 
@@ -19,13 +23,15 @@ dipakai sebagai jawaban Tugas Mandiri di sini.
 
 ## Berkas
 
+- `Tugas_Mandiri_Hari_2_AquaSmart.docx`: **berkas yang dikumpulkan.**
 - `run_hari2.py`: skrip yang menjalankan seluruh analisis Soal 2 dan Soal 3
   (confusion matrix baseline, perbandingan model, GridSearchCV, kurva
   overfitting, threshold sweep, dan uji sekali di data uji).
 - `hasil/`: keluaran nyata dari menjalankan `run_hari2.py` — CSV, PNG, dan
-  `evaluasi_hari2.json`. Tidak ada angka yang ditulis tangan.
-- `JAWABAN_TUGAS_MANDIRI_HARI_2.md`: jawaban Soal 1–3 dengan tabel dan gambar
-  dari `hasil/`.
+  `evaluasi_hari2.json`. Tidak ada angka yang ditulis tangan. Tiga gambar di
+  antaranya ditempel langsung ke dalam DOCX.
+- `JAWABAN_TUGAS_MANDIRI_HARI_2.md`: sumber isi DOCX dalam Markdown, isinya
+  sama persis, lebih mudah ditinjau/diedit sebelum dirender ulang ke DOCX.
 
 ## Menjalankan ulang
 
