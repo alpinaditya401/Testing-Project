@@ -1,16 +1,26 @@
-# Tugas Mandiri Hari 2 AquaSmart AIoT
+# Hari 2 AquaSmart AIoT — Langkah Praktikum + Tugas Mandiri
 
-Jawaban Soal 1–3 pada `MODUL_PRAKTIKUM2.pdf` (Hari 2: Evaluasi dan Perbandingan
-Model), Bagian 1 — Machine Learning dan Deep Learning. Melanjutkan model Hari 1
-(Random Forest untuk status ambang pH/suhu pada interval lima menit
-berikutnya); tidak membuat project baru dan tidak memakai data contoh modul
-(triase klinik).
+Paket lengkap Hari 2 dari `MODUL_PRAKTIKUM2.pdf` (Evaluasi dan Perbandingan
+Model), Bagian 1 — Machine Learning dan Deep Learning: **seluruh langkah
+praktikum 1.0–1.9** dijalankan sebagai notebook, ditambah **jawaban Soal 1–3
+Tugas Mandiri**. Sama seperti paket Hari 1 (`../notebooks/*.ipynb` +
+`tugas_mandiri/Tugas_Mandiri_Hari_1_AquaSmart.docx`), semuanya melanjutkan
+model Hari 1 (Random Forest untuk status ambang pH/suhu pada interval lima
+menit berikutnya); tidak membuat project baru dan tidak memakai data contoh
+modul (triase klinik).
 
-**Yang dikumpulkan: `Tugas_Mandiri_Hari_2_AquaSmart.docx`** — laporan jawaban
-Soal 1–3 dengan tabel dan gambar, format sama seperti
-`tugas_mandiri/Tugas_Mandiri_Hari_1_AquaSmart.docx`.
-`JAWABAN_TUGAS_MANDIRI_HARI_2.md` adalah sumber isinya dalam Markdown (lebih
-mudah ditinjau/diedit); keduanya berisi jawaban yang sama.
+**Yang dikumpulkan:**
+
+1. **`Hari2_Bagian1_AquaSmart.ipynb`** — notebook yang menjalankan langkah
+   1.0 sampai 1.9 modul (confusion matrix, threshold, perbandingan model,
+   GridSearchCV, overfitting, MLP, model final, bonus forecasting), memakai
+   data AquaSmart sendiri. Sudah dieksekusi penuh, semua output nyata.
+2. **`Tugas_Mandiri_Hari_2_AquaSmart.docx`** — jawaban Soal 1–3 (bagian
+   "IV. TUGAS MANDIRI" modul), format sama seperti
+   `tugas_mandiri/Tugas_Mandiri_Hari_1_AquaSmart.docx`.
+
+`JAWABAN_TUGAS_MANDIRI_HARI_2.md` adalah sumber isi DOCX dalam Markdown
+(lebih mudah ditinjau/diedit); isinya sama persis dengan DOCX.
 
 ## Kenapa Bagian 1, bukan Bagian 2
 
@@ -23,10 +33,14 @@ dipakai sebagai jawaban Tugas Mandiri di sini.
 
 ## Berkas
 
-- `Tugas_Mandiri_Hari_2_AquaSmart.docx`: **berkas yang dikumpulkan.**
-- `run_hari2.py`: skrip yang menjalankan seluruh analisis Soal 2 dan Soal 3
-  (confusion matrix baseline, perbandingan model, GridSearchCV, kurva
-  overfitting, threshold sweep, dan uji sekali di data uji).
+- `Hari2_Bagian1_AquaSmart.ipynb`: **berkas yang dikumpulkan** — seluruh
+  langkah praktikum 1.0–1.9, dieksekusi penuh dengan data AquaSmart.
+- `Tugas_Mandiri_Hari_2_AquaSmart.docx`: **berkas yang dikumpulkan** —
+  jawaban Soal 1–3.
+- `run_hari2.py`: skrip berdiri sendiri yang menjalankan analisis Soal 2 dan
+  Soal 3 secara lebih rinci (dipakai untuk menyusun angka di DOCX/Markdown);
+  isinya tumpang tindih dengan notebook tetapi dengan threshold sweep dan
+  perbandingan akhir yang lebih detail.
 - `hasil/`: keluaran nyata dari menjalankan `run_hari2.py` — CSV, PNG, dan
   `evaluasi_hari2.json`. Tidak ada angka yang ditulis tangan. Tiga gambar di
   antaranya ditempel langsung ke dalam DOCX.
@@ -42,6 +56,11 @@ induk):
 python -m pip install -r ../requirements-mandiri.txt
 python run_hari2.py
 ```
+
+Untuk notebook, buka `Hari2_Bagian1_AquaSmart.ipynb` di Jupyter/VS Code
+dengan kernel yang sama dan jalankan seluruh sel dari atas ke bawah (kernel
+harus dijalankan dari folder ini, karena notebook memuat `../mandiri.py` dan
+`../tugas_mandiri/*.csv` dengan jalur relatif).
 
 Skrip memuat `../tugas_mandiri/fitur_dan_target.csv`, yaitu fitur dan label
 hasil pembersihan Hari 1 yang sudah di-commit ke Git (bukan CSV mentah
