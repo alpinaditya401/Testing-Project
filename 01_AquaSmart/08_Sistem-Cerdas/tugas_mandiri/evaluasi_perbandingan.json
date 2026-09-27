@@ -1,16 +1,16 @@
 {
   "seed": 42,
-  "sumber_data": "tugas_mandiri/fitur_dan_target.csv, hasil pembersihan dan audit Hari 1 (bukan data contoh modul, bukan CSV mentah 505.730 baris)",
+  "sumber_data": "tugas_mandiri/fitur_dan_target.csv, hasil pembersihan dan audit sebelumnya (bukan data contoh modul, bukan CSV mentah 505.730 baris)",
   "data_latih": 8525,
   "data_uji": 2135,
   "proporsi_kelas1_latih": 0.91,
-  "baseline_hari1_uji": {
+  "baseline_uji": {
     "macro_f1": 0.895124068682883,
     "balanced_accuracy": 0.9155455242815838,
     "recall_alarm": 0.9660116834838024,
     "accuracy": 0.9540983606557377
   },
-  "baseline_hari1_classification_report": {
+  "baseline_classification_report": {
     "Dalam ambang": {
       "precision": 0.7730496453900709,
       "recall": 0.8650793650793651,
@@ -108,7 +108,7 @@
     "accuracy": 0.9072599531615925
   },
   "catatan": [
-    "Data latih/uji sama persis dengan pembagian kronologis Hari 1 (purge 60 menit, random_state=42); hanya sumber CSV yang dipakai ulang, bukan pipeline dilatih ulang dari mentah.",
+    "Data latih/uji sama persis dengan pembagian kronologis pada baseline (purge 60 menit, random_state=42); hanya sumber CSV yang dipakai ulang, bukan pipeline dilatih ulang dari mentah.",
     "Threshold dipilih dari macro F1 pada data LATIH (cross-validated predict_proba), data uji tetap disegel sampai baris \"Model final pada data uji\" di atas.",
     "Kelas mayoritas di data ini adalah \"di luar ambang\" (~90%), kebalikan dari contoh modul (triase, Urgent minoritas); karena itu macro F1 dan balanced accuracy tetap dipakai sebagai metrik utama, bukan accuracy atau recall kelas alarm saja.",
     "Hasil ini adalah status proksi ambang sensor, bukan bukti keamanan air, label ahli, atau bukti aktuasi perangkat fisik; lihat README repo bagian Status."

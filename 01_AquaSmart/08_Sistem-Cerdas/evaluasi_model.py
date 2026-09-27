@@ -1,14 +1,13 @@
-"""Tugas Mandiri Hari 2 AquaSmart: evaluasi dan perbandingan model (Bagian 1).
+"""AquaSmart: evaluasi dan perbandingan model klasifikasi ambang pH/suhu.
 
-Melanjutkan model klasifikasi status ambang pH/suhu Hari 1 (Random Forest)
-memakai fitur dan label yang sudah dibersihkan dan diaudit pada Hari 1
-(`../tugas_mandiri/fitur_dan_target.csv`), bukan data contoh pada modul.
-Tidak menjalankan ulang pembersihan dari CSV mentah 505.730 baris (tidak
-ikut di-commit); lihat README_MANDIRI.md untuk asal dan audit data itu.
+Melanjutkan model baseline (Random Forest) memakai fitur dan label yang
+sudah dibersihkan dan diaudit sebelumnya (`tugas_mandiri/fitur_dan_target.csv`),
+bukan data contoh pada modul. Tidak menjalankan ulang pembersihan dari CSV
+mentah 505.730 baris (tidak ikut di-commit); lihat README_MANDIRI.md untuk
+asal dan audit data itu.
 """
 from pathlib import Path
 import json
-import sys
 
 import pandas as pd
 import matplotlib
@@ -22,24 +21,22 @@ from sklearn.model_selection import cross_validate, cross_val_predict, GridSearc
 from sklearn.metrics import (ConfusionMatrixDisplay, classification_report, precision_score,
                               recall_score, f1_score, make_scorer)
 
-HERE = Path(__file__).resolve().parent
-SISTEM_CERDAS = HERE.parent
-sys.path.insert(0, str(SISTEM_CERDAS))
-import mandiri  # noqa: E402  (Hari 1: RULES, pipeline(), chronological_split(), score())
+import mandiri  # RULES, pipeline(), chronological_split(), score()
 
-OUT = HERE / 'hasil'
-OUT.mkdir(exist_ok=True)
+HERE = Path(__file__).resolve().parent
+OUT = HERE / 'tugas_mandiri'
+BUKTI = OUT / 'bukti'
 SEED = 42
 MACRO_F1 = make_scorer(f1_score, average='macro', zero_division=0)
 LABELS = ['Dalam ambang', 'Di luar ambang']
 
 
 def load_features():
-    path = SISTEM_CERDAS / 'tugas_mandiri/fitur_dan_target.csv'
+    path = OUT / 'fitur_dan_target.csv'
     if not path.exists():
         raise FileNotFoundError(
-            f'Data Hari 1 tidak ditemukan: {path}. Jalankan dulu notebook Hari 1 '
-            '(../../notebooks/01_eda.ipynb dan 02_baseline.ipynb) atau lihat README ini.')
+            f'Data belum tersedia: {path}. Jalankan dulu notebook '
+            '../../notebooks/01_eda.ipynb dan 02_baseline.ipynb, atau lihat README_MANDIRI.md.')
     df = pd.read_csv(path, parse_dates=['timestamp']).set_index('timestamp').sort_index()
     y = df.pop('target_proxy').astype(int)
     return df, y
@@ -59,22 +56,22 @@ def main():
     def buat_pipe(model):
         return mandiri.pipeline(X.columns, estimator=model)
 
-    # ---------- Soal 2a: confusion matrix baseline Hari 1 (Random Forest) ----------
+    # ---------- Confusion matrix baseline (Random Forest) ----------
     baseline = mandiri.pipeline(X.columns)
     baseline.fit(X_train, y_train)
     pred_baseline = baseline.predict(X_test)
     ConfusionMatrixDisplay.from_predictions(
         y_test, pred_baseline, display_labels=LABELS, cmap='Blues')
-    plt.title('Confusion Matrix Baseline Hari 1 (Random Forest) - Data Uji')
+    plt.title('Confusion Matrix Baseline (Random Forest) - Data Uji')
     plt.tight_layout()
-    plt.savefig(OUT / 'confusion_matrix_baseline.png', dpi=150)
+    plt.savefig(BUKTI / 'evaluasi_confusion_matrix_baseline.png', dpi=150)
     plt.close()
     baseline_report = classification_report(
         y_test, pred_baseline, target_names=LABELS, output_dict=True, zero_division=0)
     baseline_score = mandiri.score(y_test, pred_baseline)
-    print('Baseline Hari 1 pada data uji:', baseline_score)
+    print('Baseline pada data uji:', baseline_score)
 
-    # ---------- Soal 2a/2b: membandingkan minimal dua model dengan cross-validation ----------
+    # ---------- Membandingkan minimal dua model dengan cross-validation ----------
     kandidat = {
         'Logistic Regression': LogisticRegression(max_iter=2000, class_weight='balanced'),
         'Random Forest': RandomForestClassifier(
@@ -91,11 +88,11 @@ def main():
                               'recall_alarm': ringkas(cv['test_recall']),
                               'macro_f1': ringkas(cv['test_f1_macro'])})
     df_perbandingan = pd.DataFrame(perbandingan)
-    df_perbandingan.to_csv(OUT / 'perbandingan_model.csv', index=False)
+    df_perbandingan.to_csv(OUT / 'perbandingan_model_evaluasi.csv', index=False)
     print('\n== Perbandingan model (5-fold CV) ==')
     print(df_perbandingan.to_string(index=False))
 
-    # ---------- Soal 2a: hyperparameter tuning (GridSearchCV) pada Random Forest ----------
+    # ---------- Hyperparameter tuning (GridSearchCV) pada Random Forest ----------
     parameter = {'model__n_estimators': [100, 160, 300],
                  'model__max_depth': [6, 10, None]}
     grid = GridSearchCV(
@@ -108,7 +105,7 @@ def main():
     grid_table = grid_table.sort_values('mean_test_score', ascending=False)
     grid_table.to_csv(OUT / 'grid_search.csv', index=False)
 
-    # ---------- Soal 3a: mengenali overfitting/underfitting (Decision Tree) ----------
+    # ---------- Mengenali overfitting/underfitting (Decision Tree) ----------
     kedalaman = [1, 2, 3, 5, 8, 12, None]
     f1_latih, f1_validasi = [], []
     for d in kedalaman:
@@ -125,13 +122,13 @@ def main():
     plt.plot(label, f1_validasi, 's-', label='Macro F1 validasi (CV)')
     plt.xlabel('max_depth Decision Tree')
     plt.ylabel('Macro F1')
-    plt.title('Underfitting vs Overfitting - AquaSmart Hari 2')
+    plt.title('Underfitting vs Overfitting - AquaSmart')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(OUT / 'overfitting.png', dpi=150)
+    plt.savefig(BUKTI / 'evaluasi_overfitting.png', dpi=150)
     plt.close()
 
-    # ---------- Soal 3a: memilih threshold pada model hasil tuning ----------
+    # ---------- Memilih threshold pada model hasil tuning ----------
     peluang = cross_val_predict(grid.best_estimator_, X_train, y_train, cv=5,
                                  method='predict_proba')[:, 1]
     threshold_rows = []
@@ -155,21 +152,21 @@ def main():
     final_score = mandiri.score(y_test, pred_final)
     ConfusionMatrixDisplay.from_predictions(
         y_test, pred_final, display_labels=LABELS, cmap='Greens')
-    plt.title(f'Confusion Matrix Model Final Hari 2 (threshold={threshold_terpilih})')
+    plt.title(f'Confusion Matrix Model Final (threshold={threshold_terpilih})')
     plt.tight_layout()
-    plt.savefig(OUT / 'confusion_matrix_final.png', dpi=150)
+    plt.savefig(BUKTI / 'evaluasi_confusion_matrix_final.png', dpi=150)
     plt.close()
     print('\nModel final pada data uji (dibuka satu kali):', final_score)
 
     ringkasan = {
         'seed': SEED,
-        'sumber_data': ('tugas_mandiri/fitur_dan_target.csv, hasil pembersihan dan audit Hari 1 '
-                         '(bukan data contoh modul, bukan CSV mentah 505.730 baris)'),
+        'sumber_data': ('tugas_mandiri/fitur_dan_target.csv, hasil pembersihan dan audit '
+                         'sebelumnya (bukan data contoh modul, bukan CSV mentah 505.730 baris)'),
         'data_latih': int(len(X_train)),
         'data_uji': int(len(X_test)),
         'proporsi_kelas1_latih': float(round(y_train.mean(), 3)),
-        'baseline_hari1_uji': baseline_score,
-        'baseline_hari1_classification_report': baseline_report,
+        'baseline_uji': baseline_score,
+        'baseline_classification_report': baseline_report,
         'perbandingan_model_cv': perbandingan,
         'grid_search_best_params': grid.best_params_,
         'grid_search_best_macro_f1_cv': float(grid.best_score_),
@@ -177,9 +174,9 @@ def main():
         'threshold_terpilih': threshold_terpilih,
         'model_final_uji': final_score,
         'catatan': [
-            'Data latih/uji sama persis dengan pembagian kronologis Hari 1 (purge 60 menit, '
-            'random_state=42); hanya sumber CSV yang dipakai ulang, bukan pipeline dilatih ulang '
-            'dari mentah.',
+            'Data latih/uji sama persis dengan pembagian kronologis pada baseline (purge 60 '
+            'menit, random_state=42); hanya sumber CSV yang dipakai ulang, bukan pipeline '
+            'dilatih ulang dari mentah.',
             'Threshold dipilih dari macro F1 pada data LATIH (cross-validated predict_proba), '
             'data uji tetap disegel sampai baris "Model final pada data uji" di atas.',
             'Kelas mayoritas di data ini adalah "di luar ambang" (~90%), kebalikan dari contoh '
@@ -189,9 +186,9 @@ def main():
             'atau bukti aktuasi perangkat fisik; lihat README repo bagian Status.',
         ],
     }
-    (OUT / 'evaluasi_hari2.json').write_text(
+    (OUT / 'evaluasi_perbandingan.json').write_text(
         json.dumps(ringkasan, indent=2, ensure_ascii=False), encoding='utf-8')
-    print('\nRingkasan tersimpan di hasil/evaluasi_hari2.json')
+    print('\nRingkasan tersimpan di tugas_mandiri/evaluasi_perbandingan.json')
 
 
 if __name__ == '__main__':
