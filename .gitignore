@@ -11,6 +11,7 @@
 !/README.md
 !/frontend/
 !/01_AquaSmart/
+!/notebooks/
 
 # Dua berkas ini diminta eksplisit oleh brief Proyek Akhir: repo publik wajib
 # memuat sonar-project.properties dan .github/workflows/ci.yml. Keduanya tidak
@@ -24,6 +25,19 @@
 
 /01_AquaSmart/*
 !/01_AquaSmart/01_Aplikasi-Web/
+!/01_AquaSmart/08_Sistem-Cerdas/
+/01_AquaSmart/08_Sistem-Cerdas/*
+!/01_AquaSmart/08_Sistem-Cerdas/mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/build_notebooks_mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/build_laporan_mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/export_bukti_mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/screenshot_mandiri.cjs
+!/01_AquaSmart/08_Sistem-Cerdas/README_MANDIRI.md
+!/01_AquaSmart/08_Sistem-Cerdas/requirements-mandiri.txt
+!/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/
+/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.joblib
+/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.zip
+/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/qa/
 
 # Salinan cadangan proses dan laporan praktikum yang memuat nama serta NIM
 # mahasiswa lain. Keduanya bukan bagian deliverable.

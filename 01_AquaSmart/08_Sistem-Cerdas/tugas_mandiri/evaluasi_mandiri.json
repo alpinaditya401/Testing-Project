@@ -1,0 +1,75 @@
+{
+  "seed": 42,
+  "rules": {
+    "PH_MIN": 6.5,
+    "PH_MAX": 8.5,
+    "TEMP_MIN": 25.0,
+    "TEMP_MAX": 30.0
+  },
+  "split": [
+    {
+      "bagian": "Latih",
+      "jumlah": 8525,
+      "awal": "2023-01-26 12:05:00",
+      "akhir": "2023-03-07 20:35:00",
+      "kelas 0": 771,
+      "kelas 1": 7754
+    },
+    {
+      "bagian": "Uji",
+      "jumlah": 2135,
+      "awal": "2023-03-07 21:40:00",
+      "akhir": "2023-03-22 17:50:00",
+      "kelas 0": 252,
+      "kelas 1": 1883
+    }
+  ],
+  "features": [
+    "ph_lag1",
+    "ph_lag2",
+    "ph_mean12",
+    "ph_std12",
+    "tds_lag1",
+    "tds_lag2",
+    "tds_mean12",
+    "tds_std12",
+    "temp_lag1",
+    "temp_lag2",
+    "temp_mean12",
+    "temp_std12"
+  ],
+  "cv_macro_f1_mean": 0.7980729393142678,
+  "cv_macro_f1_std": 0.20527392641317005,
+  "results": [
+    {
+      "model": "Dummy mayoritas",
+      "macro_f1": 0.4686411149825784,
+      "balanced_accuracy": 0.5,
+      "recall_alarm": 1.0,
+      "accuracy": 0.8819672131147541
+    },
+    {
+      "model": "Ambang terakhir non AI",
+      "macro_f1": 0.9157824148948759,
+      "balanced_accuracy": 0.9164970201215554,
+      "recall_alarm": 0.9798194370685077,
+      "accuracy": 0.9648711943793911
+    },
+    {
+      "model": "Random Forest",
+      "macro_f1": 0.895124068682883,
+      "balanced_accuracy": 0.9155455242815838,
+      "recall_alarm": 0.9660116834838024,
+      "accuracy": 0.9540983606557377
+    }
+  ],
+  "checks": {
+    "urutan_waktu_dan_purge": true,
+    "timestamp_latih_uji_terpisah": true,
+    "fitur_hanya_masa_lalu": true,
+    "imputer_hanya_latih": true,
+    "model_reload_identik": true,
+    "sumber_sensor_sama": "Ya, diasumsikan satu kolam; bukan validasi lintas objek"
+  },
+  "conclusion": "Selisih macro F1 Random Forest terhadap aturan persistensi adalah -0.0207. Random Forest belum mengungguli aturan persistensi; baseline non-AI tetap menjadi pilihan awal."
+}

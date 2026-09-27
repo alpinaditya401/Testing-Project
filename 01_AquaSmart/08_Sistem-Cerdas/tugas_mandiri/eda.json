@@ -1,0 +1,34 @@
+{
+  "audit": {
+    "raw_rows": 505730,
+    "raw_columns": 5,
+    "exact_duplicates": 0,
+    "repeated_measurements_collapsed": 8518,
+    "invalid_timestamp": 0,
+    "impossible_values": {
+      "ph": 219,
+      "tds": 0,
+      "temp": 0
+    },
+    "unique_measurements": 497212,
+    "grid_bins": 15928,
+    "empty_bins": 4820,
+    "raw_sha256": "ac69aff715a31f3f35439247b02d9e7bf95e409652bf88e5f15329c6effb9dba"
+  },
+  "insights": [
+    "Kelas di luar ambang mencakup 90.34% label. Dampak: gunakan macro F1, balanced accuracy, dan baseline dummy; accuracy saja tidak cukup.",
+    "Median pH harian berkisar 5.54–11.71. Dampak: evaluasi harus berurutan waktu karena perubahan kondisi atau drift sensor tidak boleh tercampur secara acak.",
+    "Korelasi pH dengan TDS sebesar -0.172. Dampak: keduanya dipertahankan untuk baseline, tetapi korelasi tidak membuktikan kausalitas atau menjadikan TDS pengganti kekeruhan.",
+    "Ada 4820 interval kosong dari 15928 interval lima menit. Dampak: pertahankan grid waktu, jangan menghubungkan lag melintasi jeda seolah pengukuran berurutan."
+  ],
+  "distribution": {
+    "jumlah": {
+      "Dalam ambang": 1073,
+      "Di luar ambang": 10033
+    },
+    "persen": {
+      "Dalam ambang": 9.661444264361606,
+      "Di luar ambang": 90.3385557356384
+    }
+  }
+}

@@ -1,0 +1,207 @@
+<!doctype html><html lang="id"><meta charset="utf-8"><title>Soal 3</title><style>body{font:17px Arial,sans-serif;color:#202020;margin:40px;max-width:1120px}
+h1{font-size:27px}h2{font-size:20px;margin-top:30px}p{line-height:1.5}
+pre{font:14px Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+table{border-collapse:collapse;font-size:14px;margin:20px 0;width:100%}
+td,th{padding:8px;text-align:left!important;border-bottom:1px solid #ddd}
+th{background:#f0f2f2}img{max-width:100%;height:auto}section{margin-bottom:28px}
+.meta{color:#555;font-size:14px}</style><body><h1>Soal 3 · Pembersihan dan feature engineering</h1><p>AquaSmart AIoT · Tugas Mandiri Hari 1</p><p class="meta">Bukti output dari notebook yang telah dieksekusi, diekspor ke HTML tanpa mengubah nilai hasil.</p><section><h2>Output sel 6</h2><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>missing setelah cleaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ph</th>
+      <td>4822</td>
+    </tr>
+    <tr>
+      <th>tds</th>
+      <td>4820</td>
+    </tr>
+    <tr>
+      <th>temp</th>
+      <td>4820</td>
+    </tr>
+  </tbody>
+</table>
+</div><pre>Fitur yang digunakan: [&#x27;ph_lag1&#x27;, &#x27;ph_lag2&#x27;, &#x27;ph_mean12&#x27;, &#x27;ph_std12&#x27;, &#x27;tds_lag1&#x27;, &#x27;tds_lag2&#x27;, &#x27;tds_mean12&#x27;, &#x27;tds_std12&#x27;, &#x27;temp_lag1&#x27;, &#x27;temp_lag2&#x27;, &#x27;temp_mean12&#x27;, &#x27;temp_std12&#x27;]
+Sampel dapat dievaluasi: 10672 | Bin tidak dievaluasi: 5256
+</pre><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ph_lag1</th>
+      <th>ph_lag2</th>
+      <th>ph_mean12</th>
+      <th>ph_std12</th>
+      <th>tds_lag1</th>
+      <th>tds_lag2</th>
+      <th>tds_mean12</th>
+      <th>tds_std12</th>
+      <th>temp_lag1</th>
+      <th>temp_lag2</th>
+      <th>temp_mean12</th>
+      <th>temp_std12</th>
+    </tr>
+    <tr>
+      <th>timestamp</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2023-01-26 12:05:00</th>
+      <td>7.60</td>
+      <td>NaN</td>
+      <td>7.6000</td>
+      <td>0.0000</td>
+      <td>249.0</td>
+      <td>NaN</td>
+      <td>248.6667</td>
+      <td>1.5275</td>
+      <td>24.19</td>
+      <td>NaN</td>
+      <td>24.0833</td>
+      <td>0.0971</td>
+    </tr>
+    <tr>
+      <th>2023-01-26 12:10:00</th>
+      <td>6.92</td>
+      <td>7.60</td>
+      <td>7.4300</td>
+      <td>0.3400</td>
+      <td>247.0</td>
+      <td>249.0</td>
+      <td>248.2500</td>
+      <td>1.5000</td>
+      <td>24.19</td>
+      <td>24.19</td>
+      <td>24.1100</td>
+      <td>0.0956</td>
+    </tr>
+    <tr>
+      <th>2023-01-26 12:15:00</th>
+      <td>6.96</td>
+      <td>6.92</td>
+      <td>7.3360</td>
+      <td>0.3618</td>
+      <td>247.0</td>
+      <td>247.0</td>
+      <td>248.0000</td>
+      <td>1.4142</td>
+      <td>24.25</td>
+      <td>24.19</td>
+      <td>24.1380</td>
+      <td>0.1038</td>
+    </tr>
+    <tr>
+      <th>2023-01-26 12:20:00</th>
+      <td>7.58</td>
+      <td>6.96</td>
+      <td>7.3767</td>
+      <td>0.3386</td>
+      <td>247.0</td>
+      <td>247.0</td>
+      <td>247.8333</td>
+      <td>1.3292</td>
+      <td>24.25</td>
+      <td>24.25</td>
+      <td>24.1567</td>
+      <td>0.1035</td>
+    </tr>
+    <tr>
+      <th>2023-01-26 12:25:00</th>
+      <td>7.44</td>
+      <td>7.58</td>
+      <td>7.3500</td>
+      <td>0.3234</td>
+      <td>250.0</td>
+      <td>247.0</td>
+      <td>247.8333</td>
+      <td>1.3292</td>
+      <td>24.31</td>
+      <td>24.25</td>
+      <td>24.2083</td>
+      <td>0.0854</td>
+    </tr>
+  </tbody>
+</table>
+</div><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>jumlah</th>
+    </tr>
+    <tr>
+      <th>target_proxy</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1023</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>9649</td>
+    </tr>
+  </tbody>
+</table>
+</div><pre>Data bersih dan fitur disimpan di: C:\Testing-Project\01_AquaSmart\08_Sistem-Cerdas\tugas_mandiri
+</pre></section></body></html>
