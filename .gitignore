@@ -28,8 +28,9 @@
 !/01_AquaSmart/08_Sistem-Cerdas/
 /01_AquaSmart/08_Sistem-Cerdas/*
 !/01_AquaSmart/08_Sistem-Cerdas/mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/evaluasi_model.py
 !/01_AquaSmart/08_Sistem-Cerdas/build_notebooks_mandiri.py
-!/01_AquaSmart/08_Sistem-Cerdas/build_laporan_mandiri.py
+!/01_AquaSmart/08_Sistem-Cerdas/build_laporan_gabungan.js
 !/01_AquaSmart/08_Sistem-Cerdas/export_bukti_mandiri.py
 !/01_AquaSmart/08_Sistem-Cerdas/screenshot_mandiri.cjs
 !/01_AquaSmart/08_Sistem-Cerdas/README_MANDIRI.md
