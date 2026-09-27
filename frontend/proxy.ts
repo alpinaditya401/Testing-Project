@@ -8,7 +8,7 @@ const protectedRoutes = ["/dashboard", "/settings", "/profile"]
 // Jadi ini pencegat navigasi, bukan lapisan otorisasi.
 const SESSION_COOKIE = "aquasmart_session"
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
