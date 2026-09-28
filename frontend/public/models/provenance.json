@@ -1,0 +1,35 @@
+{
+  "source_file": "AquaSmart_3Scene.blend",
+  "source_sha256": "c92a4a3b71857d675043e4d92cf9bd819fbc72f5c87da155022c37dc1acbefc1",
+  "scene_version": "Lele dan selada, 23 September 2026",
+  "models": [
+    {
+      "scene": "03_AQUAPONIK",
+      "file": "aquaponik.glb",
+      "source_objects": 2960,
+      "web_objects": 6,
+      "vertices": 677422,
+      "bytes": 3147752,
+      "frame": 1
+    },
+    {
+      "scene": "01_RANGKAIAN",
+      "file": "rangkaian.glb",
+      "source_objects": 405,
+      "web_objects": 1,
+      "vertices": 302660,
+      "bytes": 1186852,
+      "frame": 1
+    },
+    {
+      "scene": "02_CASING",
+      "file": "casing.glb",
+      "source_objects": 428,
+      "web_objects": 1,
+      "vertices": 172950,
+      "bytes": 854400,
+      "frame": 140
+    }
+  ],
+  "notes": "Original geometry and original fish keyframes. Static scene geometry merged by source group. Casing shown at frame 140. Web lighting differs from Blender renders."
+}

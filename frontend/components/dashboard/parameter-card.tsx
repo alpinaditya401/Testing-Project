@@ -24,8 +24,9 @@ export function ParameterCard({
   return (
     <article
       aria-labelledby={`param-${parameterKey}`}
+      data-status={ok === null ? "none" : ok ? "ok" : "out"}
       className={cn(
-        "rounded-panel border bg-surface-white p-5",
+        "sensor-card rounded-panel border bg-surface-white p-5",
         ok === false ? "border-alarm-coral-text" : "border-foam-line",
       )}
     >

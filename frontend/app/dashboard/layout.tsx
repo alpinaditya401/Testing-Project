@@ -1,8 +1,10 @@
 import Link from "next/link"
+import { CurrentPage } from "@/components/app-shell/current-page"
 import { LogoutButton } from "@/components/app-shell/logout-button"
 import { MobileMenu } from "@/components/app-shell/mobile-menu"
 import { NavLinks } from "@/components/app-shell/nav-links"
 import { SessionSeed } from "@/components/app-shell/session-seed"
+import { Brand } from "@/components/studio/brand"
 import { brandLink } from "@/components/ui/styles"
 import { AlertsResponse } from "@/lib/api/schemas"
 import { requireSession, serverRequest } from "@/lib/api/server"
@@ -15,7 +17,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { unacknowledged_count } = await serverRequest("/api/alerts?limit=1", AlertsResponse)
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <div className="studio-dashboard min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
       <a href="#konten" className="skip-link">
         Lewati ke konten
       </a>
@@ -28,12 +30,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <MobileMenu unacknowledged={unacknowledged_count} />
       </header>
 
-      <aside className="hidden border-r border-foam-line bg-surface-white lg:flex lg:flex-col">
+      <aside className="studio-sidebar hidden border-r border-foam-line bg-surface-white lg:flex lg:flex-col">
         <div className="border-b border-foam-line p-5">
-          <Link href="/dashboard" className={brandLink}>
-            AquaSmart
-          </Link>
-          <p className="mt-1 text-xs text-muted">Pemantauan kualitas air</p>
+          <Brand href="/dashboard" />
+          <p className="mt-2 text-xs text-muted">Pemantauan kualitas air</p>
         </div>
         <nav aria-label="Navigasi utama" className="flex-1 p-3">
           <NavLinks unacknowledged={unacknowledged_count} />
@@ -48,6 +48,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       <main id="konten" tabIndex={-1} className="min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+        <div className="dashboard-topline">
+          <span>
+            Ruang budidaya <CurrentPage />
+          </span>
+          <span>Kontrol aktuator: SIMULASI</span>
+        </div>
         <div className="mx-auto max-w-content">{children}</div>
       </main>
     </div>

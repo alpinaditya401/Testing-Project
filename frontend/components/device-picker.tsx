@@ -1,8 +1,10 @@
+import Form from "next/form"
 import Link from "next/link"
+import { button, control } from "@/components/ui/styles"
 import { cn } from "@/lib/utils"
 
-// Plain links, so switching device is a navigation the server renders; no client
-// JavaScript is needed to pick a device.
+// Switching device is a server-rendered navigation that works without JavaScript. On phones
+// a GET form replaces the link row and submits on the button, not on every arrow key.
 export function DevicePicker({
   devices,
   selectedId,
@@ -15,7 +17,30 @@ export function DevicePicker({
   if (devices.length < 2) return null
   return (
     <nav aria-label="Pilih perangkat">
-      <ul className="flex flex-wrap gap-2">
+      <Form action={basePath} className="sm:hidden">
+        <label htmlFor="device-choice" className="block text-sm font-medium">
+          Perangkat aktif
+        </label>
+        <div className="mt-2 flex gap-2">
+          <select
+            key={selectedId}
+            id="device-choice"
+            name="device"
+            defaultValue={selectedId}
+            className={cn(control(), "min-w-0 flex-1")}
+          >
+            {devices.map((device) => (
+              <option key={device.id} value={device.id}>
+                {device.name}
+              </option>
+            ))}
+          </select>
+          <button type="submit" className={button({ tone: "secondary", size: "compact" })}>
+            Tampilkan
+          </button>
+        </div>
+      </Form>
+      <ul className="hidden flex-wrap gap-2 sm:flex">
         {devices.map((device) => {
           const selected = device.id === selectedId
           return (

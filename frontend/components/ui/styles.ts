@@ -1,18 +1,10 @@
 import { cva } from "class-variance-authority"
 
-// The styling layer of the design system. Every value resolves to a token declared in
-// app/globals.css, which carries the palette of web/assets/css/app.css unchanged; no
-// component may introduce a colour, radius, shadow or type size of its own.
-//
-// Accessibility semantics do not live here. Labels, descriptions and invalid state
-// come from components/ui/a11y.ts, so a change of appearance can never quietly drop
-// an aria attribute, and a screen reader fix never has to touch a class list.
-//
-// Contrast of every pairing used below was measured with the antislop contrast
-// checker on 20 September 2026, against surface-white unless stated:
-//   ink 15.03:1, deep-current 14.39:1, muted 5.74:1, clear-water-text 7.52:1,
-//   sediment-text 7.03:1, alarm-coral-text 6.63:1, foam on deep-current 13.71:1,
-//   white on alarm-coral-text 6.95:1.
+// Appearance only: every value resolves to a token in app/globals.css, and no component may
+// add a colour, radius, shadow or type size of its own. Measured contrast is in DESIGN_SYSTEM.md.
+
+// Labels, descriptions and invalid state live in components/ui/a11y.ts, so a change of
+// appearance can never quietly drop an aria attribute.
 
 // Type sizes are fluid tokens, so the mobile step is built into the scale instead of
 // living in a breakpoint override.
@@ -56,7 +48,7 @@ export const button = cva(
 )
 
 // The border is muted, not foam-line: an input edge is a control boundary and needs
-// 3:1 against the panel, which foam-line (1.26:1) does not reach.
+// 3:1 against the panel, which foam-line (1.29:1) does not reach.
 export const control = cva(
   "min-h-11 w-full rounded-crisp border border-muted bg-surface-white px-3 text-ink aria-[invalid=true]:border-alarm-coral-text",
   {

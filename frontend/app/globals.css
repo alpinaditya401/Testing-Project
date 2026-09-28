@@ -1,47 +1,46 @@
 @import "tailwindcss";
 
-/* Tokens copied from web/assets/css/app.css, not a new palette: the hex values must
-   stay identical so the old SPA and this frontend never drift apart. The *-text
-   variants carry text on light backgrounds; the base hues are for fills and icons.
-   foam-line reaches only 1.26:1 against surface-white, so it may separate panels
-   but must never be the only boundary of a control. Inputs use muted (5.74:1). */
+/* Studio palette (C:\AquaSmart-Studio), adopted on 2026-09-28. It no longer mirrors
+   web/assets/css/app.css; the old SPA keeps its own tokens. */
 @theme {
-  --color-ink: #10262a;
-  --color-deep-current: #0e2a30;
+  --color-ink: #193f3a;
+  --color-deep-current: #174c40;
   --color-clear-water: #4c9a8e;
   --color-sediment: #b9834f;
   --color-alarm-coral: #d2601f;
-  --color-foam: #f1f5f3;
-  --color-foam-line: #d8e2de;
+  --color-foam: #f5f7f3;
+  /* 1.29:1 on surface-white: a panel divider only, never the sole edge of a control. */
+  --color-foam-line: #dce5dd;
 
-  --color-clear-water-text: #1b5b52;
+  /* The *-text variants carry text on light backgrounds; the base hues are for fills. */
+  --color-clear-water-text: #24624e;
   --color-sediment-text: #7a4b1a;
   --color-alarm-coral-text: #9b3b09;
 
-  --color-surface: #f1f5f3;
-  --color-surface-white: #f8faf9;
-  --color-bg-deep: #e7eeeb;
-  --color-muted: #50676a;
+  --color-surface: #f5f7f3;
+  --color-surface-white: #ffffff;
+  --color-bg-deep: #e7eee7;
+  --color-muted: #566b63;
 
-  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
-  --font-data: "IBM Plex Mono", Consolas, monospace;
+  /* No web font request: the app has to render the same on a farmer's computer with no
+     internet. Systems without Segoe UI fall back to their own sans. */
+  --font-display: "Segoe UI", sans-serif;
+  --font-body: "Segoe UI", sans-serif;
+  --font-data: "Segoe UI", sans-serif;
 
-  --radius-crisp: 4px;
-  --radius-panel: 10px;
-  --radius-media: 20px;
+  --radius-crisp: 8px;
+  --radius-panel: 16px;
+  --radius-media: 24px;
 
-  --shadow-elevated: 0 8px 24px -6px rgb(14 42 48 / 0.18);
+  --shadow-elevated: 0 24px 60px -20px rgb(23 76 64 / 0.16);
 
-  --container-content: 1180px;
+  --container-content: 1240px;
 
-  /* app.css --ease, kept so motion in both frontends decelerates identically. */
   --ease-current: cubic-bezier(0.2, 0, 0, 1);
 
   /* Heading sizes are fluid, so a phone gets its own step from the scale itself
-     instead of from a breakpoint override bolted on later. The lower bound is the
-     size at 360px, the upper bound the size from --container-content onward. */
-  --text-page: clamp(1.625rem, 1.3rem + 1.45vw, 2.125rem);
+     instead of from a breakpoint override bolted on later. */
+  --text-page: clamp(1.75rem, 1.3rem + 1.45vw, 2.5rem);
   --text-page--line-height: 1.15;
   --text-section: clamp(1.375rem, 1.24rem + 0.6vw, 1.625rem);
   --text-section--line-height: 1.2;
@@ -51,62 +50,967 @@
   --text-sub--line-height: 1.35;
 }
 
-/* app.css --space-1 to --space-9 are 4, 8, 12, 16, 24, 32, 48, 64 and 96px, which are
-   Tailwind's own 1, 2, 3, 4, 6, 8, 12, 16 and 24 steps on the default 0.25rem scale.
-   The scale is therefore inherited rather than redeclared; duplicating it here would
-   create a second source of truth that could drift from app.css. */
+/* DESIGN.md rejects dark mode and the Studio design is light too, so the missing
+   prefers-color-scheme block and .dark variant are a decision, not an omission. */
 
-/* DESIGN.md rejects dark mode on purpose, so there is no prefers-color-scheme block
-   and no .dark variant. That is a decision, not an omission. */
-
+/* studio-action and studio-card point at the semantic tokens, so the two layers cannot
+   drift. Georgia italic is reserved for the <em> in public headlines. */
+:root {
+  --studio-paper: #fafbf6;
+  --studio-soft: #edf2e9;
+  --studio-line: var(--color-foam-line);
+  --studio-action: var(--color-deep-current);
+  --studio-card: var(--color-surface-white);
+  --studio-serif: Georgia, "Times New Roman", serif;
+  /* 180ms confirms a press or hover; 550ms is the single entrance of the main public
+     content. Nothing loops except the loading indicators, which stop under reduced motion. */
+  --motion-fast: 180ms;
+  --motion-enter: 550ms;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 30px;
+}
 body {
-  background-color: var(--color-foam);
+  margin: 0;
+  background: var(--color-foam);
   color: var(--color-ink);
   font-family: var(--font-body);
 }
-
-/* One focus style for every interactive element. deep-current on foam is 13.71:1,
-   well above the 3:1 non-text minimum. */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+a {
+  transition:
+    background-color var(--motion-fast),
+    color var(--motion-fast),
+    transform var(--motion-fast);
+}
+button:not(:disabled):active,
+.studio-button:active {
+  transform: translateY(1px);
+}
+/* Below 16px iOS Safari zooms the whole page when a field takes focus. */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+/* One focus style for every interactive element. deep-current is 9.09:1 on foam and
+   9.42:1 on paper, well above the 3:1 non-text minimum. */
 :focus-visible {
   outline: 3px solid var(--color-deep-current);
-  outline-offset: 2px;
+  outline-offset: 4px;
 }
-
+/* font-data is no longer a monospace, so digits need tabular figures to stay aligned in
+   columns of readings. */
+.font-data {
+  font-variant-numeric: tabular-nums;
+}
 .skip-link {
   position: absolute;
-  left: 0.5rem;
-  top: -4rem;
+  left: 8px;
+  top: -80px;
   z-index: 50;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   background: var(--color-deep-current);
-  color: var(--color-foam);
+  color: var(--color-surface-white);
   border-radius: var(--radius-crisp);
 }
-
 .skip-link:focus-visible {
-  top: 0.5rem;
+  top: 8px;
 }
-
 /* Used by the loading.tsx files. Plain CSS rather than @apply so the class survives
    changes to Tailwind's utility list. */
 .skeleton {
-  background-color: var(--color-bg-deep);
+  background: var(--color-bg-deep);
   border-radius: var(--radius-crisp);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
-
 @keyframes skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
   50% {
     opacity: 0.5;
   }
 }
-
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.studio-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+.studio-brand img {
+  border-radius: 9px;
+}
+.brand-dot {
+  color: var(--color-clear-water-text);
+}
+.studio-home {
+  background: var(--studio-paper);
+}
+.landing-nav,
+.landing-hero,
+.monitor-section,
+.workflow-section,
+.development-note,
+.landing-footer {
+  width: min(1240px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.landing-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 104px;
+  border-bottom: 1px solid var(--studio-line);
+  gap: 24px;
+}
+.landing-nav nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+.landing-nav nav > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.studio-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  min-height: 50px;
+  background: var(--studio-action);
+  color: var(--color-surface-white);
+  border-radius: var(--radius-crisp);
+  padding: 12px 21px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.studio-button:hover {
+  background: var(--color-ink);
+  transform: translateY(-2px);
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--color-muted);
+}
+.landing-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 38px;
+  align-items: center;
+  padding-block: 74px 90px;
+}
+.hero-copy {
+  animation: enter var(--motion-enter) var(--ease-current) both;
+}
+.hero-copy h1 {
+  font-size: clamp(42px, 4.7vw, 65px);
+  font-weight: 550;
+  line-height: 1.06;
+  letter-spacing: -2.8px;
+  margin: 25px 0;
+}
+.hero-copy h1 em,
+.auth-story h2 em {
+  font-family: var(--studio-serif);
+  font-weight: 400;
+  color: var(--color-clear-water-text);
+}
+.hero-copy > p {
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--color-muted);
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+.text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.hero-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 34px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+.hero-scene {
+  position: relative;
+  background: var(--studio-soft);
+  border-radius: var(--radius-media);
+  min-height: 490px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: enter var(--motion-enter) 100ms var(--ease-current) both;
+}
+.scene-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 24px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.farm-art {
+  position: relative;
+  height: 345px;
+  mix-blend-mode: multiply;
+}
+/* The only raised element in the hero: the example reading sits on top of the
+   illustration it describes. */
+.scene-reading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--studio-card);
+  margin: -6px 24px 15px;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-elevated);
+}
+.scene-reading strong {
+  font-size: 13px;
+}
+.scene-reading small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+.scene-value {
+  font-size: 33px;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: -1px;
+}
+.scene-value span {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.art-caption {
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: center;
+  margin-bottom: 15px;
+}
+.monitor-section {
+  padding: 58px 0 72px;
+  border-top: 1px solid var(--studio-line);
+}
+.section-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+  margin-bottom: 32px;
+}
+.section-intro h2,
+.workflow-heading h2 {
+  font-size: clamp(30px, 3.1vw, 42px);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -1.5px;
+  margin-top: 14px;
+}
+.section-intro > p {
+  max-width: 300px;
+  line-height: 1.8;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+.preview-board {
+  border: 1px solid var(--studio-line);
+  border-radius: 20px;
+  background: var(--studio-card);
+  padding: 30px 36px;
+  box-shadow: var(--shadow-elevated);
+}
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+.preview-header h3,
+.preview-header h2 {
+  font-size: 21px;
+  font-weight: 550;
+  margin-top: 6px;
+  letter-spacing: -0.5px;
+}
+.demo-label {
+  font-size: 12px;
+  padding: 7px 10px;
+  background: var(--studio-soft);
+  color: var(--color-clear-water-text);
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-block: 1px solid var(--studio-line);
+  padding: 25px 0;
+}
+.preview-metrics > div {
+  padding: 0 28px;
+  border-left: 1px solid var(--studio-line);
+}
+.preview-metrics > div:first-child {
+  padding-left: 0;
+  border: 0;
+}
+.metric-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+.preview-metrics p {
+  font-size: 46px;
+  line-height: 1.3;
+  letter-spacing: -2px;
+  margin: 8px 0;
+}
+.preview-metrics :where(p) span {
+  font-size: 14px;
+  color: var(--color-muted);
+  letter-spacing: 0;
+  margin-left: 9px;
+}
+.preview-metrics small {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.preview-chart {
+  padding-top: 24px;
+}
+.preview-chart > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.preview-chart > :where(div:first-child) span {
+  color: var(--color-muted);
+}
+.water-chart {
+  margin-top: 20px;
+}
+.water-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 245px;
+  overflow: visible;
+}
+/* The chart stretches to its box, so strokes opt out of the stretch and keep their
+   width on every screen. */
+.chart-grid,
+.chart-line {
+  vector-effect: non-scaling-stroke;
+}
+.chart-grid {
+  stroke: var(--studio-line);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+.chart-line {
+  stroke: var(--color-clear-water-text);
+  stroke-width: 3;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.chart-fill {
+  fill: var(--studio-soft);
+  opacity: 0.8;
+}
+.chart-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.chart-empty {
+  padding: 40px 0;
+  color: var(--color-muted);
+}
+.workflow-section {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 100px;
+  padding-block: 45px 80px;
+}
+.workflow-heading p {
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 300px;
+  color: var(--color-muted);
+  margin-top: 22px;
+}
+.workflow-list article {
+  border-bottom: 1px solid var(--studio-line);
+  padding: 26px 0;
+}
+.workflow-list article:first-child {
+  padding-top: 0;
+}
+.workflow-list svg {
+  color: var(--color-clear-water-text);
+  margin-bottom: 12px;
+}
+.workflow-list h3 {
+  font-size: 19px;
+  font-weight: 550;
+  letter-spacing: -0.4px;
+}
+.workflow-list p {
+  font-size: 13px;
+  color: var(--color-muted);
+  line-height: 1.8;
+  margin-top: 8px;
+}
+.development-note {
+  background: var(--studio-soft);
+  padding: 36px 42px;
+  border-radius: var(--radius-panel);
+  margin-bottom: 60px;
+}
+.development-note h2 {
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+  margin: 10px 0;
+}
+.development-note p {
+  font-size: 13px;
+  line-height: 1.9;
+  max-width: 800px;
+  color: var(--color-muted);
+}
+.development-note .text-action {
+  margin-top: 12px;
+}
+.landing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--studio-line);
+  padding-block: 30px;
+}
+.landing-footer > span {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.auth-page {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  min-height: 100dvh;
+  background: var(--studio-paper);
+}
+.auth-story {
+  background: var(--studio-soft);
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.auth-story-copy {
+  margin-top: 65px;
+}
+.auth-story h2 {
+  font-size: clamp(32px, 3.4vw, 48px);
+  line-height: 1.18;
+  letter-spacing: -1.8px;
+  margin-top: 20px;
+  font-weight: 500;
+}
+.auth-story-copy p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-muted);
+  max-width: 390px;
+  margin-top: 20px;
+}
+.auth-art {
+  flex: 1;
+  min-height: 275px;
+  mix-blend-mode: multiply;
+  position: relative;
+  margin: 16px -24px;
+}
+.auth-art > span {
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.auth-story-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--color-muted);
+  padding-top: 25px;
+}
+.auth-form-side {
+  padding: 35px 56px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  min-height: 44px;
+  color: var(--color-muted);
+  align-self: flex-start;
+}
+.auth-form-content {
+  width: 100%;
+  max-width: 390px;
+  margin: auto;
+  padding-block: 45px;
+  animation: enter var(--motion-enter) var(--ease-current);
+}
+.auth-title {
+  font-size: clamp(32px, 3.2vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -1.7px;
+  font-weight: 550;
+  margin: 16px 0;
+}
+.auth-form-content form {
+  margin-top: 30px;
+}
+.auth-form-content input {
+  min-height: 50px;
+  background: var(--color-surface-white);
+}
+.auth-form-content button[type="submit"] {
+  min-height: 52px;
+}
+.auth-foot {
+  font-size: 12px;
+  text-align: center;
+  color: var(--color-muted);
+  padding-top: 25px;
+}
+.studio-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  padding: 15px 10px;
+}
+.studio-sidebar > div:first-child {
+  border-bottom: 0;
+  padding-bottom: 36px;
+}
+.studio-sidebar nav li {
+  margin-bottom: 6px;
+}
+.studio-sidebar nav a {
+  min-height: 48px;
+  font-size: 13px;
+}
+/* The inset edge marks the current page, a real state, next to aria-current. */
+.studio-sidebar nav a[aria-current="page"] {
+  background: var(--studio-soft);
+  color: var(--color-deep-current);
+  box-shadow: inset 3px 0 var(--color-clear-water-text);
+}
+.studio-sidebar .studio-brand {
+  font-size: 23px;
+  gap: 7px;
+}
+.studio-sidebar .studio-brand img {
+  width: 30px;
+  height: 30px;
+}
+.dashboard-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--studio-line);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+.dashboard-topline > span > span {
+  padding: 0 12px;
+}
+.dashboard-page-heading {
+  position: relative;
+  padding: 8px 0 4px;
+}
+.dashboard-page-heading h1 {
+  letter-spacing: -1.2px;
+}
+.sensor-card {
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+/* The edge repeats the status word printed on the card: clear water inside the limits,
+   coral outside them, and no edge while there is no reading to judge. */
+.sensor-card[data-status="ok"]::before,
+.sensor-card[data-status="out"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--color-clear-water-text);
+}
+.sensor-card[data-status="out"]::before {
+  background: var(--color-alarm-coral-text);
+}
+.sensor-card .text-4xl {
+  font-size: 46px;
+  letter-spacing: -2px;
+  font-weight: 500;
+  padding-block: 6px;
+}
+.live-chart-panel {
+  background: var(--color-surface-white);
+  border: 1px solid var(--studio-line);
+  border-radius: var(--radius-panel);
+  padding: 26px;
+}
+.studio-dashboard table thead {
+  background: var(--studio-soft);
+}
+.studio-dashboard table th {
+  font-weight: 600;
+}
+.studio-dashboard table td {
+  padding-block: 15px;
+}
+@media (min-width: 1500px) {
+  .auth-story {
+    padding-inline: 80px;
+  }
+}
+@media (max-width: 1000px) {
+  .landing-nav,
+  .landing-hero,
+  .monitor-section,
+  .workflow-section,
+  .development-note,
+  .landing-footer {
+    width: calc(100% - 48px);
+  }
+  .landing-hero {
+    gap: 25px;
+    padding-block: 48px;
+  }
+  .hero-copy h1 {
+    font-size: 46px;
+  }
+  .hero-scene {
+    min-height: 425px;
+  }
+  .farm-art {
+    height: 280px;
+  }
+  .workflow-section {
+    gap: 50px;
+  }
+  .auth-story {
+    padding: 30px;
+  }
+  .auth-form-side {
+    padding: 30px;
+  }
+  .auth-story h2 {
+    font-size: 36px;
+  }
+}
+@media (max-width: 700px) {
+  .landing-nav,
+  .landing-hero,
+  .monitor-section,
+  .workflow-section,
+  .development-note,
+  .landing-footer {
+    width: calc(100% - 40px);
+  }
+  .landing-nav {
+    min-height: 83px;
+    gap: 12px;
+  }
+  .studio-brand {
+    font-size: 22px;
+    gap: 6px;
+  }
+  .studio-brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .landing-nav nav {
+    gap: 0;
+  }
+  .landing-nav nav > a:not(.studio-button) {
+    display: none;
+  }
+  .landing-nav .studio-button {
+    padding: 10px 12px;
+    min-height: 44px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .landing-hero {
+    grid-template-columns: 1fr;
+    padding-block: 42px;
+    gap: 35px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(40px, 9vw, 56px);
+    letter-spacing: -2px;
+  }
+  .hero-copy > p {
+    font-size: 15px;
+  }
+  .hero-actions {
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .hero-note {
+    margin-top: 22px;
+    line-height: 1.6;
+  }
+  .hero-scene {
+    min-height: 380px;
+  }
+  .farm-art {
+    height: 265px;
+  }
+  .scene-label {
+    padding: 18px;
+  }
+  .scene-reading {
+    margin-inline: 18px;
+    padding: 14px;
+  }
+  .scene-reading small {
+    max-width: 160px;
+  }
+  .scene-value {
+    font-size: 29px;
+  }
+  .monitor-section {
+    padding-block: 36px 45px;
+  }
+  .section-intro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .section-intro h2,
+  .workflow-heading h2 {
+    font-size: 32px;
+  }
+  .section-intro > p {
+    max-width: 100%;
+  }
+  .preview-board {
+    padding: 20px 16px;
+    border-radius: 15px;
+  }
+  .preview-header {
+    gap: 10px;
+  }
+  .preview-header h3,
+  .preview-header h2 {
+    font-size: 18px;
+  }
+  .demo-label {
+    padding: 6px;
+  }
+  .preview-metrics {
+    gap: 10px;
+  }
+  .preview-metrics > div {
+    padding: 0 0 0 10px;
+  }
+  .metric-label {
+    font-size: 12px;
+    gap: 5px;
+  }
+  .metric-label svg {
+    width: 14px;
+    height: 14px;
+  }
+  .preview-metrics p {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+  .preview-metrics p span {
+    font-size: 12px;
+    margin-left: 4px;
+  }
+  .water-chart {
+    margin-top: 16px;
+  }
+  .water-chart svg {
+    min-height: 115px;
+  }
+  .workflow-section {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 10px 42px;
+  }
+  .workflow-heading p {
+    max-width: 100%;
+  }
+  .development-note {
+    padding: 26px 22px;
+    margin-bottom: 35px;
+  }
+  .development-note h2 {
+    font-size: 23px;
+  }
+  .landing-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-block: 22px;
+  }
+  .landing-footer > span:last-child {
+    width: 100%;
+  }
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+  .auth-story {
+    padding: 22px 24px;
+  }
+  .auth-story-copy {
+    margin-top: 22px;
+  }
+  .auth-story h2 {
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+  .auth-story-copy p,
+  .auth-art,
+  .auth-story-foot {
+    display: none;
+  }
+  .auth-story-copy > .eyebrow {
+    display: none;
+  }
+  .auth-form-side {
+    padding: 18px 24px 30px;
+  }
+  .auth-form-content {
+    padding-block: 24px;
+    max-width: 440px;
+  }
+  .auth-title {
+    font-size: 34px;
+  }
+  .dashboard-topline {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+  .dashboard-page-heading h1 {
+    font-size: 29px;
+  }
+  .live-chart-panel {
+    padding: 18px;
+  }
+  .sensor-card .text-4xl {
+    font-size: 40px;
+  }
+}
+@media (max-width: 370px) {
+  .landing-nav {
+    flex-wrap: wrap;
+    padding-block: 14px;
+  }
+  .preview-metrics {
+    gap: 5px;
+  }
+  .metric-label {
+    flex-wrap: wrap;
+  }
+  .preview-metrics p {
+    font-size: 28px;
+  }
+  .preview-header {
+    flex-wrap: wrap;
+  }
+  .hero-copy h1 {
+    font-size: 39px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .skeleton {
+  html {
+    scroll-behavior: auto;
+  }
+  .skeleton,
+  .hero-copy,
+  .hero-scene,
+  .auth-form-content {
     animation: none;
+  }
+  button,
+  a {
+    transition: none;
   }
 }

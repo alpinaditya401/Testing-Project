@@ -16,7 +16,7 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
 | Perintah | Isi |
 |---|---|
 | `npm run lint` | Biome |
-| `npm test` | Skema Zod diuji terhadap respons asli PHP di `lib/api/fixtures.json` |
+| `npm test` | Skema Zod diuji terhadap respons asli PHP di `lib/api/fixtures.json`, ditambah tes batas gerak jelajah 3D |
 | `python scripts/capture-api-fixtures.py` | Rekam ulang fixture dari backend lokal yang di-seed |
 
 ## Alur data
@@ -27,6 +27,17 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
   meneruskan cookie `aquasmart_session`.
 - Skema respons diturunkan dari `server/API.md` dan diperiksa terhadap respons nyata.
 
+## Desain dan jelajah 3D
+
+Tampilan mengikuti edisi desain `C:\AquaSmart-Studio`; token, dial, kontras terukur, dan
+perbedaannya dari Studio ada di `DESIGN_SYSTEM.md`.
+
+`/jelajah` bisa dibuka tanpa login. Model Blender (aquaponik, rangkaian, casing) dimuat dari
+`public/models/` setelah tombol "Mulai jelajah 3D" ditekan, dengan decoder Draco lokal di
+`public/draco/`. Asal model dan SHA256 berkas Blender sumbernya tercatat di
+`public/models/provenance.json`. Skrip ekspornya ada di `C:\AquaSmart-Studio\blender-web`,
+di luar repo ini.
+
 ## Batasan yang diketahui
 
 - **Rate limit login dan register terbagi.** `RateLimiter.php` membuat bucket per
@@ -36,3 +47,6 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
   belum dikerjakan karena backend dibekukan.
 - **Kontrol aerator dan feeder adalah SIMULASI.** Perintah tercatat di server, tetapi
   aktuasi fisik lewat ESP32 belum diverifikasi.
+- **Jelajah 3D belum diprofil.** Pilihan 30 atau 60 fps adalah batas atas render loop, bukan
+  hasil ukur. Ponsel fisik dan kegagalan GPU belum diuji. Panduan wiring adalah dokumentasi
+  rancangan, bukan hasil validasi rangkaian fisik.

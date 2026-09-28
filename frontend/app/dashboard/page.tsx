@@ -3,6 +3,7 @@ import { NoDevice } from "@/components/dashboard/no-device"
 import { ParameterCard } from "@/components/dashboard/parameter-card"
 import { ReadingsTable } from "@/components/dashboard/readings-table"
 import { DevicePicker } from "@/components/device-picker"
+import { WaterChart } from "@/components/studio/water-chart"
 import { heading, panel } from "@/components/ui/styles"
 import { DevicesResponse, ReadingsResponse, ThresholdsResponse } from "@/lib/api/schemas"
 import { requireSession, serverRequest } from "@/lib/api/server"
@@ -41,7 +42,7 @@ export default async function DashboardPage({
     <div className="space-y-8">
       <AutoRefresh seconds={30} />
 
-      <header className="space-y-3">
+      <header className="dashboard-page-heading space-y-3">
         <p className="text-sm text-muted">{device.location}</p>
         <h1 className={heading()}>Kualitas Air: {device.name}</h1>
         <p className="text-sm text-ink">
@@ -113,6 +114,21 @@ export default async function DashboardPage({
           </ul>
         </section>
       ) : null}
+
+      <section className="live-chart-panel" aria-labelledby="grafik-ph">
+        <div className="preview-header">
+          <div>
+            <span className="eyebrow">Perjalanan kualitas air</span>
+            <h2 id="grafik-ph">Tren pH kolam</h2>
+          </div>
+          <span className="demo-label">{readings.length} pembacaan terbaru</span>
+        </div>
+        <WaterChart values={readings.map((reading) => reading.ph)} />
+        <p className="text-xs text-muted">
+          Urutan waktu dari kiri ke kanan. Grafik mengikuti data perangkat terpilih; jarak
+          antartitik tidak mewakili selang waktu.
+        </p>
+      </section>
 
       <section aria-labelledby="riwayat" className="space-y-4">
         <h2 id="riwayat" className={heading({ level: "panel", tone: "ink" })}>

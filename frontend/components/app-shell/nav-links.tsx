@@ -3,6 +3,7 @@
 import {
   Bell,
   CalendarClock,
+  Compass,
   FileBarChart,
   Gauge,
   Settings,
@@ -13,11 +14,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-// Order follows the contract weight of each feature. Icons are chosen for what the
-// route holds (gauge: readings overview, sliders: actuators, calendar: feeding
-// schedule, bell: alerts, chart: reports), not for a uniform library look.
-const LINKS = [
+// Order follows the contract weight of each feature; Jelajah 3D, the only link out of the
+// dashboard, sits beside the readings because it shows the hardware behind them.
+// Icons name what each route holds, not a uniform library look.
+export const LINKS = [
   { href: "/dashboard", label: "Kualitas Air", icon: Gauge },
+  { href: "/jelajah", label: "Jelajah 3D", icon: Compass },
   { href: "/dashboard/control", label: "Kontrol Aktuator", icon: SlidersHorizontal },
   { href: "/dashboard/schedule", label: "Jadwal Pakan", icon: CalendarClock },
   { href: "/dashboard/alerts", label: "Peringatan", icon: Bell },
@@ -25,6 +27,11 @@ const LINKS = [
   { href: "/dashboard/settings", label: "Pengaturan", icon: Settings },
   { href: "/dashboard/profile", label: "Profil", icon: UserRound },
 ] as const
+
+// /dashboard is a prefix of every other route, so it only matches exactly.
+export function isActive(href: string, pathname: string) {
+  return href === "/dashboard" ? pathname === href : pathname.startsWith(href)
+}
 
 export function NavLinks({
   unacknowledged,
@@ -37,7 +44,7 @@ export function NavLinks({
   return (
     <ul className="space-y-1">
       {LINKS.map(({ href, label, icon: Icon }) => {
-        const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href)
+        const active = isActive(href, pathname)
         return (
           <li key={href}>
             <Link

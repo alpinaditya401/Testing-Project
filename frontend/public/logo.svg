@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Logo AquaSmart</title>
+  <desc id="desc">Tanda tetes air dengan garis pembacaan sensor</desc>
+  <path d="M64 8C51 29 27 54 27 79c0 22 16.6 40 37 40s37-18 37-40C101 54 77 29 64 8Z" fill="#F1F5F3" stroke="#D8E2DE" stroke-width="4"/>
+  <path d="M42 74h44M42 88h30" fill="none" stroke="#0E2A30" stroke-width="6" stroke-linecap="square"/>
+  <circle cx="84" cy="88" r="5" fill="#10262A"/>
+  <path d="M52 48h24M64 36v24" fill="none" stroke="#0E2A30" stroke-width="6" stroke-linecap="square"/>
+</svg>

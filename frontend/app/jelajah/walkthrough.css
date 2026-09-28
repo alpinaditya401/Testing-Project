@@ -1,0 +1,678 @@
+.explore-page {
+  background: var(--studio-paper);
+  min-height: 100dvh;
+}
+.explore-nav,
+.explore-main,
+.explore-footer {
+  width: min(1240px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.explore-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 90px;
+  border-bottom: 1px solid var(--studio-line);
+}
+.explore-nav > a:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.explore-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding-block: 42px 36px;
+}
+.explore-heading h1 {
+  font-size: clamp(32px, 3.3vw, 48px);
+  font-weight: 550;
+  line-height: 1.13;
+  letter-spacing: -1.7px;
+  margin-top: 12px;
+}
+.explore-heading h1 em {
+  font-family: var(--studio-serif);
+  font-weight: 400;
+  color: var(--color-clear-water-text);
+}
+.explore-heading > p {
+  max-width: 370px;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.scene-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.scene-tabs > button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-height: 74px;
+  padding: 14px 20px;
+  border: 1px solid var(--studio-line);
+  border-radius: 12px;
+  text-align: left;
+}
+.scene-tabs > button[aria-pressed="true"] {
+  background: var(--studio-action);
+  color: white;
+  border-color: var(--studio-action);
+}
+.scene-index {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.scene-tabs strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+}
+.scene-tabs small {
+  display: block;
+  font-size: 12px;
+  margin-top: 3px;
+  opacity: 0.85;
+}
+.walk-player {
+  border: 1px solid var(--studio-line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+.walk-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 8px 20px;
+  background: white;
+}
+.walk-toolbar > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.walk-toolbar small {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 400;
+  padding-left: 9px;
+  border-left: 1px solid var(--studio-line);
+}
+.walk-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.walk-toolbar button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+}
+.walk-fps {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+}
+.walk-stage {
+  position: relative;
+  height: 540px;
+  isolation: isolate;
+  background: var(--color-deep-current);
+}
+.walk-canvas-host {
+  position: absolute;
+  inset: 0;
+}
+.walk-canvas-host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.walk-canvas-host canvas:active {
+  cursor: grabbing;
+}
+/* deep-current, not clear-water: clear-water reached only 2.53:1 against the floor. */
+.walk-canvas-host canvas:focus-visible {
+  outline: 3px solid var(--color-deep-current);
+  outline-offset: -4px;
+}
+.walk-poster {
+  object-fit: cover;
+}
+/* At 0.63 the scrim keeps white text at 5.07:1 even over a pure white poster pixel. */
+.walk-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(9 30 29 / 0.63);
+  padding: 24px;
+  color: white;
+  text-align: center;
+}
+.walk-overlay > div {
+  max-width: 410px;
+}
+.walk-overlay svg {
+  margin-inline: auto;
+  margin-bottom: 15px;
+}
+.walk-overlay h2 {
+  font-size: 30px;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+}
+.walk-overlay p {
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 14px 0 24px;
+}
+.walk-overlay .studio-button {
+  background: var(--studio-paper);
+  color: var(--color-deep-current);
+}
+.walk-overlay .studio-button svg {
+  margin: 0;
+}
+.walk-overlay small {
+  display: block;
+  font-size: 12px;
+  margin-top: 15px;
+}
+.walk-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  color: white;
+  text-shadow: 0 1px 3px black;
+  pointer-events: none;
+}
+.walk-hud {
+  position: absolute;
+  inset: auto 18px 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  pointer-events: none;
+}
+.walk-hud > span {
+  font-size: 12px;
+  background: var(--studio-paper);
+  color: var(--color-ink);
+  padding: 8px 11px;
+  border-radius: 6px;
+}
+.walk-direction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+}
+.walk-direction > div {
+  display: flex;
+  gap: 4px;
+}
+.walk-direction button {
+  display: grid;
+  place-items: center;
+  background: var(--studio-paper);
+  color: var(--color-ink);
+  border: 1px solid var(--color-muted);
+  border-radius: 8px;
+  width: 46px;
+  height: 46px;
+  touch-action: none;
+}
+.walk-direction button:active {
+  background: var(--studio-action);
+  color: white;
+}
+.walk-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+}
+.walk-views,
+.walk-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.walk-actions button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+.walk-views button {
+  background: var(--studio-soft);
+}
+.walkthrough button:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+.walkthrough button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.walk-details {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 70px;
+  padding-block: 30px;
+}
+.walk-details h2 {
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -0.6px;
+  margin-top: 10px;
+}
+.walk-details p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-muted);
+  margin-top: 12px;
+}
+.walk-details .walk-disclaimer {
+  font-size: 12px;
+}
+.walk-options {
+  background: var(--studio-soft);
+  padding: 20px 24px;
+  border-radius: 12px;
+}
+.walk-options > label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.walk-options select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--color-muted);
+  background: white;
+  border-radius: 7px;
+  font-size: 13px;
+  padding: 8px 10px;
+  margin: 8px 0 12px;
+}
+.walk-options .walk-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+}
+.walk-toggle input {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--studio-action);
+}
+.walk-options p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+.walk-help {
+  border-block: 1px solid var(--studio-line);
+  margin-bottom: 30px;
+  padding: 12px 0;
+}
+.walk-help summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.walk-help > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding-bottom: 16px;
+}
+.walk-help p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--color-muted);
+}
+.explore-footer {
+  font-size: 12px;
+  color: var(--color-muted);
+  padding-block: 15px 30px;
+}
+.walk-expanded {
+  position: fixed;
+  inset: 12px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  box-shadow: var(--shadow-elevated);
+}
+.walk-expanded .walk-stage {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+.walk-loading {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgb(255 255 255 / 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  animation: walk-spin 1s linear infinite;
+}
+@keyframes walk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 700px) {
+  .explore-nav,
+  .explore-main,
+  .explore-footer {
+    width: calc(100% - 32px);
+  }
+  .explore-nav {
+    gap: 12px;
+    min-height: 78px;
+  }
+  .explore-nav .studio-brand {
+    font-size: 21px;
+  }
+  .explore-nav > a:last-child {
+    font-size: 12px;
+  }
+  .explore-heading {
+    display: block;
+    padding-block: 28px;
+  }
+  .explore-heading > p {
+    margin-top: 18px;
+  }
+  .explore-heading h1 {
+    font-size: 34px;
+  }
+  .scene-tabs {
+    gap: 5px;
+  }
+  .scene-tabs > button {
+    padding: 12px 7px;
+    min-height: 62px;
+    gap: 0;
+    justify-content: center;
+  }
+  .scene-index,
+  .scene-tabs small {
+    display: none;
+  }
+  .scene-tabs strong {
+    font-size: 12px;
+  }
+  .walk-toolbar {
+    padding: 5px 10px;
+  }
+  .walk-toolbar > span {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .walk-toolbar small {
+    display: none;
+  }
+  .walk-toolbar > div {
+    gap: 4px;
+  }
+  .walk-stage {
+    height: 440px;
+  }
+  .walk-overlay {
+    padding: 18px;
+  }
+  .walk-overlay h2 {
+    font-size: 25px;
+  }
+  .walk-overlay p {
+    font-size: 13px;
+  }
+  /* Hint and arrows stay on one row: world.ts keeps markers out of the bottom 120px only,
+     and a stacked column grew taller than that and covered markers. */
+  .walk-hud {
+    inset: auto 10px 12px;
+    gap: 9px;
+  }
+  .walk-actions {
+    padding: 10px;
+    gap: 8px;
+  }
+  .walk-views {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .walk-actions button {
+    padding: 7px 9px;
+  }
+  .walk-tools {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .walk-actions .walk-mouse {
+    display: none;
+  }
+  .walk-details {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 24px;
+  }
+  .walk-details h2 {
+    font-size: 21px;
+  }
+  .walk-help > div {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .walk-expanded {
+    inset: 0;
+    border-radius: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .walk-loading {
+    animation: none;
+  }
+}
+
+.component-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.component-leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.component-leaders line {
+  stroke: var(--color-deep-current);
+  stroke-width: 1.5;
+}
+.component-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: var(--color-deep-current);
+  color: white;
+  font:
+    600 12px var(--font-sans),
+    sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 5px #12382e40;
+}
+/* The selected marker is the one warm accent on the 3D stage; ink on it reads at 8.72:1. */
+.component-marker[aria-pressed="true"] {
+  background: #ffdc83;
+  color: var(--color-ink);
+  z-index: 2;
+  outline: 2px solid var(--color-deep-current);
+}
+/* An ink ring on a white halo reads over the pale stage and over dark model parts; the
+   previous orange ring reached 2.08:1 against the stage. */
+.component-marker:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px white;
+}
+.component-marker[hidden] {
+  display: none;
+}
+.component-guide {
+  border-top: 1px solid var(--studio-line);
+  background: var(--color-foam);
+}
+.component-guide summary {
+  cursor: pointer;
+  padding: 16px 22px;
+  font-weight: 650;
+  color: var(--color-deep-current);
+}
+.component-guide-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+  gap: 28px;
+  padding: 0 22px 24px;
+}
+.component-picker label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+/* muted, like every other control edge: the previous #98aaa1 reached only 2.44:1. */
+.component-picker select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid var(--color-muted);
+  border-radius: 6px;
+  background: white;
+  color: var(--color-ink);
+}
+.component-picker button {
+  margin-top: 10px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-deep-current);
+  border-radius: 6px;
+  color: var(--color-deep-current);
+  cursor: pointer;
+}
+.component-picker button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.component-picker p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 14px;
+  color: var(--color-muted);
+}
+.component-description h3 {
+  font-size: 22px;
+  margin: 5px 0 8px;
+  color: var(--color-ink);
+}
+.component-description p,
+.component-description li {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.component-description h4 {
+  margin: 12px 0 5px;
+  font-size: 13px;
+}
+.component-description ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+.component-status {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--color-muted);
+}
+/* The sediment edge marks a caution, the same warning tone statusText uses. */
+.component-description .component-note {
+  margin-top: 14px;
+  padding-left: 12px;
+  border-left: 3px solid var(--color-sediment);
+  color: var(--color-sediment-text);
+}
+.wiring-source {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 12px;
+  color: var(--color-muted);
+}
+/* A standalone download action, not a link inside a sentence, so it keeps the 44px target. */
+.wiring-source a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: 8px;
+  text-decoration: underline;
+  color: var(--color-deep-current);
+}
+.walk-expanded .component-guide {
+  max-height: 37vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 700px) {
+  .component-guide-body {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 0 16px 20px;
+  }
+  .component-marker {
+    width: 40px;
+    height: 40px;
+  }
+  .component-description h3 {
+    font-size: 20px;
+  }
+}

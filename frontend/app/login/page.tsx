@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { LoginForm } from "@/components/auth/login-form"
-import { brandLink, heading, panel, sentenceLink } from "@/components/ui/styles"
+import { AuthFrame } from "@/components/studio/auth-frame"
+import { sentenceLink } from "@/components/ui/styles"
 import { getSession } from "@/lib/api/server"
 import { safeRedirect } from "@/lib/form"
 
@@ -16,15 +17,14 @@ export default async function LoginPage({
   if (await getSession()) redirect(redirectTo)
 
   return (
-    <main
-      id="konten"
-      className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10"
-    >
-      <Link href="/" className={brandLink}>
-        AquaSmart
-      </Link>
-      <div className={`${panel()} mt-6`}>
-        <h1 className={heading({ level: "section" })}>Selamat datang kembali</h1>
+    <AuthFrame>
+      <span className="eyebrow">Ruang budidaya Anda</span>
+      <div>
+        <h1 className="auth-title">
+          Selamat datang
+          <br />
+          kembali.
+        </h1>
         <p className="mt-2 text-sm text-muted">
           Masuk untuk memantau kualitas air dan perangkat budidaya Anda.
         </p>
@@ -38,6 +38,6 @@ export default async function LoginPage({
           Buat akun di sini
         </Link>
       </p>
-    </main>
+    </AuthFrame>
   )
 }
