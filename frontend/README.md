@@ -1,7 +1,7 @@
 # AquaSmart frontend
 
 Next.js App Router di depan backend PHP AquaSmart (`01_AquaSmart/01_Aplikasi-Web/server/`).
-Backend tidak diubah; frontend ini hanya klien.
+Frontend ini hanya klien; validasi dan aturan data tetap di backend.
 
 ## Menjalankan
 
@@ -18,6 +18,7 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
 | `npm run lint` | Biome |
 | `npm test` | Skema Zod diuji terhadap respons asli PHP di `lib/api/fixtures.json`, ditambah tes batas gerak jelajah 3D |
 | `python scripts/capture-api-fixtures.py` | Rekam ulang fixture dari backend lokal yang di-seed |
+| `node scripts/write-wiring-guide.mjs` | Tulis ulang `public/models/panduan-wiring.md` dari data panel komponen jelajah 3D |
 
 ## Alur data
 
@@ -47,6 +48,10 @@ di luar repo ini.
   belum dikerjakan karena backend dibekukan.
 - **Kontrol aerator dan feeder adalah SIMULASI.** Perintah tercatat di server, tetapi
   aktuasi fisik lewat ESP32 belum diverifikasi.
+- **TDS dan level air adalah estimasi.** Server menghitungnya dari nilai mentah ESP32 (kurva
+  DFRobot SEN0244 pada asumsi 25°C, dan jarak ultrasonik terhadap tinggi tandon); keduanya belum
+  terkalibrasi dan tidak dipakai menilai batas kualitas air. Status firmware ada di
+  `01_AquaSmart/01_Aplikasi-Web/firmware/esp32/README.md`.
 - **Jelajah 3D belum diprofil.** Pilihan 30 atau 60 fps adalah batas atas render loop, bukan
   hasil ukur. Ponsel fisik dan kegagalan GPU belum diuji. Panduan wiring adalah dokumentasi
   rancangan, bukan hasil validasi rangkaian fisik.

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/ReportsRepository.php';
+require_once __DIR__ . '/TelemetryRepository.php';
 
 final class ExportRepository
 {
@@ -52,7 +53,7 @@ final class ExportRepository
         foreach ($rows as &$row) {
             if (array_key_exists('simulation',$row)) $row['simulation'] = (bool)$row['simulation'];
             if ($kind === 'alerts') $row['source'] = Provenance::label($row['provenance']);
-            if ($kind === 'telemetry') $row=json_decode($row['payload'],true)+['received_at'=>$row['received_at']];
+            if ($kind === 'telemetry') $row=json_decode($row['payload'],true)+TelemetryRepository::ADDED_FIELDS+['received_at'=>$row['received_at']];
         }
         return ['meta'=>$meta+['source_counts'=>Provenance::counts($rows)],'rows'=>$rows];
     }
@@ -67,7 +68,7 @@ final class ExportRepository
             'reports' => ['day','cnt','ph_avg','temperature_avg','turbidity_avg','simulation_samples','non_simulation_samples'],
             default => ['id','device_id','created_at','actuator','value','duration','status','simulation','completed_at'],
         };
-        if ($export['meta']['kind']==='telemetry') $columns=['created_at','received_at','provenance','simulation','source_session','temperature','temperature_status','turbidity_adc','turbidity_mv','turbidity_sensor_mv','turbidity_mapping_percent','soil_ph_adc','soil_ph_mv','ph_sensor','calibrated'];
+        if ($export['meta']['kind']==='telemetry') $columns=['created_at','received_at','provenance','simulation','source_session','temperature','temperature_status','turbidity_adc','turbidity_mv','turbidity_sensor_mv','turbidity_mapping_percent','soil_ph_adc','soil_ph_mv','tds_adc','tds_mv','tds_ppm_estimate','water_distance_cm','tank_height_cm','water_level_percent','ph_sensor','calibrated'];
         elseif ($export['meta']['kind']!=='reports') $columns=array_merge($columns,['provenance','source_session']);
         foreach(Provenance::SOURCES as $source) $columns[]='source_'.$source;
         fputcsv($stream,$columns,',','"','');

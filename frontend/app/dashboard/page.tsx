@@ -2,10 +2,16 @@ import { AutoRefresh } from "@/components/auto-refresh"
 import { NoDevice } from "@/components/dashboard/no-device"
 import { ParameterCard } from "@/components/dashboard/parameter-card"
 import { ReadingsTable } from "@/components/dashboard/readings-table"
+import { TelemetryPanel } from "@/components/dashboard/telemetry-panel"
 import { DevicePicker } from "@/components/device-picker"
 import { WaterChart } from "@/components/studio/water-chart"
 import { heading, panel } from "@/components/ui/styles"
-import { DevicesResponse, ReadingsResponse, ThresholdsResponse } from "@/lib/api/schemas"
+import {
+  DevicesResponse,
+  ReadingsResponse,
+  TelemetryResponse,
+  ThresholdsResponse,
+} from "@/lib/api/schemas"
 import { requireSession, serverRequest } from "@/lib/api/server"
 import { pickDevice } from "@/lib/devices"
 import { formatDateTime, provenanceLabel } from "@/lib/format"
@@ -15,7 +21,7 @@ export const metadata = { title: "Kualitas Air | AquaSmart" }
 
 // The screen answers one question for a fish farmer: is the water in this pond safe
 // right now. The summary sentence comes first, then the three contract parameters,
-// then what to do, then the history that explains it.
+// then what to do, then the device's extra raw sensors, then the history that explains it.
 export default async function DashboardPage({
   searchParams,
 }: {
@@ -29,10 +35,13 @@ export default async function DashboardPage({
   const device = pickDevice(devices, (await searchParams).device)
   if (!device) return <NoDevice isAdmin={session.user.role === "admin"} />
 
-  const { readings } = await serverRequest(
-    `/api/devices/${encodeURIComponent(device.id)}/readings?limit=18`,
-    ReadingsResponse,
-  )
+  const [{ readings }, { telemetry }] = await Promise.all([
+    serverRequest(
+      `/api/devices/${encodeURIComponent(device.id)}/readings?limit=18`,
+      ReadingsResponse,
+    ),
+    serverRequest(`/api/devices/${encodeURIComponent(device.id)}/telemetry`, TelemetryResponse),
+  ])
   const latest = device.latest_reading
   const outOfRange = latest
     ? PARAMETERS.filter((p) => !withinLimits(p.key, latest[p.key], thresholds))
@@ -114,6 +123,8 @@ export default async function DashboardPage({
           </ul>
         </section>
       ) : null}
+
+      <TelemetryPanel record={telemetry[0] ?? null} />
 
       <section className="live-chart-panel" aria-labelledby="grafik-ph">
         <div className="preview-header">

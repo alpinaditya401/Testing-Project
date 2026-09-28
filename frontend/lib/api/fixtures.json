@@ -31,13 +31,13 @@
     "id": 5,
     "device_id": "AQS-CRITICAL",
     "severity": "critical",
-    "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-19T11:45:45Z.",
+    "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-28T00:50:15Z.",
     "source": "SEED / data contoh",
     "provenance": "seed",
     "source_session": "seed-local-v1",
     "acknowledged": true,
-    "created_at": "2026-09-19T11:45:45Z",
-    "acknowledged_at": "2026-09-19T11:45:46Z"
+    "created_at": "2026-09-28T00:50:15Z",
+    "acknowledged_at": "2026-09-28T00:50:16Z"
    }
   }
  },
@@ -56,13 +56,13 @@
     "id": 5,
     "device_id": "AQS-CRITICAL",
     "severity": "critical",
-    "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-19T11:45:45Z.",
+    "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-28T00:50:15Z.",
     "source": "SEED / data contoh",
     "provenance": "seed",
     "source_session": "seed-local-v1",
     "acknowledged": true,
-    "created_at": "2026-09-19T11:45:45Z",
-    "acknowledged_at": "2026-09-19T11:45:46Z"
+    "created_at": "2026-09-28T00:50:15Z",
+    "acknowledged_at": "2026-09-28T00:50:16Z"
    }
   }
  },
@@ -82,24 +82,24 @@
      "id": 5,
      "device_id": "AQS-CRITICAL",
      "severity": "critical",
-     "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-19T11:45:45Z.",
+     "message": "Kekeruhan 150 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-28T00:50:15Z.",
      "source": "SEED / data contoh",
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "acknowledged": false,
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "acknowledged_at": null
     },
     {
      "id": 4,
      "device_id": "AQS-WARNING",
      "severity": "warning",
-     "message": "Kekeruhan 60 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-19T11:45:45Z.",
+     "message": "Kekeruhan 60 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-28T00:50:15Z.",
      "source": "SEED / data contoh",
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "acknowledged": false,
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "acknowledged_at": null
     },
     {
@@ -111,7 +111,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "acknowledged": false,
-     "created_at": "2026-09-19T11:30:45Z",
+     "created_at": "2026-09-28T00:35:15Z",
      "acknowledged_at": null
     },
     {
@@ -123,7 +123,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "acknowledged": false,
-     "created_at": "2026-09-19T10:45:45Z",
+     "created_at": "2026-09-27T23:50:15Z",
      "acknowledged_at": null
     },
     {
@@ -135,8 +135,8 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "acknowledged": true,
-     "created_at": "2026-09-19T09:45:45Z",
-     "acknowledged_at": "2026-09-19T09:49:05Z"
+     "created_at": "2026-09-27T22:50:15Z",
+     "acknowledged_at": "2026-09-27T22:53:35Z"
     }
    ],
    "unacknowledged_count": 4
@@ -166,7 +166,7 @@
       "origin_provenance": "seed",
       "origin_session": "seed-local-v1"
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 32,
@@ -180,7 +180,7 @@
       "created_at": "2026-01-01T00:00:00Z",
       "calibrated": false
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 31,
@@ -191,10 +191,10 @@
      "metadata": {
       "provenance": "device",
       "source_session": "esp32-contoh-001",
-      "created_at": "2026-09-19T11:45:46Z",
+      "created_at": "2026-09-28T00:50:16Z",
       "calibrated": false
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 30,
@@ -206,7 +206,7 @@
       "actuator": "auto",
       "value": false
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 29,
@@ -218,7 +218,7 @@
       "actuator": "aerator",
       "value": true
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 28,
@@ -227,12 +227,12 @@
      "provenance": "simulation",
      "source_session": null,
      "metadata": {
-      "command_id": "6852434a13c1ca7b00ab3fa5b65f1996",
+      "command_id": "20e27c308487fff2a7f60e89872184d3",
       "simulation": true,
       "source": "manual",
       "provenance": "simulation"
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 27,
@@ -244,7 +244,7 @@
       "actuator": "feeder",
       "value": true
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 26,
@@ -253,12 +253,12 @@
      "provenance": "simulation",
      "source_session": null,
      "metadata": {
-      "command_id": "ac673a1b81f019577db17259e069fb32",
+      "command_id": "9c409b659f9134db4864ee4aaa863efe",
       "simulation": true,
       "source": "manual",
       "provenance": "simulation"
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 25,
@@ -269,7 +269,7 @@
      "metadata": {
       "schedule_id": 3
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 24,
@@ -283,7 +283,7 @@
       "duration": 5,
       "days": "Setiap hari"
      },
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 23,
@@ -292,7 +292,7 @@
      "provenance": "manual",
      "source_session": null,
      "metadata": [],
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 22,
@@ -301,7 +301,7 @@
      "provenance": "manual",
      "source_session": null,
      "metadata": [],
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 21,
@@ -310,7 +310,7 @@
      "provenance": "manual",
      "source_session": null,
      "metadata": [],
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 20,
@@ -319,7 +319,7 @@
      "provenance": "manual",
      "source_session": null,
      "metadata": [],
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 19,
@@ -328,7 +328,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 18,
@@ -337,7 +337,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 17,
@@ -346,7 +346,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 16,
@@ -355,7 +355,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 15,
@@ -364,7 +364,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 14,
@@ -373,7 +373,7 @@
      "provenance": "seed",
      "source_session": "seed-local-v1",
      "metadata": [],
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     }
    ]
   }
@@ -384,7 +384,7 @@
   "path": "/api/auth/login",
   "status": 200,
   "request": {
-   "username": "admin_6308202d",
+   "username": "admin_2f015aa0",
    "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   },
   "headers": {
@@ -394,7 +394,7 @@
   "body": {
    "user": {
     "id": 1,
-    "username": "admin_6308202d",
+    "username": "admin_2f015aa0",
     "contact": null,
     "name": "Administrator AquaSmart",
     "role": "admin",
@@ -431,7 +431,7 @@
   "body": {
    "user": {
     "id": 1,
-    "username": "admin_6308202d",
+    "username": "admin_2f015aa0",
     "contact": null,
     "name": "Administrator AquaSmart",
     "role": "admin",
@@ -454,7 +454,7 @@
   "body": {
    "commands": [
     {
-     "id": "4cc6d5e7ab9f6c158efddee607ab9f12",
+     "id": "adba200daf38b49aaa560414425f5bdd",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -463,15 +463,15 @@
      "request_id": "seed-succeeded",
      "status": "succeeded",
      "simulation": true,
-     "created_at": 1789818165,
-     "expires_at": 1789818196,
-     "delivered_at": 1789818166,
-     "completed_at": 1789818167,
+     "created_at": 1790556435,
+     "expires_at": 1790556466,
+     "delivered_at": 1790556436,
+     "completed_at": 1790556437,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "5ad3dda5836cefec094f5cdc41778f92",
+     "id": "e50cc096bd3f9e49709cee9176310600",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -480,15 +480,15 @@
      "request_id": "seed-failed",
      "status": "failed",
      "simulation": true,
-     "created_at": 1789818045,
-     "expires_at": 1789818076,
-     "delivered_at": 1789818046,
-     "completed_at": 1789818047,
+     "created_at": 1790556315,
+     "expires_at": 1790556346,
+     "delivered_at": 1790556316,
+     "completed_at": 1790556317,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "d5ed726edad09cd4e24cf91b535a80a3",
+     "id": "64bb1e4d6a50c343f5fac3658b91ca19",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -497,10 +497,10 @@
      "request_id": "seed-timeout",
      "status": "timeout",
      "simulation": true,
-     "created_at": 1789817925,
-     "expires_at": 1789817956,
-     "delivered_at": 1789817926,
-     "completed_at": 1789818015,
+     "created_at": 1790556195,
+     "expires_at": 1790556226,
+     "delivered_at": 1790556196,
+     "completed_at": 1790556285,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -528,30 +528,30 @@
     "online": true,
     "aerator": true,
     "feeder": false,
-    "last_seen": "2026-09-19T11:45:45Z",
+    "last_seen": "2026-09-28T00:50:15Z",
     "auto": false,
     "latest_reading": {
      "ph": 7.1,
      "temperature": 28,
      "turbidity": 60,
      "simulation": true,
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
    },
    "command": {
-    "id": "6852434a13c1ca7b00ab3fa5b65f1996",
+    "id": "20e27c308487fff2a7f60e89872184d3",
     "device_id": "AQS-WARNING",
     "user_id": 1,
     "actuator": "aerator",
     "value": true,
     "duration": 0,
-    "request_id": "54328c774a1652d326ad8279d209b256",
+    "request_id": "dc12fc4fb71296beb5c4a268c7f62109",
     "status": "pending",
     "simulation": true,
-    "created_at": 1789818346,
-    "expires_at": 1789818406,
+    "created_at": 1790556616,
+    "expires_at": 1790556676,
     "delivered_at": null,
     "completed_at": null,
     "provenance": "simulation",
@@ -580,14 +580,14 @@
     "online": true,
     "aerator": false,
     "feeder": false,
-    "last_seen": "2026-09-19T11:45:45Z",
+    "last_seen": "2026-09-28T00:50:15Z",
     "auto": false,
     "latest_reading": {
      "ph": 7.1,
      "temperature": 28,
      "turbidity": 150,
      "simulation": true,
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -625,13 +625,13 @@
      "temperature": 28,
      "turbidity": 20,
      "simulation": true,
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
    },
    "command": {
-    "id": "ac673a1b81f019577db17259e069fb32",
+    "id": "9c409b659f9134db4864ee4aaa863efe",
     "device_id": "AQS-OFFLINE",
     "user_id": 1,
     "actuator": "feeder",
@@ -640,8 +640,8 @@
     "request_id": "uji-skema-1",
     "status": "pending",
     "simulation": true,
-    "created_at": 1789818346,
-    "expires_at": 1789818406,
+    "created_at": 1790556616,
+    "expires_at": 1790556676,
     "delivered_at": null,
     "completed_at": null,
     "provenance": "simulation",
@@ -721,14 +721,14 @@
      "online": true,
      "aerator": true,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": true,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28.4,
       "turbidity": 42,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -740,14 +740,14 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": true,
      "latest_reading": {
       "ph": 6.8,
       "temperature": 27.8,
       "turbidity": 35,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -759,7 +759,7 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": null
     },
@@ -777,7 +777,7 @@
       "temperature": 28,
       "turbidity": 20,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -789,14 +789,14 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28,
       "turbidity": 60,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -808,14 +808,14 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28,
       "turbidity": 150,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -904,7 +904,7 @@
  {
   "name": "err_export_kind",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-WARNING&kind=bogus&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-WARNING&kind=bogus&period=day&date=2026-09-28&format=json",
   "status": 422,
   "request": null,
   "headers": {
@@ -963,7 +963,7 @@
   "path": "/api/auth/login",
   "status": 401,
   "request": {
-   "username": "admin_6308202d",
+   "username": "admin_2f015aa0",
    "password": "xxxxxxxxxxxx"
   },
   "headers": {
@@ -1064,7 +1064,7 @@
  {
   "name": "export_csv",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-WARNING&kind=readings&period=day&date=2026-09-19&format=csv",
+  "path": "/api/export?device_id=AQS-WARNING&kind=readings&period=day&date=2026-09-28&format=csv",
   "status": 200,
   "request": null,
   "headers": {
@@ -1074,12 +1074,12 @@
    "content-type": "text/csv; charset=utf-8",
    "content-disposition": "attachment; filename=\"aquasmart-export.csv\""
   },
-  "body": "id,device_id,created_at,ph,temperature,turbidity,simulation,provenance,source_session,source_simulation,source_device,source_manual,source_seed,source_legacy_unverified\n38,AQS-WARNING,2026-09-19T11:45:45Z,7.1,28,60,true,seed,seed-local-v1,0,0,0,1,0\n"
+  "body": "id,device_id,created_at,ph,temperature,turbidity,simulation,provenance,source_session,source_simulation,source_device,source_manual,source_seed,source_legacy_unverified\n38,AQS-WARNING,2026-09-28T00:50:15Z,7.1,28,60,true,seed,seed-local-v1,0,0,0,1,0\n"
  },
  {
   "name": "export_json",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-WARNING&kind=readings&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-WARNING&kind=readings&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1093,10 +1093,10 @@
     "device_id": "AQS-WARNING",
     "kind": "readings",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1110,7 +1110,7 @@
     {
      "id": 38,
      "device_id": "AQS-WARNING",
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "ph": 7.1,
      "temperature": 28,
      "turbidity": 60,
@@ -1124,7 +1124,7 @@
  {
   "name": "export_json_alerts",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-WARNING&kind=alerts&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-WARNING&kind=alerts&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1138,10 +1138,10 @@
     "device_id": "AQS-WARNING",
     "kind": "alerts",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1155,9 +1155,9 @@
     {
      "id": 4,
      "device_id": "AQS-WARNING",
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "severity": "warning",
-     "message": "Kekeruhan 60 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-19T11:45:45Z.",
+     "message": "Kekeruhan 60 di luar ambang 0–50. Periksa endapan, filter, dan sisa pakan. Sumber: simulasi; waktu 2026-09-28T00:50:15Z.",
      "acknowledged": 0,
      "acknowledged_at": null,
      "provenance": "seed",
@@ -1170,7 +1170,7 @@
  {
   "name": "export_json_commands",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-KOLAM-01&kind=commands&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-KOLAM-01&kind=commands&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1184,10 +1184,10 @@
     "device_id": "AQS-KOLAM-01",
     "kind": "commands",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1199,41 +1199,41 @@
    },
    "rows": [
     {
-     "id": "d5ed726edad09cd4e24cf91b535a80a3",
+     "id": "64bb1e4d6a50c343f5fac3658b91ca19",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789817925,
+     "created_at": 1790556195,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "timeout",
      "simulation": true,
-     "completed_at": 1789818015,
+     "completed_at": 1790556285,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "5ad3dda5836cefec094f5cdc41778f92",
+     "id": "e50cc096bd3f9e49709cee9176310600",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789818045,
+     "created_at": 1790556315,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "failed",
      "simulation": true,
-     "completed_at": 1789818047,
+     "completed_at": 1790556317,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "4cc6d5e7ab9f6c158efddee607ab9f12",
+     "id": "adba200daf38b49aaa560414425f5bdd",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789818165,
+     "created_at": 1790556435,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "succeeded",
      "simulation": true,
-     "completed_at": 1789818167,
+     "completed_at": 1790556437,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -1243,7 +1243,7 @@
  {
   "name": "export_json_feeding_logs",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-KOLAM-01&kind=feeding_logs&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-KOLAM-01&kind=feeding_logs&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1257,10 +1257,10 @@
     "device_id": "AQS-KOLAM-01",
     "kind": "feeding_logs",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1272,41 +1272,41 @@
    },
    "rows": [
     {
-     "id": "d5ed726edad09cd4e24cf91b535a80a3",
+     "id": "64bb1e4d6a50c343f5fac3658b91ca19",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789817925,
+     "created_at": 1790556195,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "timeout",
      "simulation": true,
-     "completed_at": 1789818015,
+     "completed_at": 1790556285,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "5ad3dda5836cefec094f5cdc41778f92",
+     "id": "e50cc096bd3f9e49709cee9176310600",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789818045,
+     "created_at": 1790556315,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "failed",
      "simulation": true,
-     "completed_at": 1789818047,
+     "completed_at": 1790556317,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "4cc6d5e7ab9f6c158efddee607ab9f12",
+     "id": "adba200daf38b49aaa560414425f5bdd",
      "device_id": "AQS-KOLAM-01",
-     "created_at": 1789818165,
+     "created_at": 1790556435,
      "actuator": "feeder",
      "value": 1,
      "duration": 1,
      "status": "succeeded",
      "simulation": true,
-     "completed_at": 1789818167,
+     "completed_at": 1790556437,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -1316,7 +1316,7 @@
  {
   "name": "export_json_reports",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-WARNING&kind=reports&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-WARNING&kind=reports&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1330,10 +1330,10 @@
     "device_id": "AQS-WARNING",
     "kind": "reports",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1345,7 +1345,7 @@
    },
    "rows": [
     {
-     "day": "2026-09-19",
+     "day": "2026-09-28",
      "cnt": 1,
      "ph_avg": 7.1,
      "temperature_avg": 28,
@@ -1364,7 +1364,7 @@
  {
   "name": "export_json_telemetry",
   "method": "GET",
-  "path": "/api/export?device_id=AQS-KOLAM-01&kind=telemetry&period=day&date=2026-09-19&format=json",
+  "path": "/api/export?device_id=AQS-KOLAM-01&kind=telemetry&period=day&date=2026-09-28&format=json",
   "status": 200,
   "request": null,
   "headers": {
@@ -1378,10 +1378,10 @@
     "device_id": "AQS-KOLAM-01",
     "kind": "telemetry",
     "period": "day",
-    "date": "2026-09-19",
+    "date": "2026-09-28",
     "timezone": "UTC",
-    "start_at": "2026-09-19T00:00:00Z",
-    "end_at_exclusive": "2026-09-20T00:00:00Z",
+    "start_at": "2026-09-28T00:00:00Z",
+    "end_at_exclusive": "2026-09-29T00:00:00Z",
     "hardware_verified": false,
     "source_counts": {
      "simulation": 0,
@@ -1393,7 +1393,7 @@
    },
    "rows": [
     {
-     "created_at": "2026-09-19T11:45:46Z",
+     "created_at": "2026-09-28T00:50:16Z",
      "provenance": "device",
      "simulation": false,
      "source_session": "esp32-contoh-001",
@@ -1405,9 +1405,15 @@
      "turbidity_mapping_percent": 50,
      "soil_ph_adc": 1000,
      "soil_ph_mv": 800,
+     "tds_adc": 1500,
+     "tds_mv": 1200,
+     "tds_ppm_estimate": 445.5,
+     "water_distance_cm": 18,
+     "tank_height_cm": 50,
+     "water_level_percent": 64,
      "ph_sensor": "soil_placeholder",
      "calibrated": false,
-     "received_at": "2026-09-19T11:45:46Z"
+     "received_at": "2026-09-28T00:50:16Z"
     }
    ]
   }
@@ -1425,7 +1431,7 @@
   "body": {
    "feeding_logs": [
     {
-     "id": "4cc6d5e7ab9f6c158efddee607ab9f12",
+     "id": "adba200daf38b49aaa560414425f5bdd",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -1434,15 +1440,15 @@
      "request_id": "seed-succeeded",
      "status": "succeeded",
      "simulation": true,
-     "created_at": 1789818165,
-     "expires_at": 1789818196,
-     "delivered_at": 1789818166,
-     "completed_at": 1789818167,
+     "created_at": 1790556435,
+     "expires_at": 1790556466,
+     "delivered_at": 1790556436,
+     "completed_at": 1790556437,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "5ad3dda5836cefec094f5cdc41778f92",
+     "id": "e50cc096bd3f9e49709cee9176310600",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -1451,15 +1457,15 @@
      "request_id": "seed-failed",
      "status": "failed",
      "simulation": true,
-     "created_at": 1789818045,
-     "expires_at": 1789818076,
-     "delivered_at": 1789818046,
-     "completed_at": 1789818047,
+     "created_at": 1790556315,
+     "expires_at": 1790556346,
+     "delivered_at": 1790556316,
+     "completed_at": 1790556317,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     },
     {
-     "id": "d5ed726edad09cd4e24cf91b535a80a3",
+     "id": "64bb1e4d6a50c343f5fac3658b91ca19",
      "device_id": "AQS-KOLAM-01",
      "user_id": 1,
      "actuator": "feeder",
@@ -1468,10 +1474,10 @@
      "request_id": "seed-timeout",
      "status": "timeout",
      "simulation": true,
-     "created_at": 1789817925,
-     "expires_at": 1789817956,
-     "delivered_at": 1789817926,
-     "completed_at": 1789818015,
+     "created_at": 1790556195,
+     "expires_at": 1790556226,
+     "delivered_at": 1790556196,
+     "completed_at": 1790556285,
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -1485,7 +1491,7 @@
   "status": 201,
   "request": {
    "device_id": "AQS-KOLAM-01",
-   "observed_at": "2026-09-19",
+   "observed_at": "2026-09-28",
    "weight_g": 130.5,
    "length_cm": null,
    "notes": "Uji skema"
@@ -1499,11 +1505,11 @@
     "id": 2,
     "user_id": 1,
     "device_id": "AQS-KOLAM-01",
-    "observed_at": "2026-09-19",
+    "observed_at": "2026-09-28",
     "weight_g": 130.5,
     "length_cm": null,
     "notes": "Uji skema",
-    "created_at": "2026-09-19T11:45:46+00:00",
+    "created_at": "2026-09-28T00:50:16+00:00",
     "provenance": "manual",
     "source_session": null
    }
@@ -1539,11 +1545,11 @@
      "id": 1,
      "user_id": 1,
      "device_id": "AQS-KOLAM-01",
-     "observed_at": "2026-09-19",
+     "observed_at": "2026-09-28",
      "weight_g": 125,
      "length_cm": 18,
      "notes": "SIMULASI: contoh observasi manual, bukan hasil panen.",
-     "created_at": "2026-09-19T11:45:45+00:00",
+     "created_at": "2026-09-28T00:50:15+00:00",
      "provenance": "seed",
      "source_session": "seed-local-v1"
     }
@@ -1606,7 +1612,7 @@
     "id": 1,
     "contact": "anggota-skema@example.com",
     "token": "0000000000000000000000000000000000000000000000000000000000000000",
-    "expires_at": "2026-09-20T11:45:47+00:00"
+    "expires_at": "2026-09-29T00:50:17+00:00"
    }
   }
  },
@@ -1626,7 +1632,7 @@
   "body": {
    "user": {
     "id": 1,
-    "username": "admin_6308202d",
+    "username": "admin_2f015aa0",
     "name": "Admin Uji Skema",
     "role": "admin",
     "phone": "081234567890"
@@ -1646,7 +1652,7 @@
   "body": {
    "readings": [
     {
-     "time": "2026-09-19T11:45:45Z",
+     "time": "2026-09-28T00:50:15Z",
      "ph": 7.1,
      "temperature": 28,
      "turbidity": 60,
@@ -1702,7 +1708,7 @@
  {
   "name": "reports_day",
   "method": "GET",
-  "path": "/api/reports?device_id=AQS-WARNING&date=2026-09-19&period=day",
+  "path": "/api/reports?device_id=AQS-WARNING&date=2026-09-28&period=day",
   "status": 200,
   "request": null,
   "headers": {
@@ -1712,13 +1718,13 @@
   "body": {
    "device_id": "AQS-WARNING",
    "period": "day",
-   "date": "2026-09-19",
+   "date": "2026-09-28",
    "timezone": "UTC",
-   "start_at": "2026-09-19T00:00:00Z",
-   "end_at_exclusive": "2026-09-20T00:00:00Z",
+   "start_at": "2026-09-28T00:00:00Z",
+   "end_at_exclusive": "2026-09-29T00:00:00Z",
    "groups": [
     {
-     "day": "2026-09-19",
+     "day": "2026-09-28",
      "cnt": 1,
      "ph_avg": 7.1,
      "temperature_avg": 28,
@@ -1747,7 +1753,7 @@
  {
   "name": "reports_month",
   "method": "GET",
-  "path": "/api/reports?device_id=AQS-WARNING&date=2026-09-19&period=month",
+  "path": "/api/reports?device_id=AQS-WARNING&date=2026-09-28&period=month",
   "status": 200,
   "request": null,
   "headers": {
@@ -1757,13 +1763,13 @@
   "body": {
    "device_id": "AQS-WARNING",
    "period": "month",
-   "date": "2026-09-19",
+   "date": "2026-09-28",
    "timezone": "UTC",
    "start_at": "2026-09-01T00:00:00Z",
    "end_at_exclusive": "2026-10-01T00:00:00Z",
    "groups": [
     {
-     "day": "2026-09-19",
+     "day": "2026-09-28",
      "cnt": 1,
      "ph_avg": 7.1,
      "temperature_avg": 28,
@@ -1804,7 +1810,7 @@
     {
      "id": "e4ea0ce1a3a133de917e3242dbf41067ed927abef52ec234cee740c1890fac52",
      "version": "threshold-rules-v2",
-     "created_at": "2026-09-19T11:45:45Z",
+     "created_at": "2026-09-28T00:50:15Z",
      "reading_count": 3,
      "config": {
       "ph_min": 6.5,
@@ -1858,7 +1864,7 @@
     "duration": 5,
     "days": "Setiap hari",
     "active": true,
-    "created_at": "2026-09-19T11:45:46Z"
+    "created_at": "2026-09-28T00:50:16Z"
    }
   }
  },
@@ -1894,7 +1900,7 @@
      "duration": 8,
      "days": "Setiap hari",
      "active": true,
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 2,
@@ -1902,7 +1908,7 @@
      "duration": 8,
      "days": "Setiap hari",
      "active": true,
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     }
    ]
   }
@@ -1925,7 +1931,7 @@
      "duration": 8,
      "days": "Setiap hari",
      "active": true,
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     },
     {
      "id": 3,
@@ -1933,7 +1939,7 @@
      "duration": 5,
      "days": "Setiap hari",
      "active": true,
-     "created_at": "2026-09-19T11:45:46Z"
+     "created_at": "2026-09-28T00:50:16Z"
     },
     {
      "id": 2,
@@ -1941,7 +1947,7 @@
      "duration": 8,
      "days": "Setiap hari",
      "active": true,
-     "created_at": "2026-09-19T11:45:45Z"
+     "created_at": "2026-09-28T00:50:15Z"
     }
    ]
   }
@@ -1959,7 +1965,7 @@
   "body": {
    "telemetry": [
     {
-     "created_at": "2026-09-19T11:45:46Z",
+     "created_at": "2026-09-28T00:50:16Z",
      "provenance": "device",
      "simulation": false,
      "source_session": "esp32-contoh-001",
@@ -1971,9 +1977,15 @@
      "turbidity_mapping_percent": 50,
      "soil_ph_adc": 1000,
      "soil_ph_mv": 800,
+     "tds_adc": 1500,
+     "tds_mv": 1200,
+     "tds_ppm_estimate": 445.5,
+     "water_distance_cm": 18,
+     "tank_height_cm": 50,
+     "water_level_percent": 64,
      "ph_sensor": "soil_placeholder",
      "calibrated": false,
-     "received_at": "2026-09-19T11:45:46Z"
+     "received_at": "2026-09-28T00:50:16Z"
     },
     {
      "created_at": "2026-01-01T00:00:00Z",
@@ -1988,9 +2000,15 @@
      "turbidity_mapping_percent": null,
      "soil_ph_adc": null,
      "soil_ph_mv": null,
+     "tds_adc": null,
+     "tds_mv": null,
+     "tds_ppm_estimate": null,
+     "water_distance_cm": null,
+     "tank_height_cm": null,
+     "water_level_percent": null,
      "ph_sensor": "soil_placeholder",
      "calibrated": false,
-     "received_at": "2026-09-19T11:45:46Z"
+     "received_at": "2026-09-28T00:50:16Z"
     }
    ],
    "notice": "PLACEHOLDER SENSOR TANAH, BUKAN pH AIR TERKALIBRASI; turbidity berupa mapping sementara, bukan NTU."
@@ -2087,14 +2105,14 @@
      "online": true,
      "aerator": true,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:46Z",
+     "last_seen": "2026-09-28T00:50:16Z",
      "auto": true,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28.4,
       "turbidity": 42,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -2106,14 +2124,14 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": true,
      "latest_reading": {
       "ph": 6.8,
       "temperature": 27.8,
       "turbidity": 35,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -2125,7 +2143,7 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": null
     },
@@ -2143,7 +2161,7 @@
       "temperature": 28,
       "turbidity": 20,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -2155,14 +2173,14 @@
      "online": true,
      "aerator": true,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28,
       "turbidity": 60,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -2174,14 +2192,14 @@
      "online": true,
      "aerator": false,
      "feeder": false,
-     "last_seen": "2026-09-19T11:45:45Z",
+     "last_seen": "2026-09-28T00:50:15Z",
      "auto": false,
      "latest_reading": {
       "ph": 7.1,
       "temperature": 28,
       "turbidity": 150,
       "simulation": true,
-      "created_at": "2026-09-19T11:45:45Z",
+      "created_at": "2026-09-28T00:50:15Z",
       "provenance": "seed",
       "source_session": "seed-local-v1"
      }
@@ -2195,7 +2213,7 @@
   "path": "/api/auth/login",
   "status": 200,
   "request": {
-   "username": "viewer_da4e36f9",
+   "username": "viewer_9a9a3cae",
    "password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   },
   "headers": {
@@ -2205,7 +2223,7 @@
   "body": {
    "user": {
     "id": 2,
-    "username": "viewer_da4e36f9",
+    "username": "viewer_9a9a3cae",
     "contact": null,
     "name": "Viewer SIMULASI",
     "role": "viewer",

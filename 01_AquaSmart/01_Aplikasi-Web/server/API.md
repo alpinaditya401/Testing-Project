@@ -1,4 +1,4 @@
-## Kontrak provenance terbaru — software lokal 15 September 2026
+## Kontrak provenance terbaru: software lokal 15 September 2026
 
 Bagian ini menggantikan catatan gap provenance dari snapshot sebelumnya. Reading/latest_reading, alert, audit, command/feeding log dan growth observation membawa provenance/source_session. Provenance adalah simulation/device/manual/seed/legacy_unverified; field simulation tetap untuk kompatibilitas. Jangan menebak provenance dari pesan atau simulation pada record lama. Device berarti deklarasi asal, bukan bukti perangkat/kalibrasi. Session null bila tidak tersedia; legacy tidak dibuatkan sesi palsu.
 
@@ -110,6 +110,8 @@ Telemetry JSON flat, contoh sintetis (bukan pengukuran):
 Timestamp UTC tepat YYYY-MM-DDTHH:mm:ssZ, kalender valid. Device ID pada path; field tambahan diabaikan. source_session 8–64 karakter alfanumerik ASCII/underscore/hyphen; provenance device/simulation harus cocok boolean simulation. Ini deklarasi sumber terautentikasi, bukan attestation hardware.
 
 Suhu ok memerlukan angka −55…125°C; disconnected/unverified memerlukan null. ADC integer 0…4095 atau null harus berpasangan mV 0…3300 atau null. Rekonstruksi turbidity mV/0.6 toleransi 2 mV, rentang 0…5500; mapping 0…100. Bila turbidity null, reconstructed/mapping juga null. ph_sensor=soil_placeholder dan calibrated=false wajib. Sensor belum dikenal/aman dikirim null, tanpa angka palsu.
+
+TDS dan level air (opsional, sejak 26 September 2026): tds_adc/tds_mv mengikuti aturan ADC yang sama. water_distance_cm 0…500 dan tank_height_cm 1…500 wajib berpasangan atau keduanya null. Server menghitung sendiri tds_ppm_estimate (kurva DFRobot SEN0244 pada asumsi 25°C, dibulatkan 0,1, belum terkalibrasi) dan water_level_percent ((tinggi tandon − jarak) / tinggi tandon × 100, dibatasi 0…100); nilai turunan kiriman perangkat diabaikan. Baris lama tanpa field ini dikembalikan GET dan ekspor dengan nilai null, dan retry identik atas baris lama tetap 201.
 
 **PLACEHOLDER SENSOR TANAH, BUKAN pH AIR TERKALIBRASI.** Mapping turbidity bukan NTU. Data masuk device_telemetry dengan received_at server; tidak mengisi sensor_readings pH/NTU, tidak memicu rules pH air, dan belum masuk lima ekspor historis. UI diagnostik/ekspor raw masih tercatat sebagai pekerjaan lanjutan di CHECKPOINT.
 

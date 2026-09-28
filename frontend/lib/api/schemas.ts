@@ -141,6 +141,14 @@ export const TelemetryRecord = z.object({
   turbidity_mapping_percent: z.number().nullable(),
   soil_ph_adc: z.number().int().nullable(),
   soil_ph_mv: z.number().nullable(),
+  // API.md: the server derives tds_ppm_estimate and water_level_percent from the raw
+  // values, and returns all six as null for rows stored before they existed.
+  tds_adc: z.number().int().nullable(),
+  tds_mv: z.number().nullable(),
+  tds_ppm_estimate: z.number().nullable(),
+  water_distance_cm: z.number().nullable(),
+  tank_height_cm: z.number().nullable(),
+  water_level_percent: z.number().nullable(),
   // API.md: the pH input is a soil-sensor placeholder and is never calibrated.
   ph_sensor: z.literal("soil_placeholder"),
   calibrated: z.literal(false),
@@ -580,6 +588,7 @@ export type User = z.output<typeof User>
 export type Session = z.output<typeof Session>
 export type Device = z.output<typeof Device>
 export type Reading = z.output<typeof Reading>
+export type TelemetryRecord = z.output<typeof TelemetryRecord>
 export type Schedule = z.output<typeof Schedule>
 export type Command = z.output<typeof Command>
 export type Alert = z.output<typeof Alert>

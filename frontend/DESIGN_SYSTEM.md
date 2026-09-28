@@ -95,8 +95,9 @@ Halaman editorial (beranda, masuk, daftar, jelajah 3D) memakai ukuran piksel sen
 | `sentenceLink` | tanpa varian | Tautan di dalam kalimat berjalan, lihat catatan target di bawah |
 
 Lapisan Studio berupa kelas `studio-*` dan kelas halaman di `app/globals.css`, ditambah
-komponen di `components/studio/` (`Brand`, `AuthFrame`, `WaterChart`) dan
-`components/walkthrough/`. Nama "studio" merujuk asal desainnya, bukan edisi terpisah.
+komponen di `components/studio/` (`Brand`, `AuthFrame`, `WaterChart`),
+`components/walkthrough/`, dan `components/dashboard/telemetry-panel.tsx`. Nama "studio" merujuk
+asal desainnya, bukan edisi terpisah.
 `TableRegion` membungkus tabel lebar supaya yang menggulir tabelnya, bukan halaman.
 
 **Catatan target sentuh.** Semua kontrol dan tautan mandiri setinggi minimal 44px, termasuk
@@ -187,6 +188,10 @@ batas (`AQS-CRITICAL`). Semuanya pada lima lebar: 320, 375, 768, 1024, dan 1440 
 | Teks di bawah 12px | Tidak ada |
 | Target di bawah 44px | Nol, kecuali dua tautan dalam kalimat dan checkbox di dalam label 44px |
 
+Dashboard dengan panel telemetri berisi data (satu kiriman uji ke `AQS-KOLAM-01`) diukur ulang di
+lima lebar yang sama dengan hasil serupa: tanpa overflow, target kecil, maupun teks di bawah 12px.
+Kedua kartu telemetri bertumpuk di 320 dan 375px, dan berdampingan di 768px ke atas.
+
 Ukuran `h1` per lebar (320 / 375 / 768 / 1024 / 1440 px):
 
 | Halaman | Ukuran |
@@ -212,9 +217,14 @@ di luar repo ini. Ukuran: aquaponik 3.147.752 byte, rangkaian 1.186.852 byte, ca
 Decoder Draco ada di `public/draco/` beserta lisensi Apache 2.0-nya, jadi tidak ada permintaan
 ke CDN. Model baru dimuat setelah tombol "Mulai jelajah 3D" ditekan.
 
-Pin di panduan komponen dicocokkan dengan `firmware/esp32/config.example.h` pada 28 September
-2026: suhu GPIO4, kekeruhan GPIO34, pH GPIO35 (masih `soil_placeholder`), servo GPIO18, relay
-GPIO23. Panduan sambungan adalah dokumentasi rancangan, bukan hasil validasi rangkaian fisik.
+Panduan komponen memuat pin firmware per 26 September 2026 dari `firmware/esp32/config.example.h`:
+suhu GPIO4, kekeruhan GPIO34, TDS GPIO35, pH tanah GPIO32 (masih `soil_placeholder`), ultrasonik
+GPIO27 dan GPIO25, LCD GPIO21 dan GPIO22, servo GPIO18, relay GPIO23. Model Blender dirancang
+23 September, sebelum firmware itu: kabel pH di model masih ke GPIO35, dan model mengusulkan
+GPIO32, GPIO27, serta GPIO25 untuk tombol pakan, float switch, dan LED pompa. Panduan menandai
+setiap bentrokan itu. Panduan unduhan `public/models/panduan-wiring.md` dibuat dari data yang sama
+dengan `node scripts/write-wiring-guide.mjs`. Panduan sambungan adalah dokumentasi rancangan,
+bukan hasil validasi rangkaian fisik.
 
 Yang sudah diperiksa di browser (Chrome terotomasi, GPU AMD lewat ANGLE D3D11): ketiga scene
 termuat; tombol W menggerakkan kamera; titik pandang Depan, Samping, Detail, dan Reset;
@@ -249,7 +259,11 @@ Desain Studio dibawa utuh, dengan perbaikan antislop berikut:
   halaman lama dikembalikan ke catatan status.
 - Ikon tab memakai logo yang sudah ada (`app/icon.svg`), sehingga permintaan `/favicon.ico`
   tidak lagi menghasilkan 404 di konsol.
+- Panduan komponen jelajah dan panduan unduhan diselaraskan dengan pin firmware 26 September. Di
+  Studio keduanya masih menulis "GPIO35 pH · sesuai firmware", padahal GPIO35 sudah dipakai TDS.
 
-Yang tidak dibawa: panel telemetri ESP32 (TDS dan ketinggian air) beserta perubahan skema dan
-fixture-nya, karena backend repo ini belum mengirim field tersebut; dan dokumen QA Studio,
-yang digantikan pengukuran di dokumen ini.
+Fitur terbaru Studio ikut dibawa: integrasi sensor ESP32 (TDS dan level air) beserta perubahan
+backend, firmware, tes, dan skema frontend-nya. Panel "Sensor tambahan dari perangkat" di dashboard
+tampil tanpa garis tepi status, karena backend tidak menilai TDS maupun level air; di Studio kartu
+ini tetap bergaris hijau. Fixture API direkam ulang dari backend repo ini, bukan disalin dari
+Studio. Yang tidak dibawa hanya dokumen QA Studio, yang digantikan pengukuran di dokumen ini.

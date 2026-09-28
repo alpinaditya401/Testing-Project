@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 from contextlib import closing
@@ -87,6 +88,44 @@ class HardwareApiTests(WorkspaceTests):
         self.assertEqual(result[0], 201, result[2])
         self.assertIsNone(result[2]['telemetry']['temperature'])
         self.assertEqual(result[2]['telemetry']['provenance'], 'simulation')
+
+    def test_tds_and_water_level_are_validated_and_derived_by_the_server(self):
+        path = '/api/devices/AQS-KOLAM-01/telemetry'
+        key = {'X-Device-Key': self.device_key}
+        body = self.telemetry() | dict(tds_adc=1500, tds_mv=1200, water_distance_cm=18.0, tank_height_cm=50)
+        for delta in ({'tds_adc': None}, {'tds_mv': None}, {'tds_mv': 3301}, {'tds_adc': 4096},
+                      {'tank_height_cm': None}, {'water_distance_cm': None}, {'tank_height_cm': 0},
+                      {'water_distance_cm': -1}, {'water_distance_cm': 501}):
+            self.assertEqual(self.request('POST', path, body | delta, headers=key)[0], 422, delta)
+        # Device-supplied derived values are ignored: 1200 mV on the SEN0244 curve is 445.5 ppm,
+        # and 18 cm below the sensor in a 50 cm tank is 64 percent full.
+        sent = body | {'tds_ppm_estimate': 9999, 'water_level_percent': 1}
+        result = self.request('POST', path, sent, headers=key)
+        self.assertEqual(result[0], 201, result[2])
+        self.assertEqual(result[2]['telemetry']['tds_ppm_estimate'], 445.5)
+        self.assertEqual(result[2]['telemetry']['water_level_percent'], 64)
+        above = self.request('POST', path, body | {'created_at': '2026-09-15T08:00:10Z', 'water_distance_cm': 60},
+                             headers=key)[2]['telemetry']
+        self.assertEqual(above['water_level_percent'], 0)
+        rows = self.request('GET', path)[2]['telemetry']
+        self.assertEqual([(r['tds_mv'], r['water_distance_cm']) for r in rows], [(1200, 60), (1200, 18)])
+
+    def test_rows_stored_before_tds_fields_still_accept_identical_retries(self):
+        path = '/api/devices/AQS-KOLAM-01/telemetry'
+        key = {'X-Device-Key': self.device_key}
+        body = self.telemetry()
+        self.assertEqual(self.request('POST', path, body, headers=key)[0], 201)
+        with closing(sqlite3.connect(self.tmpdir / 'test.sqlite')) as db:
+            payload = json.loads(db.execute('SELECT payload FROM device_telemetry').fetchone()[0])
+            for field in ('tds_adc', 'tds_mv', 'tds_ppm_estimate', 'water_distance_cm',
+                          'tank_height_cm', 'water_level_percent'):
+                del payload[field]
+            db.execute('UPDATE device_telemetry SET payload=?', (json.dumps(payload),))
+            db.commit()
+        self.assertEqual(self.request('POST', path, body, headers=key)[0], 201)
+        row = self.request('GET', path)[2]['telemetry'][0]
+        self.assertIsNone(row['tds_ppm_estimate'])
+        self.assertIsNone(row['water_level_percent'])
 
     def test_device_delivery_replay_ack_and_channel_isolation(self):
         command = self.queue()

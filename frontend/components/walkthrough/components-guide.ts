@@ -11,14 +11,15 @@ export const COMPONENTS: ComponentGuide[] = [
   {
     id: "esp",
     name: "ESP32 DOIT 30 pin",
-    status: "Pin inti sesuai firmware",
+    status: "Pin firmware per 26 September 2026",
     purpose: "Pusat pembacaan sensor dan kontrol feeder/pompa.",
     wires: [
       "Micro-USB → USB komputer untuk tahap awal",
       "3V3 → jalur logika 3,3 V; GND → ground bersama",
-      "GPIO4 suhu · GPIO34 kekeruhan · GPIO35 pH · GPIO18 servo · GPIO23 relay",
+      "GPIO4 suhu · GPIO34 kekeruhan · GPIO35 TDS · GPIO32 pH tanah · GPIO18 servo · GPIO23 relay",
+      "GPIO27 TRIG dan GPIO25 ECHO ultrasonik · GPIO21 SDA dan GPIO22 SCL LCD",
     ],
-    note: "Cocokkan tulisan GPIO pada board fisik, bukan urutan kaki di model. Jangan masukkan 12 V atau gabungkan 5 V USB dengan output buck.",
+    note: "Kabel di model mengikuti rancangan 23 September dan belum memuat TDS, ultrasonik, maupun LCD. Cocokkan tulisan GPIO pada board fisik, bukan urutan kaki di model. Jangan masukkan 12 V atau gabungkan 5 V USB dengan output buck.",
   },
   {
     id: "temp",
@@ -36,15 +37,15 @@ export const COMPONENTS: ComponentGuide[] = [
   {
     id: "ph",
     name: "Probe & board pH",
-    status: "GPIO35 · sensor masih perlu dikonfirmasi",
+    status: "GPIO32 di firmware · model masih GPIO35",
     purpose: "Model menampilkan usulan probe pH air dan board pengondisi sinyal.",
     wires: [
       "Probe → konektor BNC board pH",
-      "AO → GPIO35 hanya setelah tegangan aman ≤3,3 V",
+      "AO → GPIO32 (default firmware) hanya setelah tegangan aman ≤3,3 V",
       "GND → GND bersama",
       "VCC → catu sesuai modul aktual; 3V3 di model hanya untuk kandidat kompatibel",
     ],
-    note: "Firmware masih soil_placeholder, belum pH air terkalibrasi. Sensor tanah yang tersedia tidak otomatis cocok untuk air. Board/BNC tetap kering; verifikasi catu dan conditioning sebelum menyambung AO.",
+    note: "Sejak 26 September firmware memindahkan pH tanah ke GPIO32 karena GPIO35 dipakai TDS; kabel di model masih ke GPIO35. Firmware masih soil_placeholder, belum pH air terkalibrasi. Sensor tanah yang tersedia tidak otomatis cocok untuk air. Board/BNC tetap kering; verifikasi catu dan conditioning sebelum menyambung AO.",
   },
   {
     id: "turb",
@@ -155,22 +156,22 @@ export const COMPONENTS: ComponentGuide[] = [
   {
     id: "oled",
     name: "OLED SSD1306",
-    status: "Usulan · belum didukung firmware",
+    status: "Usulan · firmware memakai LCD 16x2",
     purpose: "Menampilkan pembacaan/status lokal pada tutup casing.",
     wires: ["SDA → GPIO21", "SCL → GPIO22", "VCC → 3V3 jika modul kompatibel", "GND → GND bersama"],
-    note: "Perlu kode I²C dan verifikasi alamat/display aktual. Tulisan pada model adalah data demo, bukan pembacaan sensor.",
+    note: "Firmware belum mendukung OLED ini; sejak 26 September firmware menggerakkan LCD I²C 16x2 (alamat 0x27) di SDA GPIO21 dan SCL GPIO22. Tulisan pada model adalah data demo, bukan pembacaan sensor.",
   },
   {
     id: "feed-button",
     name: "Tombol pakan",
-    status: "GPIO32 · usulan firmware",
+    status: "GPIO32 di model · bentrok dengan pH tanah",
     purpose: "Usulan pemicu pemberian pakan manual.",
     wires: [
-      "Satu kontak → GPIO32",
+      "Satu kontak → GPIO32 (model; kini dipakai pH tanah)",
       "Kontak pasangan → GND",
       "Firmware perlu konfigurasi pull-up dan debounce",
     ],
-    note: "GPIO23 sudah dipakai relay; jangan memakai pin tombol dari Wokwi historis. Pastikan pasangan kontak switch memakai multimeter.",
+    note: "Sejak 26 September firmware memakai GPIO32 untuk pH tanah, jadi tombol ini perlu pin lain sebelum diimplementasikan. GPIO23 sudah dipakai relay; jangan memakai pin tombol dari Wokwi historis. Pastikan pasangan kontak switch memakai multimeter.",
   },
   {
     id: "pump-button",
@@ -187,18 +188,25 @@ export const COMPONENTS: ComponentGuide[] = [
   {
     id: "level",
     name: "Float switch / level air",
-    status: "GPIO27 · usulan firmware",
+    status: "GPIO27 di model · bentrok dengan ultrasonik",
     purpose: "Usulan deteksi air minimum sebelum pompa diaktifkan.",
-    wires: ["Kontak float → GPIO27", "Kontak lain → GND", "Usulan mode input: INPUT_PULLUP"],
-    note: "Periksa kondisi kontak pada level tinggi/rendah. Interlock pompa belum diimplementasikan; model visual tidak memberi perlindungan dry-run.",
+    wires: [
+      "Kontak float → GPIO27 (model; kini TRIG ultrasonik)",
+      "Kontak lain → GND",
+      "Usulan mode input: INPUT_PULLUP",
+    ],
+    note: "Sejak 26 September GPIO27 menjadi keluaran TRIG ultrasonik, yang tidak boleh ditarik ke GND oleh float switch; pilih pin lain. Periksa kondisi kontak pada level tinggi/rendah. Interlock pompa belum diimplementasikan; model visual tidak memberi perlindungan dry-run.",
   },
   {
     id: "pump-led",
     name: "LED indikator pompa",
-    status: "GPIO25 · usulan firmware",
+    status: "GPIO25 di model · bentrok dengan ultrasonik",
     purpose: "Usulan penanda perintah pompa.",
-    wires: ["GPIO25 → resistor 220 Ω → anoda LED", "Katoda LED → GND"],
-    note: "Cocokkan polaritas LED dan kebutuhan resistor aktual. LED menyala tidak membuktikan pompa benar-benar mengalir.",
+    wires: [
+      "GPIO25 → resistor 220 Ω → anoda LED (model; kini ECHO ultrasonik)",
+      "Katoda LED → GND",
+    ],
+    note: "Sejak 26 September firmware memakai GPIO25 sebagai ECHO ultrasonik, jadi LED ini perlu pin lain. Cocokkan polaritas LED dan kebutuhan resistor aktual. LED menyala tidak membuktikan pompa benar-benar mengalir.",
   },
   {
     id: "feed-led",

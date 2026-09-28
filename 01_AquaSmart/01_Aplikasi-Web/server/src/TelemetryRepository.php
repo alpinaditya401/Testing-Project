@@ -4,6 +4,10 @@ require_once __DIR__ . '/AuditRepository.php';
 
 final class TelemetryRepository
 {
+    // Rows stored before the TDS and water-level fields existed decode without these keys.
+    public const ADDED_FIELDS=['tds_adc'=>null,'tds_mv'=>null,'tds_ppm_estimate'=>null,
+        'water_distance_cm'=>null,'tank_height_cm'=>null,'water_level_percent'=>null];
+
     public static function ingest(PDO $pdo,string $device,array $body): array
     {
         $stamp=$body['created_at']??null;
@@ -18,7 +22,7 @@ final class TelemetryRepository
         $temperatureStatus=$body['temperature_status']??null;
         if (!in_array($temperatureStatus,['ok','disconnected','unverified'],true)
             || ($temperatureStatus==='ok' ? !self::number($temperature,-55,125) : $temperature!==null)) throw new InvalidArgumentException('Status suhu tidak sesuai pengukuran.');
-        foreach (['turbidity','soil_ph'] as $prefix) {
+        foreach (['turbidity','soil_ph','tds'] as $prefix) {
             $adc=$body[$prefix.'_adc']??null; $mv=$body[$prefix.'_mv']??null;
             if ($adc!==null && (!is_int($adc)||$adc<0||$adc>4095)) throw new InvalidArgumentException('ADC harus 0–4095 atau null.');
             if (($adc===null)!==($mv===null) || ($mv!==null&&!self::number($mv,0,3300))) throw new InvalidArgumentException('Tegangan ADC tidak valid.');
@@ -28,11 +32,18 @@ final class TelemetryRepository
         $mv=$body['turbidity_mv']??null;
         if ($mv===null ? ($sensorMv!==null||$mapping!==null) :
             (!self::number($sensorMv,0,5500)||abs($sensorMv-$mv/0.6)>2||!self::number($mapping,0,100))) throw new InvalidArgumentException('Rekonstruksi divider/mapping tidak valid.');
+        $distance=$body['water_distance_cm']??null; $tank=$body['tank_height_cm']??null;
+        if (($distance===null)!==($tank===null) || ($distance!==null && (!self::number($distance,0,500)||!self::number($tank,1,500))))
+            throw new InvalidArgumentException('Jarak air dan tinggi tandon harus dikirim bersama, 0 sampai 500 cm.');
+        $tdsMv=$body['tds_mv']??null;
         if (($body['calibrated']??null)!==false || ($body['ph_sensor']??null)!=='soil_placeholder') throw new InvalidArgumentException('Kontrak ini hanya menerima sensor belum terkalibrasi dan pH tanah placeholder.');
         $normalized=['created_at'=>$stamp,'provenance'=>$source,'simulation'=>$simulation,'source_session'=>$session,
             'temperature'=>$temperature,'temperature_status'=>$temperatureStatus,
             'turbidity_adc'=>$body['turbidity_adc']??null,'turbidity_mv'=>$mv,'turbidity_sensor_mv'=>$sensorMv,
             'turbidity_mapping_percent'=>$mapping,'soil_ph_adc'=>$body['soil_ph_adc']??null,'soil_ph_mv'=>$body['soil_ph_mv']??null,
+            'tds_adc'=>$body['tds_adc']??null,'tds_mv'=>$tdsMv,'tds_ppm_estimate'=>$tdsMv===null?null:self::tdsEstimate($tdsMv),
+            'water_distance_cm'=>$distance,'tank_height_cm'=>$tank,
+            'water_level_percent'=>$distance===null?null:round(max(0,min(100,($tank-$distance)/$tank*100)),1),
             'ph_sensor'=>'soil_placeholder','calibrated'=>false];
         $json=json_encode($normalized,JSON_THROW_ON_ERROR|JSON_PRESERVE_ZERO_FRACTION);
         $pdo->beginTransaction();
@@ -41,7 +52,7 @@ final class TelemetryRepository
             if ($ownerId===false) throw new DomainException('Perangkat tidak ditemukan.');
             $query=$pdo->prepare('SELECT payload FROM device_telemetry WHERE device_id=? AND created_at=?');$query->execute([$device,$stamp]);
             if ($old=$query->fetchColumn()) {
-                if (json_decode($old,true)!=$normalized) throw new DomainException('Timestamp sudah memiliki telemetry berbeda.');
+                if (json_decode($old,true)+self::ADDED_FIELDS!=$normalized) throw new DomainException('Timestamp sudah memiliki telemetry berbeda.');
                 $pdo->commit();return $normalized;
             }
             $now=gmdate('Y-m-d\TH:i:s\Z');
@@ -58,11 +69,18 @@ final class TelemetryRepository
         $query=$pdo->prepare('SELECT 1 FROM devices WHERE id=? AND user_id=?');$query->execute([$device,$owner]);
         if (!$query->fetchColumn()) return null;
         $query=$pdo->prepare('SELECT payload,received_at FROM device_telemetry WHERE device_id=? ORDER BY created_at DESC LIMIT 100');$query->execute([$device]);
-        return array_map(static fn(array $row)=>json_decode($row['payload'],true)+['received_at'=>$row['received_at']],$query->fetchAll());
+        return array_map(static fn(array $row)=>json_decode($row['payload'],true)+self::ADDED_FIELDS+['received_at'=>$row['received_at']],$query->fetchAll());
     }
 
     private static function number(mixed $value,float $min,float $max): bool
     {
         return (is_int($value)||is_float($value))&&is_finite((float)$value)&&$value>=$min&&$value<=$max;
+    }
+
+    // DFRobot SEN0244 curve at an assumed 25 C, uncalibrated; the firmware LCD applies the same curve.
+    private static function tdsEstimate(int|float $mv): float
+    {
+        $volts=$mv/1000;
+        return round((133.42*$volts**3-255.86*$volts**2+857.39*$volts)*0.5,1);
     }
 }

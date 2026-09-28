@@ -160,11 +160,13 @@ def walk(record, base, creds):
               "source_session": "esp32-contoh-001", "temperature": 27.25, "temperature_status": "ok",
               "turbidity_adc": 2000, "turbidity_mv": 1500, "turbidity_sensor_mv": 2500,
               "turbidity_mapping_percent": 50, "soil_ph_adc": 1000, "soil_ph_mv": 800,
+              "tds_adc": 1500, "tds_mv": 1200, "water_distance_cm": 18.0, "tank_height_cm": 50,
               "ph_sensor": "soil_placeholder", "calibrated": False}
     disconnected = {**sample, "created_at": "2026-01-01T00:00:00Z", "temperature": None,
                     "temperature_status": "disconnected", "turbidity_adc": None, "turbidity_mv": None,
                     "turbidity_sensor_mv": None, "turbidity_mapping_percent": None,
-                    "soil_ph_adc": None, "soil_ph_mv": None}
+                    "soil_ph_adc": None, "soil_ph_mv": None, "tds_adc": None, "tds_mv": None,
+                    "water_distance_cm": None, "tank_height_cm": None}
     for payload in (sample, disconnected):
         record("ingest", device, "POST", "/api/devices/AQS-KOLAM-01/telemetry", payload,
                csrf=False, headers=key, expect=201, keep=False)

@@ -3,21 +3,23 @@
 Acuan: model Blender 23 September 2026, wiring_netlist.json (expanded_nets), hardware/WIRING.md dan firmware/esp32/config.example.h.
 Rancangan belum diuji fisik. Nomor marker menunjukkan komponen, bukan urutan kaki board.
 Matikan catu sebelum wiring. Cocokkan label pin dan datasheet modul aktual.
-Pin inti firmware: suhu GPIO4, turbidity GPIO34, pH GPIO35, servo GPIO18, relay GPIO23.
+Pin firmware per 26 September 2026: suhu GPIO4, turbidity GPIO34, TDS GPIO35, pH tanah GPIO32, ultrasonik GPIO27 (TRIG) dan GPIO25 (ECHO), LCD GPIO21 (SDA) dan GPIO22 (SCL), servo GPIO18, relay GPIO23.
+Model masih memakai GPIO35 untuk pH, GPIO32 untuk tombol pakan, GPIO27 untuk float switch, dan GPIO25 untuk LED pompa. Pin itu kini dipakai firmware; ikuti firmware.
 Wokwi historis memiliki mapping berbeda: jangan menggunakannya untuk rancangan ini.
 Model pH air adalah usulan; firmware masih soil_placeholder. OLED, tombol, LED dan level memerlukan ekstensi firmware.
 
 ## ESP32 DOIT 30 pin
 
-Pin inti sesuai firmware
+Pin firmware per 26 September 2026
 
 Pusat pembacaan sensor dan kontrol feeder/pompa.
 
 - Micro-USB → USB komputer untuk tahap awal
 - 3V3 → jalur logika 3,3 V; GND → ground bersama
-- GPIO4 suhu · GPIO34 kekeruhan · GPIO35 pH · GPIO18 servo · GPIO23 relay
+- GPIO4 suhu · GPIO34 kekeruhan · GPIO35 TDS · GPIO32 pH tanah · GPIO18 servo · GPIO23 relay
+- GPIO27 TRIG dan GPIO25 ECHO ultrasonik · GPIO21 SDA dan GPIO22 SCL LCD
 
-Cocokkan tulisan GPIO pada board fisik, bukan urutan kaki di model. Jangan masukkan 12 V atau gabungkan 5 V USB dengan output buck.
+Kabel di model mengikuti rancangan 23 September dan belum memuat TDS, ultrasonik, maupun LCD. Cocokkan tulisan GPIO pada board fisik, bukan urutan kaki di model. Jangan masukkan 12 V atau gabungkan 5 V USB dengan output buck.
 
 ## Sensor suhu DS18B20
 
@@ -34,16 +36,16 @@ Konfirmasi urutan kabel probe dari label/datasheet; warna kabel bukan patokan tu
 
 ## Probe & board pH
 
-GPIO35 · sensor masih perlu dikonfirmasi
+GPIO32 di firmware · model masih GPIO35
 
 Model menampilkan usulan probe pH air dan board pengondisi sinyal.
 
 - Probe → konektor BNC board pH
-- AO → GPIO35 hanya setelah tegangan aman ≤3,3 V
+- AO → GPIO32 (default firmware) hanya setelah tegangan aman ≤3,3 V
 - GND → GND bersama
 - VCC → catu sesuai modul aktual; 3V3 di model hanya untuk kandidat kompatibel
 
-Firmware masih soil_placeholder, belum pH air terkalibrasi. Sensor tanah yang tersedia tidak otomatis cocok untuk air. Board/BNC tetap kering; verifikasi catu dan conditioning sebelum menyambung AO.
+Sejak 26 September firmware memindahkan pH tanah ke GPIO32 karena GPIO35 dipakai TDS; kabel di model masih ke GPIO35. Firmware masih soil_placeholder, belum pH air terkalibrasi. Sensor tanah yang tersedia tidak otomatis cocok untuk air. Board/BNC tetap kering; verifikasi catu dan conditioning sebelum menyambung AO.
 
 ## Sensor kekeruhan
 
@@ -167,7 +169,7 @@ Periksa polaritas dan rating tegangan komponen. Kapasitor tidak menggantikan cat
 
 ## OLED SSD1306
 
-Usulan · belum didukung firmware
+Usulan · firmware memakai LCD 16x2
 
 Menampilkan pembacaan/status lokal pada tutup casing.
 
@@ -176,19 +178,19 @@ Menampilkan pembacaan/status lokal pada tutup casing.
 - VCC → 3V3 jika modul kompatibel
 - GND → GND bersama
 
-Perlu kode I²C dan verifikasi alamat/display aktual. Tulisan pada model adalah data demo, bukan pembacaan sensor.
+Firmware belum mendukung OLED ini; sejak 26 September firmware menggerakkan LCD I²C 16x2 (alamat 0x27) di SDA GPIO21 dan SCL GPIO22. Tulisan pada model adalah data demo, bukan pembacaan sensor.
 
 ## Tombol pakan
 
-GPIO32 · usulan firmware
+GPIO32 di model · bentrok dengan pH tanah
 
 Usulan pemicu pemberian pakan manual.
 
-- Satu kontak → GPIO32
+- Satu kontak → GPIO32 (model; kini dipakai pH tanah)
 - Kontak pasangan → GND
 - Firmware perlu konfigurasi pull-up dan debounce
 
-GPIO23 sudah dipakai relay; jangan memakai pin tombol dari Wokwi historis. Pastikan pasangan kontak switch memakai multimeter.
+Sejak 26 September firmware memakai GPIO32 untuk pH tanah, jadi tombol ini perlu pin lain sebelum diimplementasikan. GPIO23 sudah dipakai relay; jangan memakai pin tombol dari Wokwi historis. Pastikan pasangan kontak switch memakai multimeter.
 
 ## Tombol pompa
 
@@ -204,26 +206,26 @@ Tombol tidak membawa arus pompa. Fungsi manual dan aturan interlock belum ditera
 
 ## Float switch / level air
 
-GPIO27 · usulan firmware
+GPIO27 di model · bentrok dengan ultrasonik
 
 Usulan deteksi air minimum sebelum pompa diaktifkan.
 
-- Kontak float → GPIO27
+- Kontak float → GPIO27 (model; kini TRIG ultrasonik)
 - Kontak lain → GND
 - Usulan mode input: INPUT_PULLUP
 
-Periksa kondisi kontak pada level tinggi/rendah. Interlock pompa belum diimplementasikan; model visual tidak memberi perlindungan dry-run.
+Sejak 26 September GPIO27 menjadi keluaran TRIG ultrasonik, yang tidak boleh ditarik ke GND oleh float switch; pilih pin lain. Periksa kondisi kontak pada level tinggi/rendah. Interlock pompa belum diimplementasikan; model visual tidak memberi perlindungan dry-run.
 
 ## LED indikator pompa
 
-GPIO25 · usulan firmware
+GPIO25 di model · bentrok dengan ultrasonik
 
 Usulan penanda perintah pompa.
 
-- GPIO25 → resistor 220 Ω → anoda LED
+- GPIO25 → resistor 220 Ω → anoda LED (model; kini ECHO ultrasonik)
 - Katoda LED → GND
 
-Cocokkan polaritas LED dan kebutuhan resistor aktual. LED menyala tidak membuktikan pompa benar-benar mengalir.
+Sejak 26 September firmware memakai GPIO25 sebagai ECHO ultrasonik, jadi LED ini perlu pin lain. Cocokkan polaritas LED dan kebutuhan resistor aktual. LED menyala tidak membuktikan pompa benar-benar mengalir.
 
 ## LED indikator feeder
 

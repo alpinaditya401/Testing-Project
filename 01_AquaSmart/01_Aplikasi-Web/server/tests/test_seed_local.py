@@ -26,6 +26,32 @@ class LocalSeedTests(unittest.TestCase):
                 probe.settimeout(1)
                 self.assertNotEqual(probe.connect_ex(('127.0.0.1', port)), 0)
 
+    def test_launcher_keeps_a_named_database_and_its_device_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / 'lokal' / 'aquasmart.sqlite'
+
+            def launch():
+                with socket.socket() as probe:
+                    probe.bind(('127.0.0.1', 0))
+                    port = probe.getsockname()[1]
+                return subprocess.run([sys.executable, 'server/run_local.py', '--port', str(port),
+                                       '--database', str(database), '--check'], cwd=APP,
+                                      capture_output=True, text=True, timeout=20)
+
+            def issued_key():
+                with closing(sqlite3.connect(database)) as db:
+                    return db.execute("SELECT key_hash FROM device_credentials WHERE device_id='AQS-KOLAM-01'").fetchone()[0]
+
+            first = launch()
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertIn('Device key AQS-KOLAM-01:', first.stdout)
+            key_hash = issued_key()
+            second = launch()
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertIn('LOCAL_SMOKE_OK', second.stdout)
+            self.assertNotIn('Device key', second.stdout)
+            self.assertEqual(issued_key(), key_hash)
+
     def test_fresh_seed_is_complete_and_existing_database_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'demo.sqlite'
