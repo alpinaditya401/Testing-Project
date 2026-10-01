@@ -93,8 +93,11 @@ dibuat dengan Microsoft Word 16.
 Laporan yang dikumpulkan ke dosen mengikuti template modul: Tujuan, Dasar Teori, Langkah Praktikum,
 dan Tugas Mandiri. Versi itu memuat teks modul dan praktikum dengan data triase dari dosen, jadi
 disimpan di `tugas_mandiri_hari2/pengumpulan/` dan tidak masuk Git, sesuai aturan `.gitignore` bahwa
-materi kuliah tidak diterbitkan. Folder itu juga berisi notebook lengkap (praktikum dan tugas mandiri),
-tangkapan layarnya, dan alat penyusun laporan yang membutuhkan `MODUL_PRAKTIKUM2.pdf` dari dosen.
+materi kuliah tidak diterbitkan. Materi dari folder Downloads sudah digabung ke sana: kedua PDF modul,
+notebook dan bukti praktikum, dataset triase, data AquaSmart, catatan belajar, serta notebook praktikum
+Bagian 2, indexing/RAG, dan YOLO di `praktikum/`. `README.md` di folder tersebut menjelaskan paket
+asal; `requirements.txt` memuat dependensi paket praktikum. Model, cache, hasil YOLO, dan bobot yang
+bisa dibuat ulang tidak disalin.
 
 Belum ada commit untuk pekerjaan Hari 2. Alpin dan Dimas perlu meninjau berkas di atas, lalu
 melakukan commit dengan akun Git masing-masing.
