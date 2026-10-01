@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check .",
-    "test": "node --test lib/api/schemas.test.ts components/walkthrough/navigation.test.ts"
+    "test": "node --test lib/api/schemas.test.ts lib/telemetry-validity.test.ts components/walkthrough/navigation.test.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.1",

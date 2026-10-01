@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 FRONTEND = Path(__file__).resolve().parents[1]
-APP = FRONTEND.parent / "01_AquaSmart" / "01_Aplikasi-Web"
+APP = FRONTEND.parent / "backend"
 FIXTURES = FRONTEND / "lib" / "api" / "fixtures.json"
 KEPT_HEADERS = ("content-type", "content-disposition", "cache-control", "retry-after",
                 "x-export-rows", "x-provenance-counts")

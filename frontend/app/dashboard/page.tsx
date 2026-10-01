@@ -59,7 +59,7 @@ export default async function DashboardPage({
           {device.last_seen
             ? `, terakhir terlihat ${formatDateTime(device.last_seen)}`
             : ", belum pernah terhubung"}
-          . Halaman diperbarui otomatis setiap 30 detik.
+          . Sensor diperbarui setiap 1 detik; status perangkat dan riwayat setiap 30 detik.
         </p>
         <DevicePicker devices={devices} selectedId={device.id} basePath="/dashboard" />
       </header>
@@ -69,7 +69,11 @@ export default async function DashboardPage({
           Ringkasan status air
         </h2>
         {!latest ? (
-          <p className="text-ink">Belum ada pembacaan. Status kualitas air belum dapat dinilai.</p>
+          <p className="text-ink">
+            {telemetry.length > 0
+              ? "Data ESP32 sudah diterima. Lihat pembacaan langsung di bawah. Status kualitas air lengkap belum dapat dinilai karena pH air dan NTU terkalibrasi belum tersedia."
+              : "Belum ada pembacaan. Status kualitas air belum dapat dinilai."}
+          </p>
         ) : outOfRange.length === 0 ? (
           <p className="font-semibold text-clear-water-text">
             Semua parameter dalam batas yang dikonfigurasi.
@@ -88,9 +92,11 @@ export default async function DashboardPage({
         ) : null}
       </section>
 
+      <TelemetryPanel deviceId={device.id} record={telemetry[0] ?? null} />
+
       <section aria-labelledby="parameter" className="space-y-4">
         <h2 id="parameter" className={heading({ level: "panel", tone: "ink" })}>
-          Tiga parameter kualitas air
+          Parameter dari riwayat kualitas air
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PARAMETERS.map((p) => (
@@ -123,8 +129,6 @@ export default async function DashboardPage({
           </ul>
         </section>
       ) : null}
-
-      <TelemetryPanel record={telemetry[0] ?? null} />
 
       <section className="live-chart-panel" aria-labelledby="grafik-ph">
         <div className="preview-header">

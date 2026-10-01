@@ -1,6 +1,6 @@
 # AquaSmart frontend
 
-Next.js App Router di depan backend PHP AquaSmart (`01_AquaSmart/01_Aplikasi-Web/server/`).
+Next.js App Router di depan backend PHP AquaSmart (`../backend/server/`).
 Frontend ini hanya klien; validasi dan aturan data tetap di backend.
 
 ## Menjalankan
@@ -26,7 +26,7 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
   meneruskan ke PHP beserta cookie sesi dan header CSRF.
 - Server Component membaca PHP langsung lewat `lib/api/server.ts` dan hanya
   meneruskan cookie `aquasmart_session`.
-- Skema respons diturunkan dari `server/API.md` dan diperiksa terhadap respons nyata.
+- Skema respons diturunkan dari `../backend/server/API.md` dan diperiksa terhadap respons nyata.
 
 ## Desain dan jelajah 3D
 

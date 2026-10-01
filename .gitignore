@@ -10,6 +10,7 @@
 !/.gitignore
 !/README.md
 !/frontend/
+!/backend/
 !/01_AquaSmart/
 !/notebooks/
 
@@ -38,6 +39,14 @@
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.joblib
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/*.zip
 /01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri/qa/
+!/01_AquaSmart/08_Sistem-Cerdas/README_MANDIRI_HARI2.md
+!/01_AquaSmart/08_Sistem-Cerdas/export_bukti_hari2.py
+!/01_AquaSmart/08_Sistem-Cerdas/build_laporan_hari2.py
+!/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri_hari2/
+/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri_hari2/*.joblib
+# Laporan pengumpulan Hari 2 memuat teks modul kampus, dan notebook lengkapnya memakai data
+# praktikum dari dosen. Keduanya hanya untuk dikumpulkan, bukan untuk repo publik.
+/01_AquaSmart/08_Sistem-Cerdas/tugas_mandiri_hari2/pengumpulan/
 
 # Salinan cadangan proses dan laporan praktikum yang memuat nama serta NIM
 # mahasiswa lain. Keduanya bukan bagian deliverable.
@@ -74,6 +83,8 @@ __pycache__/
 Thumbs.db
 
 # ---------- Keluaran runtime AquaSmart ----------
-/01_AquaSmart/01_Aplikasi-Web/server/data/local-*/
+/backend/server/data/local-*/
+/backend/server/data/single-pond/
+!/PANDUAN_SATU_KOLAM.md
 # Keluaran runner test. Sebelumnya menumpuk di 05_Desain-Figma/review-hermes.
 /01_AquaSmart/01_Aplikasi-Web/test-output/

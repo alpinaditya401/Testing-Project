@@ -7,7 +7,7 @@
 # Build:  docker build -f deploy/Dockerfile -t aquasmart-api .
 # Run:    docker run -p 8080:8080 -v aquasmart-data:/data --env-file .env aquasmart-api
 #
-# Jalankan dari root 01_Aplikasi-Web (folder yang berisi server/ dan web/).
+# Jalankan dari folder backend (folder yang berisi server/ dan web/).
 
 FROM php:8.3-apache
 

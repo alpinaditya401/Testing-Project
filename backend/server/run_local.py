@@ -1,5 +1,6 @@
 """Start the local SIMULASI prototype on a fresh demo database, or on a kept one with --database."""
 import argparse
+import errno
 import json
 import os
 from pathlib import Path
@@ -21,11 +22,20 @@ def main():
     parser.add_argument('--database', type=Path,
                         help='Keep this database across runs; it is seeded only when the file is missing')
     parser.add_argument('--check', action='store_true', help='Start, probe HTTP and scheduler, then stop')
+    parser.add_argument('--single-pond', action='store_true',
+                        help='Create one empty pond with admin and user accounts instead of demo fixtures')
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535:
         parser.error('Port must be between 1024 and 65535')
     with socket.socket() as probe:
-        probe.bind((args.host, args.port))
+        try:
+            probe.bind((args.host, args.port))
+        except OSError as error:
+            if error.errno == errno.EADDRINUSE or getattr(error, 'winerror', None) == 10048:
+                parser.exit(2, f'Port {args.port} sudah dipakai. Backend mungkin masih berjalan. '
+                            'Hentikan runner lama dengan Ctrl+C sebelum menjalankan ulang, '
+                            'atau pilih port lain dengan --port.\n')
+            raise
     if args.database:
         database = args.database.resolve()
         runtime = database.parent
@@ -36,25 +46,33 @@ def main():
         database = runtime / 'demo.sqlite'
     accounts = None
     if not database.exists():
-        seed = subprocess.run(['php', 'server/seed_local.php', str(database)], cwd=APP,
+        seed_script = 'server/seed_single_pond.php' if args.single_pond else 'server/seed_local.php'
+        seed = subprocess.run(['php', seed_script, str(database)], cwd=APP,
                               capture_output=True, text=True, check=True)
         accounts = json.loads(seed.stdout)
+        credentials = runtime / 'credentials.local.txt'
+        credentials.write_text(json.dumps(accounts, indent=2), encoding='utf-8')
     env = {**os.environ, 'AQUASMART_DB_PATH': str(database), 'AQUASMART_APP_ENV': 'development',
            'AQUASMART_SIMULATOR_ENABLED': '1', 'AQUASMART_SESSION_SECURE': '0'}
     sessions = runtime / 'sessions'
     sessions.mkdir(exist_ok=True)
-    print(f'SIMULASI / LOCAL PROTOTYPE: http://127.0.0.1:{args.port}', flush=True)
+    label = 'SATU KOLAM / kontrol SIMULASI' if args.single_pond else 'SIMULASI / LOCAL PROTOTYPE'
+    print(f'{label}: http://127.0.0.1:{args.port}', flush=True)
     if args.host != '127.0.0.1':
         print(f'Juga menerima koneksi dari jaringan lokal di port {args.port} (host {args.host}).', flush=True)
     if accounts:
         for role in ('admin', 'viewer'):
-            print(f"{role}: {accounts[role]['username']} / {accounts[role]['password']}", flush=True)
+            role_label = 'user (akses baca)' if role == 'viewer' else 'admin'
+            print(f"{role_label}: {accounts[role]['username']} / {accounts[role]['password']}", flush=True)
+        print(f'Kredensial lokal: {runtime / "credentials.local.txt"}', flush=True)
     else:
         print('Basis data lama dipakai ulang: akun dan kunci perangkat tetap seperti saat basis data dibuat.', flush=True)
     print(f'Database: {database}\nLog error: {runtime / "php.log"}', flush=True)
     for device, key in (accounts or {}).get('device_keys', {}).items():
         print(f'Device key {device}: {key}', flush=True)
-    print('Serial tersedia: AQS-AVAILABLE. Ctrl+C menghentikan server dan scheduler.', flush=True)
+    if not args.single_pond:
+        print('Serial tersedia: AQS-AVAILABLE.', flush=True)
+    print('Ctrl+C menghentikan server dan scheduler.', flush=True)
     with (runtime / 'php.log').open('a', encoding='utf-8') as log:
         server = subprocess.Popen(['php', '-d', f'session.save_path={sessions}', '-d', 'display_errors=0',
                                    '-S', f'{args.host}:{args.port}', '-t', 'web', 'server/router.php'],

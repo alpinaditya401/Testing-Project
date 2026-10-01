@@ -244,7 +244,9 @@ if (preg_match('#^/api/devices/([A-Za-z0-9_-]+)/telemetry$#',$path,$matches)) {
     }
     if ($method==='GET') {
         $user=Auth::requireUser($pdo);
-        $rows=TelemetryRepository::recent($pdo,Auth::workspaceId($user),$matches[1]);
+        $limit=filter_var($_GET['limit']??100,FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>100]]);
+        if ($limit===false) Http::error('validation_error','Limit telemetri harus 1 sampai 100.',422);
+        $rows=TelemetryRepository::recent($pdo,Auth::workspaceId($user),$matches[1],$limit);
         if ($rows===null) Http::error('not_found','Perangkat tidak ditemukan.',404);
         Http::json(['telemetry'=>$rows,'notice'=>'PLACEHOLDER SENSOR TANAH, BUKAN pH AIR TERKALIBRASI; turbidity berupa mapping sementara, bukan NTU.']);
     }

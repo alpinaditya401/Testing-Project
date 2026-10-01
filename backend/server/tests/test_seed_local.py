@@ -12,6 +12,35 @@ APP = Path(__file__).resolve().parents[2]
 
 
 class LocalSeedTests(unittest.TestCase):
+    def test_single_pond_has_two_roles_no_fabricated_readings_and_survives_restart(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / 'single.sqlite'
+            with socket.socket() as probe:
+                probe.bind(('127.0.0.1', 0))
+                port = probe.getsockname()[1]
+            command = [sys.executable, 'server/run_local.py', '--single-pond',
+                       '--database', str(database), '--port', str(port), '--check']
+            first = subprocess.run(command, cwd=APP, capture_output=True, text=True, timeout=20)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            credentials = Path(directory) / 'credentials.local.txt'
+            issued = credentials.read_text(encoding='utf-8')
+            accounts = json.loads(issued)
+            self.assertEqual(accounts['admin']['username'], 'admin')
+            self.assertEqual(accounts['viewer']['username'], 'user')
+            self.assertNotEqual(accounts['admin']['password'], accounts['viewer']['password'])
+            with closing(sqlite3.connect(database)) as db:
+                roles = db.execute('SELECT username,role,workspace_owner_id FROM users ORDER BY id').fetchall()
+                self.assertEqual(roles, [('admin', 'admin', None), ('user', 'viewer', 1)])
+                self.assertEqual(db.execute('SELECT id,online,last_seen FROM devices').fetchall(),
+                                 [('AQS-KOLAM-01', 0, None)])
+                self.assertEqual(db.execute('SELECT COUNT(*) FROM sensor_readings').fetchone()[0], 0)
+            second = subprocess.run(command, cwd=APP, capture_output=True, text=True, timeout=20)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(credentials.read_text(encoding='utf-8'), issued)
+            retry = subprocess.run(['php', 'server/seed_single_pond.php', str(database)],
+                                   cwd=APP, capture_output=True, text=True)
+            self.assertEqual(retry.returncode, 2)
+
     def test_launcher_starts_http_scheduler_and_stops(self):
         with tempfile.TemporaryDirectory() as directory:
             with socket.socket() as probe:

@@ -149,6 +149,8 @@ export const TelemetryRecord = z.object({
   water_distance_cm: z.number().nullable(),
   tank_height_cm: z.number().nullable(),
   water_level_percent: z.number().nullable(),
+  water_level_reference_confirmed: z.boolean().optional(),
+  water_probes_immersed: z.boolean().optional(),
   // API.md: the pH input is a soil-sensor placeholder and is never calibrated.
   ph_sensor: z.literal("soil_placeholder"),
   calibrated: z.literal(false),

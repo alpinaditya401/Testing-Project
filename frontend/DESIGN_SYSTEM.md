@@ -3,8 +3,8 @@
 Palet, skala, dan komponen yang dipakai `frontend/`. Sejak 28 September 2026 tampilannya
 mengikuti edisi desain `C:\AquaSmart-Studio`, atas keputusan pemilik proyek. Akibatnya
 disengaja: frontend ini tidak lagi berbagi warna dengan SPA lama
-(`01_AquaSmart/01_Aplikasi-Web/web/`). SPA tetap memakai token `app.css` dan keputusan di
-`01_AquaSmart/01_Aplikasi-Web/DESIGN.md`; tidak ada berkas SPA yang diubah.
+(`../backend/web/`). SPA tetap memakai token `app.css` dan keputusan di
+`../01_AquaSmart/01_Aplikasi-Web/DESIGN.md`; tidak ada berkas SPA yang diubah.
 
 Pembacaan desain: ruang kerja budidaya yang tenang dan editorial. Putih hangat, hijau hutan,
 dan citra air menghubungkan halaman publik dengan dashboard yang terasa seperti instrumen.
@@ -54,7 +54,7 @@ sebelumnya, dan tombol gerak di jelajah 3D.
 dipakai karena menggambarkan konteks produk, yaitu kolam budidaya, dan di setiap tempat
 tampilnya diberi keterangan sebagai ilustrasi konsep; di beranda ditambah "bukan foto fasilitas
 nyata". Logonya adalah logo yang sudah ada di
-`01_AquaSmart/01_Aplikasi-Web/web/assets/images/logo.svg`, dan juga dipakai sebagai ikon tab.
+`../backend/web/assets/images/logo.svg`, dan juga dipakai sebagai ikon tab.
 
 **Warna panggung 3D.** Latar, lantai, alas, dan cahaya scene ditulis sebagai nilai heksadesimal
 di `components/walkthrough/world.ts`, karena material Three.js tidak membaca variabel CSS.

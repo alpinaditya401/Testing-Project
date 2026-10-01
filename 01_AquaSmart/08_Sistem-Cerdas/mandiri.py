@@ -22,7 +22,7 @@ SEED = 42
 
 
 def read_rules():
-    source = ROOT / '01_AquaSmart/01_Aplikasi-Web/server/src/ThresholdRules.php'
+    source = ROOT / 'backend/server/src/ThresholdRules.php'
     text = source.read_text(encoding='utf-8')
     rules = {k: float(re.search(r'const ' + k + r' = ([\d.]+);', text)[1])
              for k in ['PH_MIN', 'PH_MAX', 'TEMP_MIN', 'TEMP_MAX']}

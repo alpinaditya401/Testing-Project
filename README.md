@@ -42,7 +42,7 @@ Aplikasi web berjalan dan teruji secara lokal. Yang perlu dibaca apa adanya:
 - **Profil FPS perangkat fisik belum dijalankan.** Audit WCAG 2.2 AA untuk SPA
   `web/` dijalankan 21 September 2026 dengan rasio kontras terukur pada render
   nyata di viewport 1440x1024, beserta perbaikannya
-  ([laporan](01_AquaSmart/01_Aplikasi-Web/web/tests/WCAG_AUDIT_2026-09-21.md)).
+  ([laporan](backend/web/tests/WCAG_AUDIT_2026-09-21.md)).
   Uji screen reader, reflow 400%, jarak teks, kriteria AAA, dan penyapuan kontras
   khusus layout mobile belum dilakukan.
 - Kontrak menyebut MySQL/MariaDB, kode memakai SQLite. Perbedaan ini diajukan
@@ -52,28 +52,26 @@ Aplikasi web berjalan dan teruji secara lokal. Yang perlu dibaca apa adanya:
 
 | Jalur | Isi |
 | --- | --- |
-| `01_AquaSmart/01_Aplikasi-Web/server/` | REST API PHP 8 tanpa dependency, SQLite, 104 test |
-| `01_AquaSmart/01_Aplikasi-Web/web/` | SPA/PWA JavaScript native, tanpa build step |
-| `01_AquaSmart/01_Aplikasi-Web/deploy/` | Dockerfile Apache dan mod_php untuk backend |
+| `frontend/` | Frontend Next.js 16 App Router: 10 rute, BFF ke backend PHP, design system |
+| `backend/server/` | REST API PHP 8 tanpa dependency, SQLite, 104 test |
+| `backend/web/` | Dokumen root kompatibilitas untuk SPA lama yang ikut disajikan backend |
+| `backend/deploy/` | Dockerfile Apache dan mod_php untuk Railway |
 | `01_AquaSmart/01_Aplikasi-Web/firmware/` | Sketsa ESP32 |
 | `01_AquaSmart/01_Aplikasi-Web/docs/` | Catatan perhitungan dan rujukan SKPL |
-| `frontend/` | Frontend Next.js 16 App Router: 10 rute, BFF ke backend PHP, design system |
 
-Struktur folder sengaja dipertahankan seperti di ruang kerja aslinya supaya
-perintah pada dokumen dan jalur di dalam test tetap berlaku tanpa penyesuaian.
+Folder runtime dipisah: `frontend/` untuk Next.js dan `backend/` untuk PHP,
+database, serta konfigurasi Docker/Railway. Firmware dan dokumen akademik tetap
+berada di `01_AquaSmart/`.
 
 ## Deployment aktif
 
 | Bagian | Tautan | Diperiksa |
 | --- | --- | --- |
-| Frontend Next.js | https://frontend-kappa-steel-78.vercel.app | 21 September 2026, HTTP 200 |
-| Backend PHP (REST) | https://projectbasedlearning-production.up.railway.app | 21 September 2026, `GET /api/rules` HTTP 200 |
+| Frontend Next.js | https://frontend-kappa-steel-78.vercel.app | 1 Oktober 2026, HTTP 200; BFF `/api/health` HTTP 200 |
+| Backend PHP (REST) | https://projectbasedlearning-production.up.railway.app | 1 Oktober 2026, `/api/health` dan `/api/rules` HTTP 200 |
 
-**Yang tayang di Vercel masih build lama.** Diperiksa 21 September 2026: halaman
-depan yang dilayani tautan di atas masih memuat kalimat "Halaman dan lapisan data
-belum dikerjakan", yaitu kerangka sebelum sepuluh rute aplikasi ditulis. Kode
-terbarunya ada di repositori dan lulus CI, tetapi Vercel belum di-deploy ulang.
-Jangan menilai kelengkapan fitur dari tautan itu sebelum deploy ulang dilakukan.
+Frontend dan backend memakai source terbaru. `AQUASMART_API_URL` sudah ditambahkan
+ke environment Production, Preview, dan Development di Vercel.
 
 Frontend berjalan di Vercel, backend di Railway. URL per-deployment Vercel berada
 di balik Deployment Protection; yang di atas adalah URL produksi yang terbuka.
@@ -103,18 +101,22 @@ CI, bukan Quality Gate SonarQube; keduanya tidak boleh ditukar saat dibaca.
 
 ## Menjalankan secara lokal
 
-Butuh PHP 8.2 atau lebih baru dan Python 3.11. Dari `01_AquaSmart/01_Aplikasi-Web`:
+Untuk konfigurasi **satu kolam dengan akun admin dan user**, ikuti
+[Panduan satu kolam](PANDUAN_SATU_KOLAM.md). Panduan memuat perintah PowerShell
+frontend/backend, lokasi kredensial persisten dan koneksi ESP32 melalui LAN.
+
+Butuh PHP 8.2 atau lebih baru dan Python 3.11. Dari `backend/`:
 
 ```bash
 python server/run_local.py
 ```
 
 Aplikasi terbuka di `http://127.0.0.1:8080`. Kredensial runtime, seed, dan kunci
-per-perangkat dijelaskan di `LOCAL_GUIDE.md`.
+per-perangkat dijelaskan di `PANDUAN_SATU_KOLAM.md`.
 
 ## Gerbang verifikasi
 
-Dari `01_AquaSmart/01_Aplikasi-Web`:
+Dari `backend/`:
 
 ```bash
 python server/tests/run_verified_suite.py
@@ -149,7 +151,7 @@ memerlukan perangkat fisik atau jendela pengamatan yang tidak ada di repositori.
 
 Jalur di bagian ini relatif terhadap `01_AquaSmart/01_Aplikasi-Web/`.
 `DESIGN.md` adalah catatan keputusan desain yang mengikat, bukan draft.
-`server/API.md` adalah sumber kebenaran kontrak API. `REVIEW_REPORT.md` adalah
+`backend/server/API.md` adalah sumber kebenaran kontrak API. `REVIEW_REPORT.md` adalah
 satu-satunya sumber status yang berlaku; bagian teratasnya memuat hasil gerbang
 terbaru. `CHECKPOINT.md` adalah catatan titik stabil dan langkah lanjut sampai
 16 September 2026, bukan status terkini.

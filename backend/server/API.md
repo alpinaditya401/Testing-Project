@@ -94,7 +94,7 @@ Tambahan 15 September 2026: lima kombinasi method/path berikut diuji memakai fix
 | Method/path | Auth | Perilaku |
 |---|---|---|
 | POST `/api/devices/{id}/telemetry` | X-Device-Key per-device | 201 insert/retry identik; 422 invalid; 409 timestamp konflik; 401 key salah. |
-| GET `/api/devices/{id}/telemetry` | Session owner/viewer | 100 telemetry terbaru, descending timestamp; 404 lintas workspace. |
+| GET `/api/devices/{id}/telemetry` | Session owner/viewer | Telemetry terbaru, descending timestamp; `limit` opsional 1–100 (default 100), 422 limit tidak valid; 404 lintas workspace. |
 | POST `/api/devices/{id}/hardware-commands` | Admin + CSRF + ownership | 503 default; perlu `AQUASMART_HARDWARE_ENABLED=1`; 201 queue; 422 invalid; 409 request konflik/aktuator sibuk. |
 | GET `/api/device/devices/{id}/commands` | X-Device-Key per-device | Hanya simulation=false; pending→delivered; delivered dikirim ulang tanpa memperpanjang expiry; server_time epoch UTC. |
 | POST `/api/device/devices/{id}/commands/{32hex}/ack` | X-Device-Key per-device | succeeded/failed/timeout; identik idempotent 200; transisi/ID/channel konflik 409; status invalid 422. |
@@ -109,13 +109,30 @@ Telemetry JSON flat, contoh sintetis (bukan pengukuran):
 
 Timestamp UTC tepat YYYY-MM-DDTHH:mm:ssZ, kalender valid. Device ID pada path; field tambahan diabaikan. source_session 8–64 karakter alfanumerik ASCII/underscore/hyphen; provenance device/simulation harus cocok boolean simulation. Ini deklarasi sumber terautentikasi, bukan attestation hardware.
 
-Suhu ok memerlukan angka −55…125°C; disconnected/unverified memerlukan null. ADC integer 0…4095 atau null harus berpasangan mV 0…3300 atau null. Rekonstruksi turbidity mV/0.6 toleransi 2 mV, rentang 0…5500; mapping 0…100. Bila turbidity null, reconstructed/mapping juga null. ph_sensor=soil_placeholder dan calibrated=false wajib. Sensor belum dikenal/aman dikirim null, tanpa angka palsu.
+Suhu ok memerlukan angka −55…125°C; disconnected/unverified memerlukan null. ADC integer 0…4095 atau null harus berpasangan mV 0…3300 atau null. Rekonstruksi turbidity mV/rasio toleransi 2 mV, rentang 0…5500; mapping 0…100. Field opsional turbidity_divider_ratio harus berupa angka lebih dari 0 sampai 1; default 0.6 untuk firmware lama, sedangkan 1.0 mendukung konfigurasi 3,3 V tanpa divider. Bila turbidity null, reconstructed/mapping juga null. ph_sensor=soil_placeholder dan calibrated=false wajib. Sensor belum dikenal/aman dikirim null, tanpa angka palsu.
 
 TDS dan level air (opsional, sejak 26 September 2026): tds_adc/tds_mv mengikuti aturan ADC yang sama. water_distance_cm 0…500 dan tank_height_cm 1…500 wajib berpasangan atau keduanya null. Server menghitung sendiri tds_ppm_estimate (kurva DFRobot SEN0244 pada asumsi 25°C, dibulatkan 0,1, belum terkalibrasi) dan water_level_percent ((tinggi tandon − jarak) / tinggi tandon × 100, dibatasi 0…100); nilai turunan kiriman perangkat diabaikan. Baris lama tanpa field ini dikembalikan GET dan ekspor dengan nilai null, dan retry identik atas baris lama tetap 201.
 
 **PLACEHOLDER SENSOR TANAH, BUKAN pH AIR TERKALIBRASI.** Mapping turbidity bukan NTU. Data masuk device_telemetry dengan received_at server; tidak mengisi sensor_readings pH/NTU, tidak memicu rules pH air, dan belum masuk lima ekspor historis. UI diagnostik/ekspor raw masih tercatat sebagai pekerjaan lanjutan di CHECKPOINT.
 
 Migrasi transaksional menambahkan provenance/source_session pada sensor_readings, alerts, actuator_commands, growth_observations dan audit_logs. Baris lama tetap legacy_unverified, tidak ditebak dari isi pesan. Data baru mencatat simulation/device, observasi manual, bootstrap Database seed. **NFR15 masih PARTIAL**: propagasi menyeluruh DTO/report/seed_local/UI belum selesai. Jangan menggunakan label sumber lama sebagai bukti pengukuran lapangan.
+
+## Konfirmasi referensi air (30 September 2026)
+
+Telemetry menerima boolean opsional `water_level_reference_confirmed` dan
+`water_probes_immersed`. Keduanya default false; string, angka, dan null ditolak 422.
+GET melengkapi payload lama dengan false, dan retry identik payload lama tetap diterima.
+Flag adalah deklarasi operator melalui konfigurasi firmware, bukan bukti otomatis adanya air.
+
+Backend tetap menyimpan sinyal dan hasil perhitungan mentah untuk diagnosis. Dashboard
+memeriksa umur data (maksimal 10 detik), rentang HY-SRF05 2–450 cm, geometri wadah,
+dan konfirmasi referensi sebelum menampilkan level. Suhu air/TDS/kekeruhan utama juga
+memerlukan indikasi air dan konfirmasi posisi probe terendam. Kedalaman paling banyak
+1 cm ditandai kosong/sangat dangkal. Nilai TDS di luar 0–2300 mV/0–1000 ppm disembunyikan
+dari pembacaan utama. Angka TDS utama juga disembunyikan selama `calibrated=false`;
+kontrak saat ini belum menerima hasil kalibrasi. Dashboard diagnosis hanya menampilkan
+tegangan TDS, bukan ppm hasil rumus. API tetap menyimpan estimasi mentah untuk riwayat
+diagnosis, tanpa menjadikannya pengukuran terkalibrasi. Tidak mengisi pH/NTU kanonis.
 
 ## Ekspor historis
 

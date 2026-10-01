@@ -38,6 +38,43 @@ class HardwareApiTests(WorkspaceTests):
                     soil_ph_adc=1000, soil_ph_mv=800,
                     ph_sensor='soil_placeholder', calibrated=False)
 
+    def test_explicit_turbidity_divider_accepts_3v3_sketch_and_rejects_mismatches(self):
+        path = '/api/devices/AQS-KOLAM-01/telemetry'
+        key = {'X-Device-Key': self.device_key}
+        body = self.telemetry() | dict(turbidity_divider_ratio=1.0,
+                                      turbidity_sensor_mv=1500,
+                                      turbidity_mapping_percent=100 * (1 - 1500 / 3300))
+        for ratio in (0, -1, 1.1, '1.0', True, 0.6):
+            self.assertEqual(self.request('POST', path, body | {'turbidity_divider_ratio': ratio},
+                                          headers=key)[0], 422, ratio)
+        result = self.request('POST', path, body, headers=key)
+        self.assertEqual(result[0], 201, result[2])
+        self.assertEqual(result[2]['telemetry']['turbidity_sensor_mv'], 1500)
+        self.assertEqual(self.request('POST', path, body, headers=key)[0], 201)
+
+    def test_water_confirmation_requires_explicit_booleans_and_preserves_old_retries(self):
+        path = '/api/devices/AQS-KOLAM-01/telemetry'
+        key = {'X-Device-Key': self.device_key}
+        body = self.telemetry()
+        for field in ('water_level_reference_confirmed', 'water_probes_immersed'):
+            for value in ('true', 1, None):
+                self.assertEqual(self.request('POST', path, body | {field: value}, headers=key)[0], 422)
+        response = self.request('POST', path, body, headers=key)
+        self.assertEqual(response[0], 201)
+        self.assertFalse(response[2]['telemetry']['water_level_reference_confirmed'])
+        self.assertFalse(response[2]['telemetry']['water_probes_immersed'])
+        with closing(sqlite3.connect(self.tmpdir / 'test.sqlite')) as db:
+            payload = json.loads(db.execute('SELECT payload FROM device_telemetry').fetchone()[0])
+            for field in ('water_level_reference_confirmed', 'water_probes_immersed'):
+                del payload[field]
+            db.execute('UPDATE device_telemetry SET payload=?', (json.dumps(payload),))
+        self.assertEqual(self.request('POST', path, body, headers=key)[0], 201)
+        confirmed = body | {'created_at': '2026-09-15T08:00:10Z',
+                            'water_level_reference_confirmed': True, 'water_probes_immersed': True}
+        response = self.request('POST', path, confirmed, headers=key)
+        self.assertEqual(response[0], 201)
+        self.assertTrue(response[2]['telemetry']['water_probes_immersed'])
+
     def queue(self, actuator='feeder', request_id='hardware-test'):
         user = self.login()
         response = self.request('POST', '/api/devices/AQS-KOLAM-01/hardware-commands',
@@ -109,6 +146,11 @@ class HardwareApiTests(WorkspaceTests):
         self.assertEqual(above['water_level_percent'], 0)
         rows = self.request('GET', path)[2]['telemetry']
         self.assertEqual([(r['tds_mv'], r['water_distance_cm']) for r in rows], [(1200, 60), (1200, 18)])
+        latest = self.request('GET', path + '?limit=1')[2]['telemetry']
+        self.assertEqual(len(latest), 1)
+        self.assertEqual(latest[0]['water_distance_cm'], 60)
+        for limit in ('0', '101', 'wrong', '1.5', '1&limit[]=2'):
+            self.assertEqual(self.request('GET', path + '?limit=' + limit)[0], 422)
 
     def test_rows_stored_before_tds_fields_still_accept_identical_retries(self):
         path = '/api/devices/AQS-KOLAM-01/telemetry'
