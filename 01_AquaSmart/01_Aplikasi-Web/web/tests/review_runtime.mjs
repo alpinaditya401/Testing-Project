@@ -24,8 +24,11 @@ export async function launch(label){
  const edgePath=browserPath();
  // Chromium refuses to start as root without --no-sandbox (Linux containers/CI).
  const sandbox=process.getuid?.()===0?['--no-sandbox']:[];
- edge=spawn(edgePath,['--headless=new',...sandbox,'--remote-debugging-port=0',`--user-data-dir=${join(temp,'browser')}`,'--no-first-run','--no-default-browser-check','about:blank'],{stdio:'ignore'});
- const cdpPort=await until(()=>{const p=join(temp,'browser','DevToolsActivePort');return existsSync(p)&&Number(readFileSync(p,'utf8').split('\n')[0]);},'Edge endpoint');
+ // Browser stderr goes to browser.log so a browser that never starts (sandbox, missing libraries) says why.
+ const browserLogPath=join(output,'browser.log'),browserLog=openSync(browserLogPath,'w');
+ edge=spawn(edgePath,['--headless=new',...sandbox,'--remote-debugging-port=0',`--user-data-dir=${join(temp,'browser')}`,'--no-first-run','--no-default-browser-check','about:blank'],{stdio:['ignore',browserLog,browserLog]});
+ closeSync(browserLog);
+ const cdpPort=await until(()=>{const p=join(temp,'browser','DevToolsActivePort');return existsSync(p)&&Number(readFileSync(p,'utf8').split('\n')[0]);},'Edge endpoint').catch(e=>{throw Error(`${e.message} (${edgePath}): ${readFileSync(browserLogPath,'utf8').trim().split('\n').slice(-8).join(' | ')}`);});
  const tabs=await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json();const tab=tabs.find(t=>t.type==='page');
  ws=new WebSocket(tab.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.addEventListener('open',r,{once:true});ws.addEventListener('error',j,{once:true});});
  let id=0;const pending=new Map();send=(method,params={})=>new Promise((resolve,reject)=>{const n=++id;const timer=setTimeout(()=>{pending.delete(n);reject(Error('CDP timeout '+method));},12000);pending.set(n,{resolve,reject,timer});ws.send(JSON.stringify({id:n,method,params}));});

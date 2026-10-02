@@ -26,5 +26,7 @@ for name in names:
  summary.append(row)
  (out/'summary.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')
  print(json.dumps(row,ensure_ascii=True),flush=True)
+ # test-output/ stays on the machine; show why a suite failed where the runner prints (CI).
+ if row['exit_code']:print('\n'.join('  | '+line for line in text.strip().splitlines()[-12:]),flush=True)
 print('ARTIFACTS',out.as_posix(),flush=True)
 sys.exit(1 if any(x['exit_code'] for x in summary) else 0)
