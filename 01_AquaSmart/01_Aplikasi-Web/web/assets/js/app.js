@@ -1,6 +1,6 @@
 import { icon } from './icons.js';
 import { app, escapeHtml, modalRoot, navigate, qs, qsa, route } from './dom.js';
-import { average, clamp, formatTime, initials, random, sensorNumber } from './format.js';
+import { average, clamp, formatTime, initials, random, requestId, sensorNumber } from './format.js';
 import { showModal, toast } from './ui-overlay.js';
 import { APP_KEY, apiMode, applyServerUser, authenticated, connectionLabel, csrfToken, currentDevice, loadState, SESSION_KEY, setApiMode, setAuthenticated, setCsrfToken, setState, state, saveState, isAuthed } from './state-store.js';
 import { mapServerAlert, mapServerAuditLog, mapServerDevice, mapServerReading } from './server-mappers.js';
@@ -445,7 +445,7 @@ import { loadDiagnostics, restoreSession, syncApiData, syncCurrentDeviceData, us
       if (apiMode === 'api') {
         const payload = await apiRequest(`/api/devices/${encodeURIComponent(device.id)}/control`, {
           method: 'POST',
-          body: { actuator: 'feeder', value: true, duration: 8, request_id: crypto.randomUUID() }
+          body: { actuator: 'feeder', value: true, duration: 8, request_id: requestId() }
         });
         const index = state.devices.findIndex(item => item.id === payload.device.id);
         if (index >= 0) state.devices[index] = mapServerDevice(payload.device);
@@ -859,8 +859,8 @@ import { loadDiagnostics, restoreSession, syncApiData, syncCurrentDeviceData, us
           const phone = qs('#edit-phone').value.trim();
           if (apiMode === 'api') await apiRequest('/api/profile', { method: 'PATCH', body: { name, phone } });
           state.user.name = name; state.user.phone = phone; saveState(); closeProfileModal(); toast('Profil berhasil diperbarui.', 'success'); render();
-        } catch (_) {
-          toast('Gagal memperbarui profil.', 'warning');
+        } catch (error) {
+          toast(error instanceof ApiError && error.message ? `Gagal memperbarui profil: ${error.message}` : 'Gagal memperbarui profil.', 'warning');
         } finally {
           submitBtn.disabled = false;
         }

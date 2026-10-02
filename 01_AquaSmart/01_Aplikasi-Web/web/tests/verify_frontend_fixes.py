@@ -9,6 +9,7 @@ names=['skip_link','drawer_keyboard','settings_labels','http_error_boundary','ro
 names.append('demo_devices')
 names.append('product_mockups')
 names.append('product_live')
+names.append('threshold_login')
 summary=[]
 for name in names:
  script=app/f'web/tests/review_{name}.mjs';label=out.name+'/'+name

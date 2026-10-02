@@ -54,7 +54,8 @@ $pdo = Database::connection();
 require_once __DIR__.'/src/RateLimiter.php';
 require __DIR__.'/product_routes.php';
 if($method==='POST' && in_array($path,['/api/auth/login','/api/auth/register'],true))RateLimiter::check($pdo,$path,$path==='/api/auth/login'?30:10);
-if($method==='POST' && str_ends_with($path,'/readings'))RateLimiter::check($pdo,'device_ingestion',240);
+// Device limits are counted per device after its key is checked (see each route):
+// unauthenticated junk must not use up the bucket of real devices sharing a proxy IP.
 
 if ($path === '/api/auth/register' && $method === 'POST') {
     $body = Http::jsonBody();
@@ -187,7 +188,7 @@ if ($method==='DELETE' && preg_match('#^/api/workspace/members/(\d+)$#',$path,$m
 
 if (preg_match('#^/api/device/devices/([A-Za-z0-9_-]+)/commands(?:/([a-f0-9]{32})/ack)?$#',$path,$matches)) {
     DeviceAuth::requireKey($pdo,$matches[1]);
-    RateLimiter::check($pdo,'device_commands',240);
+    RateLimiter::check($pdo,'device_commands:'.$matches[1],240);
     if ($method==='GET' && !isset($matches[2])) Http::json(['commands'=>OperationsRepository::poll($pdo,$matches[1],null,false),'server_time'=>time()]);
     if ($method==='POST' && isset($matches[2])) {
         $body=Http::jsonBody();
@@ -236,7 +237,7 @@ if (preg_match('#^/api/devices/([A-Za-z0-9_-]+)/telemetry$#',$path,$matches)) {
     require_once __DIR__ . '/src/TelemetryRepository.php';
     if ($method==='POST') {
         DeviceAuth::requireKey($pdo,$matches[1]);
-        RateLimiter::check($pdo,'device_telemetry',240);
+        RateLimiter::check($pdo,'device_telemetry:'.$matches[1],240);
         try {$telemetry=TelemetryRepository::ingest($pdo,$matches[1],Http::jsonBody());}
         catch (InvalidArgumentException $error) {Http::error('validation_error',$error->getMessage(),422);}
         catch (DomainException $error) {Http::error('telemetry_conflict',$error->getMessage(),409);}
@@ -253,6 +254,9 @@ if (preg_match('#^/api/devices/([A-Za-z0-9_-]+)/telemetry$#',$path,$matches)) {
 
 if ($path === '/api/devices' && $method === 'GET') {
     $user = Auth::requireUser($pdo);
+    // No scheduler runs in the Railway deployment; settle overdue commands here
+    // so the dashboard does not keep showing a timed-out command as applied.
+    OperationsRepository::expire($pdo);
     Http::json(['devices' => DeviceRepository::allForUser($pdo, Auth::workspaceId($user))]);
 }
 
@@ -293,7 +297,7 @@ if ($method === 'POST' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/key$#', $p
 
 if ($method === 'POST' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/heartbeat$#', $path, $matches)) {
     DeviceAuth::requireKey($pdo, $matches[1]);
-    RateLimiter::check($pdo, 'device_heartbeat', 240);
+    RateLimiter::check($pdo, 'device_heartbeat:' . $matches[1], 240);
     Http::jsonBody();
     $heartbeat = DeviceLifecycle::heartbeat($pdo, $matches[1]);
     if (!$heartbeat) Http::error('device_not_found', 'Perangkat tidak ditemukan.', 404);
@@ -302,6 +306,7 @@ if ($method === 'POST' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/heartbeat$
 
 if ($method === 'POST' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/readings$#', $path, $matches)) {
     DeviceAuth::requireKey($pdo, $matches[1]);
+    RateLimiter::check($pdo, 'device_ingestion:' . $matches[1], 240);
     $body = Http::jsonBody();
     $numericFields = ['ph', 'temperature', 'turbidity'];
     foreach ($numericFields as $field) {
@@ -332,6 +337,11 @@ if ($method === 'POST' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/readings$#
             if (!preg_match('/^[0-9]{4}-/',$createdAt) || (int)substr($createdAt,0,4)<1) Http::error('validation_error','Tahun timestamp UTC harus 0001–9999.',422);
         } catch (Exception) {
             Http::error('validation_error', 'created_at harus berupa timestamp ISO-8601.', 422);
+        }
+        // A reading from the future would stay "latest" and, because alerts only
+        // fire for readings newer than the latest, silence alerts for that pond.
+        if (strtotime($createdAt) > time() + 300) {
+            Http::error('validation_error', 'created_at lebih dari 5 menit di masa depan. Periksa jam perangkat.', 422);
         }
     }
     try {

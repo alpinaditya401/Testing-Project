@@ -7,3 +7,5 @@ export function average(rows, key) { return rows.reduce((sum, row) => sum + Numb
 export function formatTime(iso) { return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' }).format(new Date(iso)); }
 export function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 export function random(min, max) { return Math.random() * (max - min) + min; }
+// crypto.randomUUID exists only in secure contexts; the LAN setup in LOCAL_GUIDE is plain HTTP.
+export function requestId() { return crypto.randomUUID?.() ?? Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join(''); }

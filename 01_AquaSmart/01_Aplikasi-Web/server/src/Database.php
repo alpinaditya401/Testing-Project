@@ -1,6 +1,89 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * PDO whose transactions take SQLite's write lock up front (BEGIN IMMEDIATE).
+ *
+ * The default deferred BEGIN starts as a reader. Under WAL, if another
+ * connection commits between this transaction's first read and first write,
+ * the write fails at once with SQLITE_BUSY ("database is locked"); the busy
+ * timeout does not retry that case. With several Apache workers this turned
+ * concurrent readings into HTTP 500. IMMEDIATE makes writers queue on the busy
+ * timeout instead. PDO::inTransaction() does not see a BEGIN issued through
+ * exec(), so the state is tracked here.
+ *
+ * A SELECT that was fetch()ed but not read to the end keeps its read snapshot
+ * open, and BEGIN IMMEDIATE on a stale snapshot fails without waiting. Callers
+ * routinely look up one row and then start a transaction, so open cursors are
+ * closed first. No caller iterates a statement across a transaction start.
+ */
+final class AquaSmartPdo extends PDO
+{
+    private bool $active = false;
+    /** @var list<WeakReference<PDOStatement>> */
+    private array $statements = [];
+
+    public function prepare(string $query, array $options = []): PDOStatement|false
+    {
+        return $this->track(parent::prepare($query, $options));
+    }
+
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement|false
+    {
+        return $this->track($fetchMode === null
+            ? parent::query($query)
+            : parent::query($query, $fetchMode, ...$fetchModeArgs));
+    }
+
+    private function track(PDOStatement|false $statement): PDOStatement|false
+    {
+        if ($statement !== false) {
+            $this->statements = array_values(array_filter($this->statements, fn($ref) => $ref->get() !== null));
+            $this->statements[] = WeakReference::create($statement);
+        }
+        return $statement;
+    }
+
+    public function beginTransaction(): bool
+    {
+        if ($this->active) {
+            throw new PDOException('There is already an active transaction');
+        }
+        foreach ($this->statements as $ref) {
+            $ref->get()?->closeCursor();
+        }
+        $this->statements = [];
+        $this->exec('BEGIN IMMEDIATE');
+        $this->active = true;
+        return true;
+    }
+
+    public function commit(): bool
+    {
+        if (!$this->active) {
+            throw new PDOException('There is no active transaction');
+        }
+        $this->exec('COMMIT');
+        $this->active = false;
+        return true;
+    }
+
+    public function rollBack(): bool
+    {
+        if (!$this->active) {
+            throw new PDOException('There is no active transaction');
+        }
+        $this->active = false;
+        $this->exec('ROLLBACK');
+        return true;
+    }
+
+    public function inTransaction(): bool
+    {
+        return $this->active;
+    }
+}
+
 final class Database
 {
     private static ?PDO $connection = null;
@@ -17,10 +100,12 @@ final class Database
             throw new RuntimeException('Tidak dapat membuat direktori database.');
         }
 
-        $pdo = new PDO('sqlite:' . $path, null, null, [
+        $pdo = new AquaSmartPdo('sqlite:' . $path, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
+            // Busy timeout in seconds: how long a writer waits for the lock.
+            PDO::ATTR_TIMEOUT => 10,
         ]);
         $pdo->exec('PRAGMA foreign_keys = ON');
         $pdo->exec('PRAGMA journal_mode = WAL');

@@ -22,9 +22,13 @@ class ReviewHardeningTests(HttpTestCase):
         status, headers, _=self.request('POST','/api/auth/register',{})
         self.assertEqual(status,429)
         self.assertGreater(int(headers['Retry-After']),0)
-        for _ in range(240):
+        # Unauthenticated junk is refused but must not use up the device's own bucket:
+        # behind a proxy every device shares one address. The per-device limit is
+        # covered in test_hardening_followup.
+        for _ in range(241):
             self.assertEqual(self.request('POST','/api/devices/AQS-KOLAM-01/readings',{})[0],401)
-        self.assertEqual(self.request('POST','/api/devices/AQS-KOLAM-01/readings',{})[0],429)
+        status,_,payload=self.request('POST','/api/devices/AQS-KOLAM-01/readings',dict(ph=7,temperature=28,turbidity=10,created_at='2025-03-01T00:00:00Z'),headers={'X-Device-Key':self.device_key})
+        self.assertEqual(status,201,payload)
 
     def test_legacy_rule_checks_emit_parseable_current_contract(self):
         root=Path(__file__).resolve().parents[1]

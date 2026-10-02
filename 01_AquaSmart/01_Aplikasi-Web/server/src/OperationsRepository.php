@@ -20,13 +20,23 @@ final class OperationsRepository
     {
         $now??=time();
         $own = !$pdo->inTransaction();
-        if ($own) $pdo->beginTransaction();
+        $overdue = 'FROM actuator_commands WHERE status IN ("pending","delivered") AND expires_at<=?' . ($deviceId===null?'':' AND device_id=?');
+        if ($own) {
+            // Read first so dashboard polling only takes the write lock when something expired.
+            $probe = $pdo->prepare('SELECT 1 ' . $overdue . ' LIMIT 1');
+            $probe->execute($deviceId===null?[$now]:[$now,$deviceId]);
+            $found = $probe->fetchColumn();
+            $probe->closeCursor();
+            if (!$found) return;
+            $pdo->beginTransaction();
+        }
         try {
-            $query = $pdo->prepare('SELECT * FROM actuator_commands WHERE status IN ("pending","delivered") AND expires_at<=?' . ($deviceId===null?'':' AND device_id=?'));
+            $query = $pdo->prepare('SELECT * ' . $overdue);
             $query->execute($deviceId===null?[$now]:[$now,$deviceId]);
             foreach ($query->fetchAll() as $row) {
                 $pdo->prepare('UPDATE actuator_commands SET status="timeout",completed_at=? WHERE id=?')->execute([$now,$row['id']]);
                 if ($row['actuator'] === 'feeder') $pdo->prepare('UPDATE devices SET feeder=0 WHERE id=?')->execute([$row['device_id']]);
+                self::revertAerator($pdo, $row);
                 AuditRepository::record($pdo, (int)$row['user_id'], $row['device_id'], 'command.timeout', ['command_id'=>$row['id'], 'simulation'=>(bool)$row['simulation'], 'provenance'=>$row['provenance']??'legacy_unverified']);
             }
             if ($own) $pdo->commit();
@@ -67,6 +77,7 @@ final class OperationsRepository
             AuditRepository::record($pdo, (int)$row['user_id'], $deviceId, 'command.' . $status, ['command_id'=>$id, 'simulation'=>$simulation,'provenance'=>$row['provenance']??'legacy_unverified','source_session'=>$row['source_session']??null]);
             // Reported feeder state stops on terminal result; no claim about physical hardware.
             if($row['actuator']==='feeder')$pdo->prepare('UPDATE devices SET feeder=0 WHERE id=?')->execute([$deviceId]);
+            if($status!=='succeeded')self::revertAerator($pdo,$row);
             $row['status']=$status;$row['completed_at']=$now;$pdo->commit();return self::dto($row);
         }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
     }
@@ -96,6 +107,18 @@ final class OperationsRepository
             catch(DomainException $e){$out[]=['schedule_id'=>$schedule['id'],'status'=>'skipped_busy'];}
         }
         return $out;
+    }
+
+    /**
+     * DeviceRepository::control() writes the requested aerator state before the
+     * device answers. When that simulation command fails or times out, put the
+     * displayed state back so the dashboard does not keep showing it as applied.
+     */
+    private static function revertAerator(PDO $pdo, array $row): void
+    {
+        if ($row['actuator'] !== 'aerator' || !(bool)$row['simulation']) return;
+        $requested = (int)(bool)$row['value'];
+        $pdo->prepare('UPDATE devices SET aerator=? WHERE id=? AND aerator=?')->execute([1 - $requested, $row['device_id'], $requested]);
     }
 
     private static function dto(array $row): array

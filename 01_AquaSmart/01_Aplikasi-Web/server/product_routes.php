@@ -16,8 +16,11 @@ try {
     if($path==='/api/units/claim' && $method==='POST') {
         $user=Auth::requireAdmin($pdo);Auth::requireCsrf();$body=Http::jsonBody();
         if(!is_string($body['serial_number']??null)||!is_string($body['activation_code']??null))throw new ProductError('validation_error','Serial dan kode aktivasi harus berupa teks.');
-        RateLimiter::check($pdo,'product_claim',ProductPolicy::config()['ACTIVATION_MAX_FAILURES'],ProductPolicy::config()['ACTIVATION_LOCK_SECONDS']);
-        Http::json(['unit'=>ProductRepository::claim($pdo,(int)$user['id'],$body['serial_number'],$body['activation_code'])],201);
+        // Only failed claims count, so one location installing several units is not locked out.
+        RateLimiter::guard($pdo,'product_claim',ProductPolicy::config()['ACTIVATION_MAX_FAILURES']);
+        try {$unit=ProductRepository::claim($pdo,(int)$user['id'],$body['serial_number'],$body['activation_code']);}
+        catch(ProductError $e){RateLimiter::hit($pdo,'product_claim',ProductPolicy::config()['ACTIVATION_LOCK_SECONDS']);throw $e;}
+        Http::json(['unit'=>$unit],201);
     }
     if($method==='GET'&&preg_match('#^/api/units/([A-Za-z0-9_-]+)/onboarding$#',$path,$m)) {
         $user=Auth::requireUser($pdo);Http::json(['unit'=>ProductRepository::onboarding($pdo,Auth::workspaceId($user),$m[1])]);

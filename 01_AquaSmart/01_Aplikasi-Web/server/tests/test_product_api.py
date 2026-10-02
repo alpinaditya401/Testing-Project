@@ -112,6 +112,18 @@ class ProductApiTests(WorkspaceTests):
         with closing(sqlite3.connect(self.tmpdir/'test.sqlite')) as db:
             self.assertNotIn(key,str(db.execute('SELECT metadata FROM audit_logs').fetchall()))
 
+    def test_existing_device_id_and_successful_claims_do_not_lock(self):
+        user=self.login();headers={'X-CSRF-Token':user['csrf_token']}
+        with closing(sqlite3.connect(self.tmpdir/'test.sqlite')) as db:
+            db.execute('INSERT OR IGNORE INTO seller_operators VALUES(?,0)',(user['user']['id'],));db.commit()
+        status,_,data=self.request('POST','/api/seller/units',{'serial_number':'AQS-KOLAM-01','name':'x','location':'y'},headers=headers)
+        self.assertEqual((status,data['error']['code']),(409,'serial_exists'))
+        # The claim limit counts failures only; one location claiming several units is not blocked.
+        for n in range(6):
+            _,headers,unit=self.prepare(f'PRODUCT-BATCH-{n}')
+            status,_,data=self.request('POST','/api/units/claim',{'serial_number':f'PRODUCT-BATCH-{n}','activation_code':unit['activation_code']},headers=headers)
+            self.assertEqual(status,201,data)
+
     def test_wrong_expired_and_ip_limit(self):
         _,headers,unit=self.prepare('PRODUCT-B')
         self.assertEqual(self.request('POST','/api/seller/units',{'serial_number':'PRODUCT-B','name':'x','location':'y'},headers=headers)[2]['error']['code'],'serial_exists')

@@ -1,4 +1,4 @@
-const CACHE = 'aquasmart-v18';
+const CACHE = 'aquasmart-v19';
 const ASSETS = [
   './',
   './index.html',

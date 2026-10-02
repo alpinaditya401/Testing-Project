@@ -9,6 +9,7 @@ final class TelemetryRepository
         $stamp=$body['created_at']??null;
         if (!is_string($stamp) || !preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z$/D',$stamp,$m)
             || !checkdate((int)$m[2],(int)$m[3],(int)$m[1]) || (int)$m[4]>23 || (int)$m[5]>59 || (int)$m[6]>59) throw new InvalidArgumentException('Timestamp UTC tidak valid.');
+        if (strtotime($stamp) > time() + 300) throw new InvalidArgumentException('Timestamp lebih dari 5 menit di masa depan. Periksa jam perangkat.');
         $simulation=$body['simulation']??null;
         $source=$body['provenance']??null;
         $session=$body['source_session']??null;

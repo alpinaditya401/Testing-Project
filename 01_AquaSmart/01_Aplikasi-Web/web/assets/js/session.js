@@ -55,20 +55,27 @@ export async function restoreSession() {
       toast(error.message || 'Layanan sesi gagal. Muat ulang untuk mencoba lagi.', 'warning');
     }
   }
-  try {
-    const thresholdsPayload = await apiRequest('/api/settings/thresholds');
-    state.thresholds = {
-      phMin: thresholdsPayload.thresholds.ph_min,
-      phMax: thresholdsPayload.thresholds.ph_max,
-      tempMin: thresholdsPayload.thresholds.temperature_min,
-      tempMax: thresholdsPayload.thresholds.temperature_max,
-      turbidityMax: thresholdsPayload.thresholds.turbidity_max
-    };
-  } catch (_) {}
+  if (authenticated) {
+    try { await syncThresholds(); } catch (_) {}
+  }
   try {
     const me = await apiRequest('/api/auth/me');
     applyServerUser(me.user);
   } catch (_) {}
+}
+
+// Thresholds belong to the workspace owner. Reload them on every sync, not only on
+// page load: after an in-page login, register or invite the previous account's (or
+// default) values would otherwise prefill Settings and overwrite the server on save.
+async function syncThresholds() {
+  const payload = await apiRequest('/api/settings/thresholds');
+  state.thresholds = {
+    phMin: payload.thresholds.ph_min,
+    phMax: payload.thresholds.ph_max,
+    tempMin: payload.thresholds.temperature_min,
+    tempMax: payload.thresholds.temperature_max,
+    turbidityMax: payload.thresholds.turbidity_max
+  };
 }
 
 export async function syncCurrentDeviceData() {
@@ -94,7 +101,8 @@ export async function syncApiData() {
  await syncCurrentDeviceData();
  const [alertPayload, auditPayload] = await Promise.all([
    apiRequest('/api/alerts?limit=50'),
-   apiRequest('/api/audit-logs?limit=50')
+   apiRequest('/api/audit-logs?limit=50'),
+   syncThresholds()
  ]);
  state.alerts = alertPayload.alerts.map(mapServerAlert);
  state.auditLogs = auditPayload.audit_logs.map(mapServerAuditLog);

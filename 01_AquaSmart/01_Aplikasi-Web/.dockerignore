@@ -7,3 +7,4 @@ server/*.py
 node_modules/
 .git/
 *.md
+web/tests/

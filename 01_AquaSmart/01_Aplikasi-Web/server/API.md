@@ -24,7 +24,7 @@ Perangkat memakai `X-Device-Key`, terikat device ID. Key disimpan SHA-256 dari 3
 
 Body mutasi memakai `Content-Type: application/json`, objek flat, maksimum 64 KiB. JSON rusak 400; media type salah 415; array/object sebagai nilai field 422; payload besar 413. Tidak login 401; role/CSRF salah 403; device asing/tidak ada 404; konflik 409; validasi 422; rate limit 429 dengan Retry-After. Error internal 500 berupa `{"error":{"code":"internal_error","message":"Gangguan server. Referensi: ..."}}`; detail hanya masuk log lokal. Semua JSON API memakai `Cache-Control: no-store, private`.
 
-Rate auth: login 30, register 10 request per IP/route selama 60 detik dari request pertama. Ingestion dan heartbeat masing-masing 240 per 60 detik. Tidak ada rate limiting terdistribusi; server ini untuk loopback lokal.
+Rate auth: login 30, register 10 request per IP/route selama 60 detik dari request pertama. Readings, telemetry, heartbeat, dan polling command masing-masing 240 per 60 detik **per perangkat**, dihitung sesudah key perangkat valid; request tanpa key yang benar ditolak 401 tanpa menghabiskan kuota perangkat. Klaim unit produk (`POST /api/units/claim`) hanya menghitung klaim yang gagal: 5 kegagalan per 15 menit, klaim sukses tidak dihitung. Identitas IP adalah `REMOTE_ADDR`, kecuali `AQUASMART_PROXY_SECRET` (minimal 16 karakter) terpasang dan request membawa `X-AquaSmart-Proxy-Secret` yang sama; saat itu `X-AquaSmart-Client-IP` (IP valid) dipakai. Jalur ini untuk BFF Next.js, yang semua request browser-nya tiba dari satu alamat. Tidak ada rate limiting terdistribusi.
 
 ## Endpoint browser/publik
 
@@ -67,7 +67,7 @@ Rate auth: login 30, register 10 request per IP/route selama 60 detik dari reque
 | Metode dan path | Kontrak |
 |---|---|
 | POST /api/devices/{id}/heartbeat | Key perangkat; objek kosong. Online/last_seen diperbarui tanpa membuat reading. Tidak ada bukti hardware_verified |
-| POST /api/devices/{id}/readings | Key perangkat; ph0–14, temperature -50–100, turbidity>=0, semua finite; simulation boolean (defaultfalse), created_at opsional ISO8601 dengan zona waktu. Timestamp dinormalisasi UTC. 201 reading; timestamp sama+payload sama idempotent, payload beda409 |
+| POST /api/devices/{id}/readings | Key perangkat; ph0–14, temperature -50–100, turbidity>=0, semua finite; simulation boolean (defaultfalse), created_at opsional ISO8601 dengan zona waktu. Timestamp dinormalisasi UTC; lebih dari 5 menit di masa depan ditolak 422 karena reading masa depan akan tetap menjadi "terbaru" dan mematikan alert. 201 reading; timestamp sama+payload sama idempotent, payload beda409 |
 | GET /api/simulator/devices/{id}/commands | Key perangkat; hanya AQUASMART_SIMULATOR_ENABLED=1 dan environment development/test. Pending diubah delivered; tidak dikirim dua kali |
 | POST /api/simulator/devices/{id}/commands/{32hex}/ack | Key perangkat; status succeeded/failed. Harus delivered dan belum expired. ACK yang sama idempotent; konflik409 |
 
@@ -109,7 +109,7 @@ Telemetry JSON flat, contoh sintetis (bukan pengukuran):
 
 Timestamp UTC tepat YYYY-MM-DDTHH:mm:ssZ, kalender valid. Device ID pada path; field tambahan diabaikan. source_session 8–64 karakter alfanumerik ASCII/underscore/hyphen; provenance device/simulation harus cocok boolean simulation. Ini deklarasi sumber terautentikasi, bukan attestation hardware.
 
-Suhu ok memerlukan angka −55…125°C; disconnected/unverified memerlukan null. ADC integer 0…4095 atau null harus berpasangan mV 0…3300 atau null. Rekonstruksi turbidity mV/0.6 toleransi 2 mV, rentang 0…5500; mapping 0…100. Bila turbidity null, reconstructed/mapping juga null. ph_sensor=soil_placeholder dan calibrated=false wajib. Sensor belum dikenal/aman dikirim null, tanpa angka palsu.
+created_at telemetry lebih dari 5 menit di masa depan ditolak 422. Suhu ok memerlukan angka −55…125°C; disconnected/unverified memerlukan null. ADC integer 0…4095 atau null harus berpasangan mV 0…3300 atau null. Rekonstruksi turbidity mV/0.6 toleransi 2 mV, rentang 0…5500; mapping 0…100. Bila turbidity null, reconstructed/mapping juga null. ph_sensor=soil_placeholder dan calibrated=false wajib. Sensor belum dikenal/aman dikirim null, tanpa angka palsu.
 
 **PLACEHOLDER SENSOR TANAH, BUKAN pH AIR TERKALIBRASI.** Mapping turbidity bukan NTU. Data masuk device_telemetry dengan received_at server; tidak mengisi sensor_readings pH/NTU, tidak memicu rules pH air, dan belum masuk lima ekspor historis. UI diagnostik/ekspor raw masih tercatat sebagai pekerjaan lanjutan di CHECKPOINT.
 

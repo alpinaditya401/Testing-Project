@@ -43,6 +43,9 @@ final class ProductRepository
         try {
             $q=$pdo->prepare('SELECT 1 FROM device_inventory WHERE serial_number=?');$q->execute([$serial]);
             if($q->fetchColumn())throw new ProductError('serial_exists','Serial sudah terdaftar. Gunakan serial unit lain.',409);
+            // Claim inserts the serial as devices.id; an existing device with that id would make the unit unclaimable.
+            $q=$pdo->prepare('SELECT 1 FROM devices WHERE id=?');$q->execute([$serial]);
+            if($q->fetchColumn())throw new ProductError('serial_exists','Serial sudah dipakai perangkat lain. Gunakan serial unit lain.',409);
             $code=null;
             for($i=0;$i<ProductPolicy::config()['ACTIVATION_COLLISION_RETRIES'];$i++) {
                 $candidate=($generator??[ProductPolicy::class,'activationCode'])();$normalized=ProductPolicy::normalizeCode($candidate);

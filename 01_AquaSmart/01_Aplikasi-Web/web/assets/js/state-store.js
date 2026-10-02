@@ -94,7 +94,9 @@ export function applyServerUser(user) {
     name: user.name || state.user.name,
     username: user.username || state.user.username,
     role: user.role === 'admin' ? 'Pembudidaya / Admin' : (user.role || state.user.role),
-    phone: user.phone || user.contact || state.user.phone,
+    // Registration stores the email or WhatsApp number in contact and leaves phone empty.
+    // Only a number may prefill the phone field; an email there fails PATCH /api/profile.
+    phone: user.phone || (/^\+?[\d\s-]{8,30}$/.test(user.contact || '') ? user.contact : ''),
     contact: user.contact || user.phone || state.user.contact || ''
   };
 }

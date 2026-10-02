@@ -18,8 +18,13 @@ final class DeviceLifecycle
             if (!$row) throw new InvalidArgumentException('Serial perangkat belum terdaftar.');
             if ($row['claimed_user_id'] !== null) throw new DomainException('Serial perangkat sudah diklaim.');
             $now = gmdate('Y-m-d\TH:i:s\Z');
-            $pdo->prepare('INSERT INTO devices(id,user_id,name,location) VALUES(?,?,?,?)')
-                ->execute([$serial, $owner, $row['default_name'], $row['default_location']]);
+            try {
+                $pdo->prepare('INSERT INTO devices(id,user_id,name,location) VALUES(?,?,?,?)')
+                    ->execute([$serial, $owner, $row['default_name'], $row['default_location']]);
+            } catch (PDOException $error) {
+                if ((string)$error->getCode() === '23000') throw new DomainException('Serial perangkat sudah dipakai perangkat lain.');
+                throw $error;
+            }
             $query = $pdo->prepare('UPDATE device_inventory SET claimed_user_id=?,claimed_at=? WHERE serial_number=? AND claimed_user_id IS NULL');
             $query->execute([$owner, $now, $serial]);
             if ($query->rowCount() !== 1) throw new DomainException('Serial perangkat sudah diklaim.');
