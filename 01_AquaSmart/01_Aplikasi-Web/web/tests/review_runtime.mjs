@@ -7,6 +7,8 @@ import {randomBytes} from 'node:crypto';
 import net from 'node:net';
 export const wait=ms=>new Promise(r=>setTimeout(r,ms));
 export async function until(fn,label='condition',timeout=8000){const end=Date.now()+timeout;let last;while(Date.now()<end){try{const v=await fn();if(v)return v;}catch(e){last=e;}await wait(60);}throw Error('Timeout: '+label+(last?' '+last.message:''));}
+// Edge on Windows stays the default; AQUASMART_BROWSER or a local Chromium/Chrome lets the same suites run on Linux/macOS.
+export function browserPath(){const candidates=[process.env.AQUASMART_BROWSER,'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','C:/Program Files/Microsoft/Edge/Application/msedge.exe',process.env.PLAYWRIGHT_BROWSERS_PATH&&join(process.env.PLAYWRIGHT_BROWSERS_PATH,'chromium'),'/usr/bin/microsoft-edge','/usr/bin/chromium','/usr/bin/chromium-browser','/usr/bin/google-chrome','/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].filter(Boolean);const found=candidates.find(existsSync);if(!found)throw Error('Browser not found; set AQUASMART_BROWSER to an Edge/Chromium executable');return found;}
 export async function freePort(){const s=net.createServer();await new Promise((r,j)=>s.once('error',j).listen(0,'127.0.0.1',r));const p=s.address().port;await new Promise(r=>s.close(r));return p;}
 export async function launch(label){
  const app=resolve(''), output=resolve('test-output',label);mkdirSync(output,{recursive:true});
@@ -19,8 +21,10 @@ export async function launch(label){
  let send;
  try{
  await until(async()=>{if(php.exitCode!==null)throw Error('PHP exited');return (await fetch(base+'/api/health')).ok;},'PHP health');
- const edgePath=['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(existsSync);if(!edgePath)throw Error('Edge not found');
- edge=spawn(edgePath,['--headless=new','--remote-debugging-port=0',`--user-data-dir=${join(temp,'browser')}`,'--no-first-run','--no-default-browser-check','about:blank'],{stdio:'ignore'});
+ const edgePath=browserPath();
+ // Chromium refuses to start as root without --no-sandbox (Linux containers/CI).
+ const sandbox=process.getuid?.()===0?['--no-sandbox']:[];
+ edge=spawn(edgePath,['--headless=new',...sandbox,'--remote-debugging-port=0',`--user-data-dir=${join(temp,'browser')}`,'--no-first-run','--no-default-browser-check','about:blank'],{stdio:'ignore'});
  const cdpPort=await until(()=>{const p=join(temp,'browser','DevToolsActivePort');return existsSync(p)&&Number(readFileSync(p,'utf8').split('\n')[0]);},'Edge endpoint');
  const tabs=await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json();const tab=tabs.find(t=>t.type==='page');
  ws=new WebSocket(tab.webSocketDebuggerUrl);await new Promise((r,j)=>{ws.addEventListener('open',r,{once:true});ws.addEventListener('error',j,{once:true});});

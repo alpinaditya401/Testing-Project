@@ -1,6 +1,20 @@
-# Kontrak integrasi alur produk (rancangan, belum endpoint aktif)
+# Kontrak integrasi alur produk
 
-Rancangan ini menghubungkan mockup dengan implementasi berikutnya. Semua angka memakai ProductPolicy/config/product.php dan KALKULASI.md. Jangan menganggap endpoint di bawah tersedia sebelum diuji dan diberi status implemented.
+Rancangan ini menghubungkan mockup dengan implementasi. Semua angka memakai ProductPolicy/config/product.php dan KALKULASI.md. Jangan menganggap endpoint di bawah tersedia sebelum diuji dan diberi status implemented.
+
+## Status endpoint (diperiksa terhadap `server/product_routes.php`, 2 Oktober 2026)
+
+| Endpoint | Status | Batas |
+| --- | --- | --- |
+| `GET /api/units` | implemented | Daftar unit produk milik workspace beserta status penjual akun |
+| `GET /api/seller/units`, `POST /api/seller/units` | implemented | Tanpa QR nyata dan tanpa reissue kode |
+| `POST /api/units/claim` | implemented | Input manual; scan kamera/QR belum ada |
+| `GET /api/units/{id}/onboarding` | implemented | Provisioning WiFi belum ada |
+| `GET /api/units/{id}/dashboard` | implemented | Pump config dan jadwal belum termasuk |
+| `POST /api/units/{id}/commands` | implemented, hanya `channel=simulation` | Kanal lain dijawab 503 `hardware_pending` |
+| `GET /api/push/config`, `/api/push/subscriptions`, `/api/push/test` | belum ada | Web Push (bagian D) belum dibangun |
+
+Bagian di bawah tetap kontrak target. Butir yang belum tercantum sebagai implemented pada tabel di atas masih rancangan.
 
 ## Penjual
 

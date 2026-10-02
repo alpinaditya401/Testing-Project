@@ -49,6 +49,37 @@ jobs:
           AQUASMART_API_URL: https://projectbasedlearning-production.up.railway.app
         run: npm run build
 
+  backend:
+    name: Backend PHP dan SPA
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 01_AquaSmart/01_Aplikasi-Web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_sqlite, sqlite3, mbstring
+          coverage: none
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Suite browser memakai WebSocket bawaan Node (Node 22 ke atas).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Test backend dan lint PHP
+        run: python server/tests/run_verified_suite.py
+
+      - name: Suite browser SPA
+        # review_runtime.mjs menemukan Google Chrome bawaan runner Ubuntu.
+        run: python web/tests/verify_frontend_fixes.py
+
   sonarqube:
     name: SonarQube Quality Gate
     needs: [frontend]
