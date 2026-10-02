@@ -1,6 +1,7 @@
 """Data and evaluation helpers for the Hari 1 AquaSmart assignment."""
 from pathlib import Path
 import hashlib
+import json
 import re
 
 import numpy as np
@@ -19,11 +20,18 @@ OUT = HERE / 'tugas_mandiri'
 OUT.mkdir(exist_ok=True)
 SENSORS = ['ph', 'tds', 'temp']
 SEED = 42
+# Label proksi bergantung pada ambang aplikasi. Hasil yang dilaporkan dihitung
+# dengan versi ini; versi lain akan mengubah target dan skor tanpa peringatan.
+RULES_VERSION = 'threshold-rules-v2'
 
 
 def read_rules():
     source = ROOT / '01_AquaSmart/01_Aplikasi-Web/server/src/ThresholdRules.php'
     text = source.read_text(encoding='utf-8')
+    version = re.search(r"const VERSION = '([^']+)';", text)[1]
+    if version != RULES_VERSION:
+        raise RuntimeError(f'ThresholdRules.php berversi {version}, sedangkan hasil tugas ini memakai '
+                           f'{RULES_VERSION}. Perbarui RULES_VERSION dan laporkan ulang skornya.')
     rules = {k: float(re.search(r'const ' + k + r' = ([\d.]+);', text)[1])
              for k in ['PH_MIN', 'PH_MAX', 'TEMP_MIN', 'TEMP_MAX']}
     return rules
@@ -63,6 +71,26 @@ def clean_data(raw):
              'impossible_values': counts, 'unique_measurements': len(df),
              'grid_bins': len(bins), 'empty_bins': int(bins.isna().all(axis=1).sum()),
              'raw_sha256': hashlib.sha256(RAW.read_bytes()).hexdigest()}
+    return bins, audit
+
+
+def load_bins():
+    """Bin lima menit dari CSV mentah, atau dari turunan yang di-commit bila mentah tidak ada.
+
+    data_bersih_5menit.csv adalah keluaran clean_data() yang disimpan 01_eda. Seluruh
+    metrik 02_baseline terbukti identik bila dihitung dari berkas ini. Audit data mentah
+    diambil dari eda.json karena tidak dapat dihitung ulang tanpa CSV mentah.
+    """
+    if RAW.exists():
+        return clean_data(read_raw())
+    derived = OUT / 'data_bersih_5menit.csv'
+    if not derived.exists():
+        raise FileNotFoundError(f'Dataset belum tersedia: {RAW} maupun {derived}. Baca README_MANDIRI.md.')
+    print('CSV mentah tidak ada; memakai data_bersih_5menit.csv yang di-commit.')
+    bins = pd.read_csv(derived, index_col='timestamp', parse_dates=['timestamp'],
+                       float_precision='round_trip')
+    bins.index.freq = '5min'
+    audit = json.loads((OUT / 'eda.json').read_text(encoding='utf-8'))['audit']
     return bins, audit
 
 

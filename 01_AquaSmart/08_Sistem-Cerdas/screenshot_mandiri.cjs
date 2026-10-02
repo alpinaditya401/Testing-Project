@@ -2,7 +2,9 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const path = require('path');
 const { pathToFileURL } = require('url');
 (async () => {
-  const browser = await chromium.launch({ channel: 'msedge', headless: true });
+  // Edge tetap bawaan; PLAYWRIGHT_CHANNEL kosong memakai Chromium milik Playwright (Linux/macOS).
+  const channel = process.env.PLAYWRIGHT_CHANNEL ?? 'msedge';
+  const browser = await chromium.launch({ ...(channel ? { channel } : {}), headless: true });
   const page = await browser.newPage({ viewport: { width: 1240, height: 980 }, deviceScaleFactor: 1 });
   for (let n = 1; n <= 5; n++) {
     const base = path.join(__dirname, 'tugas_mandiri', 'bukti', `soal_${n}`);

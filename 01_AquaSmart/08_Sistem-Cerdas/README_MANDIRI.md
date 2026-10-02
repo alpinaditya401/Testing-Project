@@ -15,11 +15,14 @@ pada interval lima menit berikutnya.
 - `tugas_mandiri/bukti/soal_1.png` sampai `soal_5.png`: screenshot browser
   atas output notebook yang diekspor ke HTML, bukan foto UI Jupyter.
 - `tugas_mandiri/data_bersih_5menit.csv`, `fitur_dan_target.csv`, tabel evaluasi,
-  JSON audit dan `pipeline_random_forest.joblib`: hasil kode yang dijalankan.
+  dan JSON audit: hasil kode yang dijalankan. `pipeline_random_forest.joblib`
+  dibuat ulang saat `02_baseline.ipynb` dijalankan dan tidak di-commit
+  (`.gitignore` menolak `*.joblib`).
 
 ## Menjalankan ulang
 
-Gunakan Python 3.12. Dari akar Testing-Project:
+Gunakan Python 3.12 (paket yang dipin juga berjalan di Python 3.11). Dari akar
+Testing-Project:
 
 ```powershell
 python -m pip install -r 01_AquaSmart/08_Sistem-Cerdas/requirements-mandiri.txt
@@ -33,13 +36,24 @@ Jalankan dari akar repository atau folder `notebooks`; jangan memindahkan dua
 notebook tanpa folder pendukungnya. Tidak diperlukan kunci API atau server PHP.
 
 Dataset mentah harus berada di `data/pond_iot_2023_raw.csv` dalam folder ini.
-Paket ZIP lokal menyertakan salinan CSV yang digunakan beserta struktur folder.
-File mentah tetap tidak dimasukkan ke Git. Untuk pengguna clone Git yang belum
-memiliki file, gunakan paket data dari tim dan verifikasi SHA-256 berikut:
+Paket ZIP lokal menyertakan salinan CSV yang digunakan beserta struktur folder;
+CSV mentah maupun ZIP tidak dimasukkan ke Git. Untuk pengguna clone Git yang
+belum memiliki file, gunakan paket data dari tim dan verifikasi SHA-256 berikut:
 
 `ac69aff715a31f3f35439247b02d9e7bf95e409652bf88e5f15329c6effb9dba`
 
 Jangan mengganti diam-diam dengan dataset terfilter karena skor akan berubah.
+
+**Tanpa CSV mentah.** `02_baseline.ipynb` tetap dapat dijalankan dari clone Git:
+`load_bins()` di `mandiri.py` memakai `tugas_mandiri/data_bersih_5menit.csv` yang
+di-commit dan audit dari `eda.json`. Diperiksa 2 Oktober 2026: `evaluasi_mandiri.json`,
+`cross_validation.csv`, dan `perbandingan_baseline.csv` hasil eksekusi ulang dengan
+cara ini identik byte per byte dengan yang di-commit. `01_eda.ipynb` tetap
+membutuhkan CSV mentah karena Soal 2 mendeskripsikan data mentah itu sendiri.
+
+**Versi ambang.** Label dihitung dengan `threshold-rules-v2` (pH 6,5–8,5, suhu
+25–30 °C). `mandiri.py` menolak berjalan bila `ThresholdRules.php` berganti versi,
+supaya target dan skor tidak berubah diam-diam.
 
 ## Asal data dan label
 
@@ -71,7 +85,8 @@ Latih: 8.525 sampel. Uji: 2.135 sampel, setelah purge satu jam sebelum holdout.
 | Random Forest | 0,8951 | 0,9155 | 0,9660 |
 
 Random Forest belum mengungguli baseline aturan. Macro F1 validasi temporal
-lima fold adalah 0,7981 dengan simpangan 0,2053. Latih dan uji diasumsikan
+lima fold adalah 0,7981 dengan simpangan 0,2053. Empat fold yang memiliki dua
+kelas rata-rata 0,8851 dengan simpangan 0,0756 (`cross_validation.csv`). Latih dan uji diasumsikan
 berasal dari satu sumber sensor; ini bukan evaluasi generalisasi lintas kolam.
 Fold validasi kelima hanya memiliki kelas alarm; macro F1 memakai dua label
 tetap dan zero_division 0. Rata-rata CV bukan bukti kemampuan dua kelas pada

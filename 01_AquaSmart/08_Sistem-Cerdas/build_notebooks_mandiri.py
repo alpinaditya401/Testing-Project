@@ -22,8 +22,10 @@ import sys, json
 import numpy as np
 import pandas as pd
 from IPython.display import display
-ROOT = next(p for p in [Path.cwd(), *Path.cwd().parents]
-            if (p / '01_AquaSmart/08_Sistem-Cerdas/mandiri.py').exists())
+ROOT = next((p for p in [Path.cwd(), *Path.cwd().parents]
+             if (p / '01_AquaSmart/08_Sistem-Cerdas/mandiri.py').exists()), None)
+if ROOT is None:
+    raise RuntimeError('Jalankan notebook dari akar repository atau folder notebooks.')
 sys.path.insert(0, str(ROOT / '01_AquaSmart/08_Sistem-Cerdas'))
 from mandiri import *
 pd.set_option('display.max_columns', 20)
@@ -139,8 +141,7 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.base import clone
 import joblib
-raw = read_raw()
-bins, audit = clean_data(raw)
+bins, audit = load_bins()
 X, y = make_features(bins)
 X_train, X_test, y_train, y_test = chronological_split(X, y)
 split = pd.DataFrame([
