@@ -52,7 +52,7 @@ Aplikasi web berjalan dan teruji secara lokal. Yang perlu dibaca apa adanya:
 
 | Jalur | Isi |
 | --- | --- |
-| `01_AquaSmart/01_Aplikasi-Web/server/` | REST API PHP 8 tanpa dependency, SQLite, 104 test |
+| `01_AquaSmart/01_Aplikasi-Web/server/` | REST API PHP 8 tanpa dependency, SQLite, 110 test |
 | `01_AquaSmart/01_Aplikasi-Web/web/` | SPA/PWA JavaScript native, tanpa build step |
 | `01_AquaSmart/01_Aplikasi-Web/deploy/` | Dockerfile Apache dan mod_php untuk backend |
 | `01_AquaSmart/01_Aplikasi-Web/firmware/` | Sketsa ESP32 |
@@ -86,7 +86,8 @@ endpoint yang memakai cookie sesi tidak boleh dipanggil lintas origin.
 
 `.github/workflows/ci.yml` menjalankan lint Biome, pemeriksaan tipe, test, dan
 build untuk `frontend/` pada setiap push dan pull request ke branch `main` dan
-`publish`. Job SonarQube selalu berjalan, tetapi langkah pemindaiannya hanya aktif
+`publish`. Sejak 2 Oktober 2026 job kedua, "Backend PHP dan SPA", menjalankan
+`run_verified_suite.py` (110 test, lint PHP) dan 27 suite browser SPA. Job SonarQube selalu berjalan, tetapi langkah pemindaiannya hanya aktif
 kalau secret `SONAR_TOKEN` sudah dipasang; tanpa itu langkahnya dilewati dengan
 pesan, bukan gagal.
 
@@ -123,6 +124,10 @@ python server/tests/run_verified_suite.py
 Lulus berarti keluaran JSON-nya memuat `"passed": true` dengan `failures`,
 `errors`, dan `skipped` bernilai nol, serta `tests_run` sama dengan
 `planned_tests`. Runner ini juga menjalankan `php -l` pada seluruh berkas PHP.
+
+Suite browser SPA dijalankan dengan `python web/tests/verify_frontend_fixes.py`.
+Browser dicari otomatis (Edge di Windows, Chromium/Chrome di Linux dan macOS) atau
+ditentukan lewat `AQUASMART_BROWSER`.
 
 Frontend Next.js diperiksa dari `frontend/`. Build membutuhkan alamat backend di
 `AQUASMART_API_URL`:

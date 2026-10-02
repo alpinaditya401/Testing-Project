@@ -1,5 +1,26 @@
 # AquaSmart AIoT — laporan review dan penyelesaian lokal
 
+## Gerbang 2 Oktober 2026: review ulang dan perbaikan
+
+Dijalankan di Linux (PHP 8.3, Python 3.11, Node 22, Chromium): **110 tes backend, 37 lint PHP, 27 suite browser (402 assertion), frontend Next.js 104 test, Biome, tsc, dan build lulus**. Suite browser sebelumnya hanya bisa jalan dengan Edge di Windows; kini juga di Linux dan di CI.
+
+Bug yang ditemukan review dan diperbaiki, masing-masing dengan test yang gagal pada kode lama:
+
+| Temuan | Dampak sebelum perbaikan | Test |
+|---|---|---|
+| Transaksi SQLite deferred dan cursor terbuka | 36–72 dari 120–220 reading serentak gagal 500 di server multi-worker (Apache) | `test_hardening_followup` |
+| Reading/telemetry bertanggal masa depan diterima | Satu reading 2099 mematikan alert kolam dan membekukan dashboard | `test_hardening_followup` |
+| Rate limit perangkat sebelum autentikasi, satu bucket | Junk tanpa key mengunci semua perangkat di balik proxy | `test_hardening_followup`, `test_review_hardening` |
+| Klaim produk sukses ikut dihitung limit | Lokasi yang memasang lebih dari 5 unit terkunci 15 menit | `test_product_api` |
+| Serial produk sama dengan id perangkat lama | Unit tidak bisa diklaim (500) | `test_product_api` |
+| Status aerator tidak kembali saat perintah gagal/timeout | Dashboard tetap menampilkan aerator menyala | `test_hardening_followup` |
+| SPA tidak memuat ulang threshold setelah login di halaman | Simpan Threshold menimpa nilai server dengan default | `review_threshold_login` |
+| Frontend: open redirect `?redirect=/%09/evil` | Pengguna diarahkan ke situs lain setelah login | `lib/form.test.ts` |
+
+Juga diperbaiki tanpa test otomatis baru: password masuk URL bila form login dikirim sebelum hidrasi, kontrol gagal diam lewat HTTP LAN (`crypto.randomUUID`), halaman error Next.js berbahasa Inggris saat backend mati, sesi null yang mengunci mutasi sampai reload, input desimal berkoma tersimpan 10x lipat, `middleware.ts` diganti `proxy.ts` (Next.js 16), serta `02_baseline.ipynb` kini dapat dijalankan dari clone tanpa CSV mentah dengan hasil identik byte per byte.
+
+Belum diubah dan perlu keputusan pemilik: perintah OFF ditolak 409 selama perintah ON masih berjalan (mengubahnya memerlukan status perintah baru di kontrak API, frontend, dan firmware). `AQUASMART_PROXY_SECRET` baru berlaku setelah diisi di Railway dan Vercel. Kontrol perangkat tetap SIMULASI.
+
 ## Lanjutan produk A–D: integrasi software sebagian (A–C), Web Push belum
 
 16 September 2026: mockup seluruh state untuk penjual, klaim, onboarding, dashboard dan Web Push tersedia melalui `mockups/index.html`; review internal di `mockups/REVIEW.md`. `docs/KALKULASI.md` mencatat enam kelompok formula/threshold dan asumsi baru. `docs/KONTRAK_PRODUK.md` menyatakan kontrak endpoint yang **belum aktif**; dokumen itu belum diperbarui setelah lima endpointnya diaktifkan di `server/product_routes.php` dengan cakupan kontrak sebagian (tanpa QR, reissue, pump config dan jadwal), sedangkan empat endpoint `/api/push/*` belum ada.
