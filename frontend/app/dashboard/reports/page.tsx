@@ -26,7 +26,7 @@ export default async function ReportsPage({
 }: {
   searchParams: Promise<{ device_id?: string; date?: string; period?: string }>
 }) {
-  const session = await requireSession("/dashboard/reports")
+  const session = await requireSession()
   const isAdmin = session.user.role === "admin"
   const [{ devices }, params] = await Promise.all([
     serverRequest("/api/devices", DevicesResponse),

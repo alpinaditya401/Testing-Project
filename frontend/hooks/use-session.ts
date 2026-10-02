@@ -1,6 +1,6 @@
 import { type QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { z } from "zod"
-import { apiRequest, authedRequest, fetchSession, sessionKey } from "@/lib/api/client"
+import { ApiError, apiRequest, authedRequest, fetchSession, sessionKey } from "@/lib/api/client"
 import * as S from "@/lib/api/schemas"
 
 // Cached data from a previous account must not leak into the next session. The
@@ -44,7 +44,16 @@ export function useRegister() {
 export function useLogout() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: () => authedRequest(queryClient, "/api/auth/logout", S.LoggedOut, "POST", {}),
+    mutationFn: async () => {
+      try {
+        return await authedRequest(queryClient, "/api/auth/logout", S.LoggedOut, "POST", {})
+      } catch (error) {
+        // Sesi yang sudah habis di server berarti tujuan keluar sudah tercapai. Tanpa
+        // ini tombol Keluar hanya menampilkan "Silakan login" dan pengguna tertahan.
+        if (error instanceof ApiError && error.status === 401) return { logged_out: true as const }
+        throw error
+      }
+    },
     onSuccess: () => switchAccount(queryClient, null),
   })
 }

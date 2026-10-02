@@ -105,13 +105,19 @@ export async function fetchSession(signal?: AbortSignal) {
 }
 
 async function csrfToken(queryClient: QueryClient, fresh = false): Promise<string> {
-  const options = {
-    queryKey: sessionKey,
-    queryFn: ({ signal }: { signal: AbortSignal }) => fetchSession(signal),
-  }
-  const session = fresh
-    ? await queryClient.fetchQuery({ ...options, staleTime: 0 })
-    : await queryClient.ensureQueryData(options)
+  // null di cache hanya berarti "terakhir kali dicek, belum login". Sesudah satu 401,
+  // pengguna bisa saja login lagi di tab lain dengan cookie yang sama. Kalau null
+  // dipercaya begitu saja (seperti ensureQueryData), tab ini menolak setiap mutasi
+  // tanpa pernah bertanya ke server sampai halaman dimuat ulang.
+  const cached = queryClient.getQueryData<Session | null>(sessionKey)
+  const session =
+    fresh || !cached
+      ? await queryClient.fetchQuery({
+          queryKey: sessionKey,
+          queryFn: ({ signal }) => fetchSession(signal),
+          staleTime: 0,
+        })
+      : cached
   if (!session) throw new ApiError(401, "unauthenticated", "Silakan login terlebih dahulu.")
   return session.csrf_token
 }

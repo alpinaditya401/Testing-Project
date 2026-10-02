@@ -30,7 +30,7 @@ export default async function ControlPage({
 }: {
   searchParams: Promise<{ device?: string }>
 }) {
-  const session = await requireSession("/dashboard/control")
+  const session = await requireSession()
   const isAdmin = session.user.role === "admin"
   const { devices } = await serverRequest("/api/devices", DevicesResponse)
   const device = pickDevice(devices, (await searchParams).device)

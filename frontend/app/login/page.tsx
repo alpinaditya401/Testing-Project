@@ -2,7 +2,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { LoginForm } from "@/components/auth/login-form"
 import { brandLink, heading, panel, sentenceLink } from "@/components/ui/styles"
-import { getSession } from "@/lib/api/server"
+import { getOptionalSession } from "@/lib/api/server"
 import { safeRedirect } from "@/lib/form"
 
 export const metadata = { title: "Masuk | AquaSmart" }
@@ -13,7 +13,7 @@ export default async function LoginPage({
   searchParams: Promise<{ redirect?: string }>
 }) {
   const redirectTo = safeRedirect((await searchParams).redirect)
-  if (await getSession()) redirect(redirectTo)
+  if (await getOptionalSession()) redirect(redirectTo)
 
   return (
     <main

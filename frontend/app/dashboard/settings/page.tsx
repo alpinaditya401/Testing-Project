@@ -23,7 +23,7 @@ const AUDIT_LIMIT = 20
 const ROLE_LABEL = { admin: "Admin", viewer: "Viewer, akses baca" } as const
 
 export default async function SettingsPage() {
-  const session = await requireSession("/dashboard/settings")
+  const session = await requireSession()
   const isAdmin = session.user.role === "admin"
   const [{ thresholds }, ruleVersions, { devices }, workspace, { audit_logs }] = await Promise.all([
     serverRequest("/api/settings/thresholds", ThresholdsResponse),

@@ -2,12 +2,12 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { RegisterForm } from "@/components/auth/register-form"
 import { brandLink, heading, panel, sentenceLink } from "@/components/ui/styles"
-import { getSession } from "@/lib/api/server"
+import { getOptionalSession } from "@/lib/api/server"
 
 export const metadata = { title: "Daftar Akun | AquaSmart" }
 
 export default async function RegisterPage() {
-  if (await getSession()) redirect("/dashboard")
+  if (await getOptionalSession()) redirect("/dashboard")
 
   return (
     <main

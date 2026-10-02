@@ -1,7 +1,7 @@
 import { Bell, CalendarClock, FileBarChart, Gauge } from "lucide-react"
 import Link from "next/link"
 import { button, heading, inlineLink, panel } from "@/components/ui/styles"
-import { getSession } from "@/lib/api/server"
+import { getOptionalSession } from "@/lib/api/server"
 
 // The public page a farmer or a reviewer lands on. It explains what the system
 // records and, just as plainly, what is still simulated: the honesty section is
@@ -45,7 +45,7 @@ const FEATURES = [
 ]
 
 export default async function Home() {
-  const session = await getSession()
+  const session = await getOptionalSession()
 
   return (
     <div className="min-h-screen">

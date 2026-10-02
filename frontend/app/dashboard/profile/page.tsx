@@ -70,7 +70,7 @@ function Row({ label, value }: { label: string; value: string }) {
 // decide whether this account can still join another workspace, and they name the
 // workspace it already belongs to.
 export default async function ProfilePage() {
-  const { user } = await requireSession("/dashboard/profile")
+  const { user } = await requireSession()
   const [{ devices }, workspace] = await Promise.all([
     serverRequest("/api/devices", DevicesResponse),
     serverRequest("/api/workspace", Workspace),

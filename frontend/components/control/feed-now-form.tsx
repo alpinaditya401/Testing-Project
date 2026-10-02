@@ -7,6 +7,7 @@ import { Field } from "@/components/ui/field"
 import { button, control } from "@/components/ui/styles"
 import { useControlActuator } from "@/hooks/use-control"
 import { ControlInput } from "@/lib/api/schemas"
+import { requestId } from "@/lib/request-id"
 
 // API.md: feeder duration is 1 to 30 seconds and the server defaults to 8.
 const DEFAULT_SECONDS = 8
@@ -25,7 +26,7 @@ export function FeedNowForm({ deviceId }: { deviceId: string }) {
       actuator: "feeder",
       value: true,
       duration: raw === "" ? Number.NaN : Number(raw),
-      request_id: crypto.randomUUID(),
+      request_id: requestId(),
     })
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message)

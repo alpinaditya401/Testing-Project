@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { button } from "@/components/ui/styles"
 import { useControlActuator } from "@/hooks/use-control"
+import { requestId } from "@/lib/request-id"
 
 // An action button rather than a switch: a switch leaves the farmer guessing whether
 // it shows the current state or the one it will change to. The current state is
@@ -23,7 +24,7 @@ export function ActuatorToggle({
 
   function send() {
     toggle.mutate(
-      { actuator, value: !on, request_id: crypto.randomUUID() },
+      { actuator, value: !on, request_id: requestId() },
       { onSuccess: () => router.refresh() },
     )
   }

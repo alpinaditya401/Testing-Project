@@ -16,7 +16,7 @@ export default async function SchedulePage({
 }: {
   searchParams: Promise<{ device?: string }>
 }) {
-  const session = await requireSession("/dashboard/schedule")
+  const session = await requireSession()
   const isAdmin = session.user.role === "admin"
   const { devices } = await serverRequest("/api/devices", DevicesResponse)
   const device = pickDevice(devices, (await searchParams).device)

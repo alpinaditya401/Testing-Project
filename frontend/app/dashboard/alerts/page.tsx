@@ -17,7 +17,7 @@ export default async function AlertsPage({
 }: {
   searchParams: Promise<{ status?: string }>
 }) {
-  const session = await requireSession("/dashboard/alerts")
+  const session = await requireSession()
   const isAdmin = session.user.role === "admin"
   const [{ alerts, unacknowledged_count }, { devices }] = await Promise.all([
     serverRequest(`/api/alerts?limit=${ALERT_LIMIT}`, AlertsResponse),

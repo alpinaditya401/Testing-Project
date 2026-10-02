@@ -7,19 +7,15 @@ import { Field } from "@/components/ui/field"
 import { button, control } from "@/components/ui/styles"
 import { useCreateObservation } from "@/hooks/use-observations"
 import { ObservationInput } from "@/lib/api/schemas"
-import { fieldErrors } from "@/lib/form"
+import { fieldErrors, parseDecimal } from "@/lib/form"
 import { formatDate } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 const DATE_HINT = "Tanggal UTC, tidak boleh melewati hari ini."
-const MEASURE_HINT = "Boleh dikosongkan kalau tidak diukur."
+// Kolom kosong berarti sampel tidak diukur dan API menyimpan null. Isian lain harus
+// angka; parseDecimal menerima koma desimal dan menolak teks, bukan mengosongkannya.
+const MEASURE_HINT = "Boleh dikosongkan kalau tidak diukur. Koma atau titik untuk desimal."
 const NOTES_HINT = "Isi minimal salah satu: berat, panjang, atau catatan."
-
-// An empty measurement field means the sample was not measured; the API stores null.
-function optionalNumber(value: FormDataEntryValue | null): number | null {
-  if (typeof value !== "string" || value.trim() === "") return null
-  return Number(value)
-}
 
 // today comes from the server render so the default and the max attribute match the
 // UTC day the page was built with, instead of drifting with the browser clock.
@@ -36,8 +32,8 @@ export function ObservationForm({ deviceId, today }: { deviceId: string; today: 
     const parsed = ObservationInput.safeParse({
       device_id: deviceId,
       observed_at: data.get("observed_at"),
-      weight_g: optionalNumber(data.get("weight_g")),
-      length_cm: optionalNumber(data.get("length_cm")),
+      weight_g: parseDecimal(data.get("weight_g")),
+      length_cm: parseDecimal(data.get("length_cm")),
       notes: String(data.get("notes") ?? ""),
     })
     if (!parsed.success) {
@@ -82,10 +78,9 @@ export function ObservationForm({ deviceId, today }: { deviceId: string; today: 
         >
           <input
             name="weight_g"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
-            min={0}
+            autoComplete="off"
             className={control()}
             {...fieldProps("observation-weight", { hint: MEASURE_HINT, error: errors.weight_g })}
           />
@@ -99,10 +94,9 @@ export function ObservationForm({ deviceId, today }: { deviceId: string; today: 
         >
           <input
             name="length_cm"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
-            min={0}
+            autoComplete="off"
             className={control()}
             {...fieldProps("observation-length", { hint: MEASURE_HINT, error: errors.length_cm })}
           />

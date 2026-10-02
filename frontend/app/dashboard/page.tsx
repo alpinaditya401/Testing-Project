@@ -20,7 +20,7 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ device?: string }>
 }) {
-  const session = await requireSession("/dashboard")
+  const session = await requireSession()
   const [{ devices }, { thresholds }] = await Promise.all([
     serverRequest("/api/devices", DevicesResponse),
     serverRequest("/api/settings/thresholds", ThresholdsResponse),

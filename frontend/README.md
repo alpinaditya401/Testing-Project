@@ -29,10 +29,20 @@ sengaja gagal, supaya deploy tidak diam-diam mengarah ke host yang salah.
 
 ## Batasan yang diketahui
 
-- **Rate limit login dan register terbagi.** `RateLimiter.php` membuat bucket per
-  `REMOTE_ADDR`. Di belakang BFF, semua permintaan browser tiba dari IP server
-  Vercel, sehingga batas login (30 per menit) dan register (10 per menit) berlaku
-  untuk semua pengguna bersama, bukan per pengguna. Perbaikannya ada di backend dan
-  belum dikerjakan karena backend dibekukan.
+- **Rate limit per IP klien perlu `AQUASMART_PROXY_SECRET`.** `RateLimiter.php`
+  membuat bucket per IP. Di belakang BFF, `REMOTE_ADDR` di PHP selalu IP server
+  Next.js, jadi tanpa pengaturan ini batas login (30 per menit) dan register (10 per
+  menit) berlaku untuk semua pengguna bersama. Untuk memakai IP klien, set nilai
+  acak yang panjang dan sama sebagai `AQUASMART_PROXY_SECRET` di environment PHP dan
+  di environment Next.js, misalnya `openssl rand -hex 32`. BFF lalu mengirim header
+  `X-AquaSmart-Proxy-Secret` dan `X-AquaSmart-Client-IP`, dengan IP diambil dari
+  `x-real-ip`, atau entri pertama `x-forwarded-for`. PHP hanya memakai IP itu bila
+  rahasianya cocok; selain itu kembali ke `REMOTE_ADDR`.
+
+  Peringatan: `x-real-ip` dan `x-forwarded-for` hanya bisa dipercaya bila Next.js
+  berjalan di belakang proxy yang menimpa header itu, misalnya Vercel. Next.js sendiri
+  hanya mengisi `x-forwarded-for` bila header itu belum ada. Jadi saat `next start`
+  diakses langsung, klien bisa mengirim IP palsu dan mendapat bucket baru di setiap
+  permintaan. Di deployment seperti itu, jangan set `AQUASMART_PROXY_SECRET`.
 - **Kontrol aerator dan feeder adalah SIMULASI.** Perintah tercatat di server, tetapi
   aktuasi fisik lewat ESP32 belum diverifikasi.

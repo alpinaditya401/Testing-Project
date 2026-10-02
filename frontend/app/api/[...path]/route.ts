@@ -15,8 +15,28 @@ if (!BACKEND) {
   throw new Error("AQUASMART_API_URL belum di-set")
 }
 
+// Rahasia bersama dengan PHP (env AQUASMART_PROXY_SECRET di kedua sisi). Di belakang
+// BFF, REMOTE_ADDR di PHP selalu IP server Next.js, sehingga batas login dan register
+// berlaku untuk semua pengguna sekaligus. Bila rahasia ini di-set, BFF mengirim IP
+// klien beserta rahasianya, dan PHP memakai IP itu sebagai identitas rate limit hanya
+// jika rahasianya cocok. Tanpa rahasia, kedua header tidak dikirim dan PHP kembali
+// memakai REMOTE_ADDR.
+const PROXY_SECRET = process.env.AQUASMART_PROXY_SECRET
+
+// IP klien seperti yang dicatat proxy di depan Next.js. Header ini hanya layak
+// dipercaya bila proxy tersebut menimpanya (misalnya Vercel); tanpa proxy seperti itu
+// klien bisa mengisinya sendiri. Lihat README.
+function clientAddress(request: Request): string | undefined {
+  const realIp = request.headers.get("x-real-ip")?.trim()
+  if (realIp) return realIp
+  const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+  return forwardedFor || undefined
+}
+
 // Header yang diteruskan ke PHP. Daftar tertutup: Host, Origin dan Referer
 // sengaja TIDAK diteruskan supaya tidak bentrok dengan pemeriksaan sisi PHP.
+// Header x-aquasmart-* dari browser juga tidak pernah lolos; hanya BFF yang
+// menuliskannya, di bawah.
 const REQUEST_HEADERS = [
   "cookie",
   "content-type",
@@ -44,6 +64,11 @@ async function proxy(request: Request, path: string[]): Promise<Response> {
   for (const name of REQUEST_HEADERS) {
     const value = request.headers.get(name)
     if (value) headers.set(name, value)
+  }
+  if (PROXY_SECRET) {
+    headers.set("X-AquaSmart-Proxy-Secret", PROXY_SECRET)
+    const clientIp = clientAddress(request)
+    if (clientIp) headers.set("X-AquaSmart-Client-IP", clientIp)
   }
 
   const method = request.method.toUpperCase()

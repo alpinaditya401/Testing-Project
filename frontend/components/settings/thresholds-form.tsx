@@ -7,13 +7,15 @@ import { Field } from "@/components/ui/field"
 import { button, control } from "@/components/ui/styles"
 import { useUpdateThresholds } from "@/hooks/use-thresholds"
 import { type Thresholds, ThresholdsInput } from "@/lib/api/schemas"
-import { fieldErrors } from "@/lib/form"
+import { fieldErrors, parseDecimal } from "@/lib/form"
 
 const PH_HINT = "0 sampai 14."
 
 // An empty box must not be read as zero, so it becomes NaN and fails validation.
+// Inputnya type=text: type=number di Chromium membuang koma desimal diam-diam, jadi
+// "27,5" tersimpan sebagai 275. parseDecimal menerima koma maupun titik.
 function numberOf(value: FormDataEntryValue | null): number {
-  return value === null || value === "" ? Number.NaN : Number(value)
+  return parseDecimal(value) ?? Number.NaN
 }
 
 // Every field starts from the value the server sent. ThresholdRules.php owns the
@@ -54,11 +56,8 @@ export function ThresholdsForm({ thresholds }: { thresholds: Thresholds }) {
         <Field id="ph-min" label="pH minimum" hint={PH_HINT} error={errors.ph_min}>
           <input
             name="ph_min"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
-            min={0}
-            max={14}
             defaultValue={thresholds.ph_min}
             className={control()}
             {...fieldProps("ph-min", { hint: PH_HINT, error: errors.ph_min })}
@@ -67,11 +66,8 @@ export function ThresholdsForm({ thresholds }: { thresholds: Thresholds }) {
         <Field id="ph-max" label="pH maksimum" hint={PH_HINT} error={errors.ph_max}>
           <input
             name="ph_max"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
-            min={0}
-            max={14}
             defaultValue={thresholds.ph_max}
             className={control()}
             {...fieldProps("ph-max", { hint: PH_HINT, error: errors.ph_max })}
@@ -80,9 +76,8 @@ export function ThresholdsForm({ thresholds }: { thresholds: Thresholds }) {
         <Field id="suhu-min" label="Suhu minimum (°C)" error={errors.temperature_min}>
           <input
             name="temperature_min"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
             defaultValue={thresholds.temperature_min}
             className={control()}
             {...fieldProps("suhu-min", { error: errors.temperature_min })}
@@ -91,9 +86,8 @@ export function ThresholdsForm({ thresholds }: { thresholds: Thresholds }) {
         <Field id="suhu-max" label="Suhu maksimum (°C)" error={errors.temperature_max}>
           <input
             name="temperature_max"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="0.1"
             defaultValue={thresholds.temperature_max}
             className={control()}
             {...fieldProps("suhu-max", { error: errors.temperature_max })}
@@ -102,10 +96,8 @@ export function ThresholdsForm({ thresholds }: { thresholds: Thresholds }) {
         <Field id="kekeruhan-max" label="Kekeruhan maksimum (NTU)" error={errors.turbidity_max}>
           <input
             name="turbidity_max"
-            type="number"
+            type="text"
             inputMode="decimal"
-            step="1"
-            min={0}
             defaultValue={thresholds.turbidity_max}
             className={control()}
             {...fieldProps("kekeruhan-max", { error: errors.turbidity_max })}

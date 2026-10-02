@@ -10,7 +10,7 @@ import { requireSession, serverRequest } from "@/lib/api/server"
 const ROLE_LABEL = { admin: "Admin", viewer: "Viewer, akses baca" } as const
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await requireSession("/dashboard")
+  const session = await requireSession()
   // limit=1 is enough: the count of unhandled alerts comes back regardless.
   const { unacknowledged_count } = await serverRequest("/api/alerts?limit=1", AlertsResponse)
 

@@ -6,6 +6,7 @@ import { useState } from "react"
 import { fieldProps } from "@/components/ui/a11y"
 import { Field } from "@/components/ui/field"
 import { button, control } from "@/components/ui/styles"
+import { useHydrated } from "@/hooks/use-hydrated"
 import { useLogin } from "@/hooks/use-session"
 import { LoginInput } from "@/lib/api/schemas"
 import { fieldErrors } from "@/lib/form"
@@ -13,6 +14,7 @@ import { fieldErrors } from "@/lib/form"
 export function LoginForm({ redirectTo }: { redirectTo: string }) {
   const router = useRouter()
   const login = useLogin()
+  const hydrated = useHydrated()
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showPassword, setShowPassword] = useState(false)
 
@@ -36,8 +38,11 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
     })
   }
 
+  // Formulir tanpa method dikirim browser sebagai GET bila ditekan sebelum hidrasi,
+  // sehingga password masuk ke URL, riwayat browser, dan log server. method="post"
+  // menutup jalur itu, dan tombol baru aktif setelah onSubmit terpasang.
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-5">
+    <form method="post" onSubmit={onSubmit} noValidate className="space-y-5">
       <Field id="username" label="Email, nomor WA, atau username" error={errors.username}>
         <input
           name="username"
@@ -77,7 +82,11 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
         </p>
       ) : null}
 
-      <button type="submit" className={button({ className: "w-full" })} disabled={login.isPending}>
+      <button
+        type="submit"
+        className={button({ className: "w-full" })}
+        disabled={!hydrated || login.isPending}
+      >
         <LogIn aria-hidden="true" className="size-5" />
         {login.isPending ? "Memeriksa akun..." : "Masuk Dashboard"}
       </button>

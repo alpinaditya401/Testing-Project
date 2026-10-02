@@ -248,10 +248,10 @@ const PH_RANGE = "pH harus di antara 0 dan 14."
 export const Thresholds = z.object({
   ph_min: z.number(PH_RANGE).min(0, PH_RANGE).max(14, PH_RANGE),
   ph_max: z.number(PH_RANGE).min(0, PH_RANGE).max(14, PH_RANGE),
-  temperature_min: z.number("Isi suhu minimum."),
-  temperature_max: z.number("Isi suhu maksimum."),
+  temperature_min: z.number("Isi suhu minimum dengan angka."),
+  temperature_max: z.number("Isi suhu maksimum dengan angka."),
   turbidity_max: z
-    .number("Isi kekeruhan maksimum.")
+    .number("Isi kekeruhan maksimum dengan angka.")
     .positive("Kekeruhan maksimum harus lebih dari 0."),
 })
 
@@ -544,8 +544,15 @@ export const ObservationInput = z
         (date) => date <= new Date().toISOString().slice(0, 10),
         "Tanggal pengamatan tidak boleh melewati hari ini (UTC).",
       ),
-    weight_g: z.number().positive("Berat harus lebih dari 0.").nullable(),
-    length_cm: z.number().positive("Panjang harus lebih dari 0.").nullable(),
+    // Pesan pada z.number() muncul saat isian bukan angka (parseDecimal memberi NaN).
+    weight_g: z
+      .number("Tulis berat sebagai angka, misalnya 12,5.")
+      .positive("Berat harus lebih dari 0.")
+      .nullable(),
+    length_cm: z
+      .number("Tulis panjang sebagai angka, misalnya 8,5.")
+      .positive("Panjang harus lebih dari 0.")
+      .nullable(),
     notes: z.string().max(2000, "Catatan maksimal 2000 karakter."),
   })
   .refine((o) => o.weight_g !== null || o.length_cm !== null || o.notes.trim() !== "", {

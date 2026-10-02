@@ -6,6 +6,7 @@ import { useState } from "react"
 import { fieldProps } from "@/components/ui/a11y"
 import { Field } from "@/components/ui/field"
 import { button, control } from "@/components/ui/styles"
+import { useHydrated } from "@/hooks/use-hydrated"
 import { useRegister } from "@/hooks/use-session"
 import { RegisterInput } from "@/lib/api/schemas"
 import { fieldErrors } from "@/lib/form"
@@ -24,6 +25,7 @@ const passwordInput = `${control()} min-w-0`
 export function RegisterForm() {
   const router = useRouter()
   const register = useRegister()
+  const hydrated = useHydrated()
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showPassword, setShowPassword] = useState(false)
 
@@ -57,8 +59,10 @@ export function RegisterForm() {
     })
   }
 
+  // Sama dengan LoginForm: tanpa method="post" dan tombol yang menunggu hidrasi,
+  // password dan konfirmasinya bisa terkirim sebagai query string.
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-5">
+    <form method="post" onSubmit={onSubmit} noValidate className="space-y-5">
       <Field id="name" label="Nama lengkap" error={errors.name}>
         <input
           name="name"
@@ -141,7 +145,7 @@ export function RegisterForm() {
       <button
         type="submit"
         className={button({ className: "w-full" })}
-        disabled={register.isPending}
+        disabled={!hydrated || register.isPending}
       >
         <UserPlus aria-hidden="true" className="size-5" />
         {register.isPending ? "Membuat akun..." : "Buat akun dan masuk"}
