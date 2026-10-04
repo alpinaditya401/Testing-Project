@@ -367,6 +367,20 @@ if ($method === 'GET' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/readings$#'
     Http::json(['readings' => $readings]);
 }
 
+if ($method === 'GET' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/recommendation$#', $path, $matches)) {
+    $user = Auth::requireUser($pdo);
+    require_once __DIR__ . '/src/AiBridge.php';
+    Http::json(AiBridge::recommendation($pdo, Auth::workspaceId($user), $matches[1]));
+}
+
+if ($method === 'POST' && preg_match('#^/api/recommendations/([^/]+)/feedback$#', $path, $matches)) {
+    $user = Auth::requireUser($pdo);
+    Auth::requireCsrf();
+    require_once __DIR__ . '/src/AiBridge.php';
+    if (!AiBridge::isRecommendationId($matches[1])) Http::error('not_found', 'Rekomendasi tidak ditemukan.', 404);
+    Http::json(AiBridge::feedback($pdo, Auth::workspaceId($user), (int)$user['id'], $matches[1], Http::jsonBody()));
+}
+
 if ($method === 'GET' && preg_match('#^/api/devices/([A-Za-z0-9_-]+)/schedules$#', $path, $matches)) {
     $user = Auth::requireUser($pdo);
     $schedules = ScheduleRepository::allForDevice($pdo, Auth::workspaceId($user), $matches[1]);

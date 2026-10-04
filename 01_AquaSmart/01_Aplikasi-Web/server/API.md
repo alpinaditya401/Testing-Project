@@ -50,6 +50,8 @@ Rate auth: login 30, register 10 request per IP/route selama 60 detik dari reque
 | GET /api/alerts | Login | limit default20 dibatasi1–100; alerts dan unacknowledged_count; source menyatakan SIMULASI atau UNVERIFIED |
 | PATCH /api/alerts/{id}/acknowledge | Admin+CSRF | objek kosong; alert. Idempotent |
 | GET /api/audit-logs | Login | limit default20 dibatasi1–100; action/metadata/device_id/created_at |
+| GET /api/devices/{id}/recommendation | Login | Rekomendasi Layanan AI Flask (`01_AquaSmart/Backend-Flask`) dari 100 pembacaan terakhir dan threshold workspace: recommendation (condition normal/waspada/di_luar_ambang, source aturan/model, confidence, reasons, actions, factors, model.version, actuation=false) dan input (readings, simulation_readings). 409 bila kurang dari 3 pembacaan; 503 `ai_unavailable` bila `AQUASMART_AI_URL`/`AQUASMART_AI_KEY` belum diisi; 502 bila layanan AI tidak terjangkau atau error |
+| POST /api/recommendations/{id}/feedback | Login+CSRF | helpful boolean, note opsional ≤500; hanya untuk rekomendasi yang diberikan ke workspace ini (404 selain itu); diteruskan ke layanan AI dan dicatat di audit |
 | GET /api/settings/thresholds | Login | thresholds workspace |
 | PATCH /api/settings/thresholds | Admin+CSRF | ph_min/ph_max (0–14,min<max), temperature_min/max (min<max), turbidity_max>0; angka finite |
 | PATCH /api/profile | Login+CSRF | name1–100 dan phone1–30; profil sendiri |

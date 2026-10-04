@@ -26,6 +26,7 @@ def main():
     modules.append('test_product_policy')
     modules.append('test_product_api')
     modules.append('test_hardening_followup')
+    modules.append('test_ai_bridge')
     checks = []
     for path in (app / 'server').rglob('*.php'):
         result = subprocess.run(['php', '-l', str(path)], capture_output=True, text=True)

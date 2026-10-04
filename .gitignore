@@ -26,6 +26,10 @@
 /01_AquaSmart/*
 !/01_AquaSmart/01_Aplikasi-Web/
 !/01_AquaSmart/08_Sistem-Cerdas/
+# Layanan AI Flask dan aplikasi mobile Flutter (dibuat 4 Oktober 2026).
+!/01_AquaSmart/Backend-Flask/
+!/01_AquaSmart/Mobile-Flutter/
+/01_AquaSmart/Backend-Flask/instance/
 /01_AquaSmart/08_Sistem-Cerdas/*
 !/01_AquaSmart/08_Sistem-Cerdas/mandiri.py
 !/01_AquaSmart/08_Sistem-Cerdas/build_notebooks_mandiri.py
@@ -68,6 +72,11 @@ next-env.d.ts
 
 # ---------- Cache ----------
 __pycache__/
+.pytest_cache/
+.venv/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
 *.py[cod]
 *.log
 .DS_Store

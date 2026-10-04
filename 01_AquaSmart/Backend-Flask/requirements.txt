@@ -1,0 +1,8 @@
+# Versi ML sama dengan 08_Sistem-Cerdas/requirements-mandiri.txt supaya model hasil
+# layanan ini identik dengan hasil notebook (diuji di tests/test_ml_parity.py).
+numpy==2.3.5
+pandas==3.0.1
+scikit-learn==1.9.1
+joblib==1.6.0
+Flask==3.1.3
+gunicorn==26.2.0
