@@ -47,17 +47,25 @@ Aplikasi web berjalan dan teruji secara lokal. Yang perlu dibaca apa adanya:
   khusus layout mobile belum dilakukan.
 - Kontrak menyebut MySQL/MariaDB, kode memakai SQLite. Perbedaan ini diajukan
   lewat Change Request, bukan ditutupi.
+- **SKPL menyebut mobile "PWA/Android WebView"**; aplikasi Flutter native diajukan lewat
+  [CR-002](01_AquaSmart/01_Aplikasi-Web/docs/CR-002_Aplikasi_Mobile_Flutter.md). Aplikasi
+  Flutter belum diuji di HP Android fisik.
+- **Model AI belum mengungguli aturan ambang** (macro F1 0,8951 lawan 0,9158). Layanan AI
+  mencatatnya, dan pembacaan di luar ambang selalu mengalahkan model.
 
 ## Isi repo
 
 | Jalur | Isi |
 | --- | --- |
-| `01_AquaSmart/01_Aplikasi-Web/server/` | REST API PHP 8 tanpa dependency, SQLite, 110 test |
+| `01_AquaSmart/01_Aplikasi-Web/server/` | REST API PHP 8 tanpa dependency, SQLite, 114 test |
 | `01_AquaSmart/01_Aplikasi-Web/web/` | SPA/PWA JavaScript native, tanpa build step |
 | `01_AquaSmart/01_Aplikasi-Web/deploy/` | Dockerfile Apache dan mod_php untuk backend |
 | `01_AquaSmart/01_Aplikasi-Web/firmware/` | Sketsa ESP32 |
 | `01_AquaSmart/01_Aplikasi-Web/docs/` | Catatan perhitungan dan rujukan SKPL |
 | `frontend/` | Frontend Next.js 16 App Router: 10 rute, BFF ke backend PHP, design system |
+| `01_AquaSmart/Backend-Flask/` | Layanan AI Python (Flask): rekomendasi, model registry, retraining, aktivasi dan rollback model; 15 test |
+| `01_AquaSmart/Mobile-Flutter/` | Aplikasi Android Flutter memakai REST API PHP: dashboard, riwayat, peringatan, kontrol, jadwal, rekomendasi; 17 test |
+| `01_AquaSmart/08_Sistem-Cerdas/`, `notebooks/` | Tugas Python untuk Sistem Cerdas: EDA, baseline, Random Forest |
 
 Struktur folder sengaja dipertahankan seperti di ruang kerja aslinya supaya
 perintah pada dokumen dan jalur di dalam test tetap berlaku tanpa penyesuaian.
@@ -86,8 +94,10 @@ endpoint yang memakai cookie sesi tidak boleh dipanggil lintas origin.
 
 `.github/workflows/ci.yml` menjalankan lint Biome, pemeriksaan tipe, test, dan
 build untuk `frontend/` pada setiap push dan pull request ke branch `main` dan
-`publish`. Sejak 2 Oktober 2026 job kedua, "Backend PHP dan SPA", menjalankan
-`run_verified_suite.py` (110 test, lint PHP) dan 27 suite browser SPA. Job SonarQube selalu berjalan, tetapi langkah pemindaiannya hanya aktif
+`publish`. Job lain menjalankan backend PHP (`run_verified_suite.py`, 114 test, lint
+PHP) dan 27 suite browser SPA, Layanan AI Flask (pytest, termasuk uji paritas model
+dengan notebook), serta Flutter (format, analyze, test, dan build APK debug yang
+diunggah sebagai artefak unduhan). Job SonarQube selalu berjalan, tetapi langkah pemindaiannya hanya aktif
 kalau secret `SONAR_TOKEN` sudah dipasang; tanpa itu langkahnya dilewati dengan
 pesan, bukan gagal.
 

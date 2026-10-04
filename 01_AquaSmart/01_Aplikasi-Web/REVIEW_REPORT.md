@@ -1,5 +1,17 @@
 # AquaSmart AIoT — laporan review dan penyelesaian lokal
 
+## 4 Oktober 2026: Layanan AI Flask dan aplikasi mobile Flutter
+
+- `01_AquaSmart/Backend-Flask`: komponen "Python AI Service" SKPL Gambar 11–12. FR-16
+  rekomendasi, FR-17 umpan balik, FR-18 retraining, FR-19 model registry, FR-20 aktivasi
+  dengan kriteria (TC-17), rollback (TC-18), NFR-12 faktor dan versi, NFR-13 safety envelope.
+  15 test pytest; uji paritas membuktikan model layanan identik dengan `evaluasi_mandiri.json`.
+- Backend PHP: `GET /api/devices/{id}/recommendation` dan `POST /api/recommendations/{id}/feedback`
+  meneruskan ke layanan AI. Gerbang backend kini **114 test, 38 lint PHP**.
+- `01_AquaSmart/Mobile-Flutter`: aplikasi Android native (Flutter 3.47) memakai REST API PHP.
+  17 test (unit, widget, parsing respons PHP asli) dan uji asap terhadap backend sungguhan.
+  Belum diuji di HP fisik. Penyimpangan dari "PWA/Android WebView" diajukan lewat CR-002.
+
 ## Gerbang 2 Oktober 2026: review ulang dan perbaikan
 
 Dijalankan di Linux (PHP 8.3, Python 3.11, Node 22, Chromium): **110 tes backend, 37 lint PHP, 27 suite browser (402 assertion), frontend Next.js 104 test, Biome, tsc, dan build lulus**. Suite browser sebelumnya hanya bisa jalan dengan Edge di Windows; kini juga di Linux dan di CI.
