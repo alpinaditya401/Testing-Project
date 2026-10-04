@@ -19,21 +19,26 @@ ini tidak menyimpan akun pengguna dan tidak pernah menggerakkan aktuator.
 
 ## Model
 
-Model dan fiturnya sama persis dengan `08_Sistem-Cerdas` (`02_baseline.ipynb`):
-Random Forest memprediksi apakah pH atau suhu keluar ambang `threshold-rules-v2`
-pada interval lima menit berikutnya, dari lag dan statistik 12 interval terakhir.
-`tests/test_ml_parity.py` membuktikan pelatihan lewat layanan menghasilkan metrik yang
-identik dengan `evaluasi_mandiri.json`.
+Keduanya memprediksi apakah pH atau suhu keluar ambang `threshold-rules-v2` pada interval
+lima menit berikutnya, dievaluasi pada baris dan pembagian latih/uji yang sama dengan notebook.
 
-Hasil itu juga berarti **Random Forest belum mengungguli aturan ambang terakhir**
-(macro F1 0,8951 lawan 0,9158). Kriteria aktivasi bawaan menerima model yang kalah
-paling banyak 0,03 dari aturan dan mencatat `beats_rule_baseline: false`; kebijakan
-ini dapat diperketat lewat environment. Rekomendasi tetap melewati safety envelope.
+| Algoritma | Asal | Holdout macro F1 | Recall alarm |
+| --- | --- | ---: | ---: |
+| Aturan persistensi (status interval sebelumnya) | pembanding | 0,9158 | 0,9798 |
+| `ph-gated-logistic-v2` (**bawaan**) | `08_Sistem-Cerdas/perbaikan_model` | 0,9081 | 0,9777 |
+| `rf-v1` | `02_baseline.ipynb` | 0,8951 | 0,9660 |
 
-Dataset latih memuat pH, TDS, dan suhu. Aplikasi AquaSmart tidak mengukur TDS (dan
-TDS bukan kekeruhan), jadi saat TDS tidak dikirim nilainya diisi median data latih dan
-respons menyebutkannya di `missing_features`. Model dengan `sensors: ["ph", "temp"]`
-dapat dilatih untuk menghilangkan ketergantungan ini.
+`tests/test_ml_parity.py` membuktikan kedua algoritma identik dengan sumbernya: `rf-v1` dengan
+`evaluasi_mandiri.json`, v2 dengan modul eksperimen terpilih.
+
+**Belum ada model yang terbukti mengungguli aturan persistensi.** v2 lebih baik dari v1, tetapi
+selisihnya terhadap aturan −0,0077 dengan CI 95% [−0,025; +0,007]. Karena itu aturan tetap menjadi
+pengaman: pembacaan di luar ambang selalu menang, dan v2 hanya menilai saat status sering berganti
+(minimal 4 kali dalam 3 jam); saat stabil, keputusan diserahkan ke aturan. Kriteria aktivasi bawaan
+menerima model yang kalah paling banyak 0,03 dari aturan dan mencatat `beats_rule_baseline: false`.
+
+v2 hanya memakai pH dan suhu. `rf-v1` juga memakai TDS, yang tidak diukur aplikasi (TDS bukan
+kekeruhan); bila TDS tidak dikirim, nilainya diisi median data latih dan disebut di `missing_features`.
 
 ## Menjalankan
 
@@ -59,7 +64,7 @@ Error memakai bentuk yang sama dengan backend PHP: `{"error": {"code", "message"
 | `POST /api/predict` | layanan | `{device_id?, readings: [{time, ph, temperature, tds?, turbidity?}], thresholds?}`, 3–2000 pembacaan |
 | `POST /api/recommendations/{id}/feedback` | layanan | `{helpful: bool, note?}` |
 | `GET /api/models` | admin | Registry, kriteria, dataset terdaftar |
-| `POST /api/models/train` | admin | `{dataset?, sensors?, params?, cross_validation?}` |
+| `POST /api/models/train` | admin | `{algorithm?, dataset?, sensors?, params?, cross_validation?}`; algorithm `ph-gated-logistic-v2` (bawaan) atau `rf-v1` |
 | `POST /api/models/{versi}/activate` | admin | Aktifkan kandidat yang lolos validasi |
 | `POST /api/models/rollback` | admin | Kembali ke versi aktif sebelumnya |
 

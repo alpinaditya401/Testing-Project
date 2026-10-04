@@ -24,7 +24,7 @@ Lima pendekatan dikembangkan terpisah (`approaches/*_best.py`):
 | Pendekatan | Rata-rata selisih CV terhadap aturan |
 | --- | ---: |
 | `context_best`: model pH berpagar regime (terpilih) | +0,0129 |
-| `margins_best`: ExtraTrees dengan margin ambang dan estimasi Markov | +0,0128 |
+| `margins_best`: ExtraTrees dengan margin ambang dan estimasi Markov | +0,0128 (enam seed) |
 | `flip_best`: model perpindahan status | +0,0118 |
 | `boost_best`: HistGradientBoosting dengan histeresis | +0,0079 |
 | `calib_best`: kalibrasi ambang keputusan | +0,0071 |
@@ -39,6 +39,14 @@ Holdout, dijalankan sekali:
 | Random Forest v1 | 0,8951 | 0,9155 | 0,9660 |
 
 Selisih terpilih terhadap aturan pada holdout −0,0077, CI 95% bootstrap blok [−0,0253; +0,0070].
+
+`context_best` dan `margins_best` praktis seri di CV: urutannya bergantung pada himpunan seed
+(enam seed: +0,01292 lawan +0,01276; tiga seed 42/0/1: +0,01292 lawan +0,01308). Aturan pemilihan yang
+ditulis sebelum ada hasil merata-ratakan semua seed yang dilaporkan, sehingga `context_best` terpilih.
+Sempat terjadi koreksi pemilihan yang keliru ke `margins_best` sesudah hasil holdout `context_best`
+terlihat; kesalahan itu dan pembetulannya dicatat di `KOREKSI_PEMILIHAN.md`. Hasil holdout `margins_best`
+(macro F1 0,9195; CI selisih terhadap aturan [−0,0177; +0,0242]; recall alarm 0,9602) hanya eksplorasi
+pandangan kedua dan tidak dipakai: setiap perbedaannya dengan aturan berupa alarm yang ditekan.
 Tiga audit independen (kebocoran fitur, protokol, ketahanan) tidak menemukan kebocoran, tetapi
 menyatakan klaim "mengungguli aturan" tidak tahan uji: 71,5% keuntungan CV berasal dari satu episode
 pH yang naik-turun sekitar 6,5 di fold 3, dan keunggulan itu berbalik di holdout.
@@ -51,8 +59,11 @@ pH yang naik-turun sekitar 6,5 di fold 3, dan keunggulan itu berbalik di holdout
 - Model v2 **belum terbukti lebih baik dari aturan persistensi**. Dengan data satu kolam dan satu
   periode, aturan tetap menjadi pengaman utama: di layanan AI, pembacaan di luar ambang selalu
   mengalahkan model, dan v2 hanya menilai saat status sering berganti.
-- Memilih ulang pendekatan dengan melihat hasil holdout akan membuat holdout tidak lagi independen,
-  jadi tidak dilakukan. Bukti yang lebih kuat butuh data dari kolam atau periode lain.
+- Memilih ulang pendekatan dengan melihat hasil holdout membuat holdout tidak lagi independen; satu kali
+  hal itu sempat terjadi karena kekeliruan dan sudah dibatalkan (`KOREKSI_PEMILIHAN.md`). Bukti yang lebih
+  kuat butuh data dari kolam atau periode lain.
+- Kunci holdout di `harness.py` bersifat prosedural: skrip yang mengimpor fungsinya tetap bisa menilai
+  baris uji. Disiplin pemilihan dijaga lewat catatan dan cap waktu, bukan oleh kode.
 
 ## Menjalankan ulang
 

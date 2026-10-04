@@ -10,7 +10,11 @@
   meneruskan ke layanan AI. Gerbang backend kini **114 test, 38 lint PHP**.
 - `01_AquaSmart/Mobile-Flutter`: aplikasi Android native (Flutter 3.47) memakai REST API PHP.
   17 test (unit, widget, parsing respons PHP asli) dan uji asap terhadap backend sungguhan.
-  Belum diuji di HP fisik. Penyimpangan dari "PWA/Android WebView" diajukan lewat CR-002.
+  Belum diuji di HP fisik. Aplikasi Flutter mengikuti arahan dosen pengampu (CR-002).
+- Perbaikan model (`08_Sistem-Cerdas/perbaikan_model`): lima pendekatan, pemilihan lewat CV data latih.
+  Model v2 menjadi bawaan layanan AI: macro F1 holdout 0,9081 (v1 0,8951, aturan persistensi 0,9158).
+  Belum terbukti mengungguli aturan; satu koreksi pemilihan yang keliru dicatat dan dibatalkan di
+  `KOREKSI_PEMILIHAN.md`.
 
 ## Gerbang 2 Oktober 2026: review ulang dan perbaikan
 

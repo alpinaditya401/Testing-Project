@@ -50,8 +50,10 @@ Aplikasi web berjalan dan teruji secara lokal. Yang perlu dibaca apa adanya:
 - **SKPL menyebut mobile "PWA/Android WebView"**; aplikasi Flutter native diajukan lewat
   [CR-002](01_AquaSmart/01_Aplikasi-Web/docs/CR-002_Aplikasi_Mobile_Flutter.md). Aplikasi
   Flutter belum diuji di HP Android fisik.
-- **Model AI belum mengungguli aturan ambang** (macro F1 0,8951 lawan 0,9158). Layanan AI
-  mencatatnya, dan pembacaan di luar ambang selalu mengalahkan model.
+- **Model AI belum terbukti mengungguli aturan ambang.** Model v2 hasil perbaikan
+  (`01_AquaSmart/08_Sistem-Cerdas/perbaikan_model`) naik dari macro F1 0,8951 ke 0,9081, tetapi
+  aturan persistensi 0,9158 dan selisihnya tidak signifikan. Layanan AI mencatatnya, dan pembacaan di
+  luar ambang selalu mengalahkan model.
 
 ## Isi repo
 

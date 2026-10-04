@@ -97,6 +97,14 @@ kausalitas fitur setelah data masa depan diubah, median imputer hanya dari
 latih, dan kesamaan prediksi setelah model dimuat ulang. Output lengkap ada
 di kedua notebook dan `evaluasi_mandiri.json`.
 
+## Perbaikan model (4 Oktober 2026)
+
+`perbaikan_model/` dan `notebooks/03_perbaikan_model.ipynb` mencatat lima pendekatan untuk
+mengungguli aturan persistensi dengan protokol tetap (pemilihan hanya lewat CV data latih, holdout
+sekali). Model terpilih naik dari macro F1 holdout 0,8951 ke 0,9081 dan menjadi model bawaan layanan
+AI, tetapi belum terbukti mengungguli aturan (0,9158; selisih tidak signifikan). Notebook 01 dan 02
+di atas tidak diubah.
+
 ## Kontribusi kedua anggota
 
 Modul mewajibkan kedua anggota melakukan commit. Belum dibuat commit pada

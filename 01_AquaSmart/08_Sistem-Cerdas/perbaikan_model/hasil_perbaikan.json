@@ -31,7 +31,8 @@
    "nama": "margins_best",
    "modul": "approaches/margins_best.py",
    "rata_delta_dua_kelas": 0.012766666666666667,
-   "delta_minimum_antar_seed": 0.0121
+   "delta_minimum_antar_seed": 0.0121,
+   "catatan": "rata-rata enam seed yang dilaporkan (42,0,1,7,123,2024); dengan seed 42,0,1 saja +0,013080"
   },
   {
    "nama": "flip_best (transition model: pH-crossing sub-model + temperature-boundary persistence, status(t-1) XOR flip)",
@@ -104,5 +105,27 @@
    "ringkasan": "Model deterministik sehingga kesamaan antar-seed tidak bermakna; 71,5% keuntungan CV berasal dari fold 3 (satu episode pH naik-turun sekitar 6,5); tanpa fold 3 selisih tinggal +0,0049; pada holdout selisih -0,0077 dan estimasi CV +0,0129 berada di atas batas atas CI holdout."
   }
  ],
- "kesimpulan": "Pendekatan terpilih (model pH berpagar regime) lebih baik dari Random Forest v1 pada holdout (macro F1 0,9081 lawan 0,8951; recall alarm 0,9777 lawan 0,9660) dan menjadi model bawaan layanan AI. Pendekatan ini belum terbukti mengungguli aturan persistensi: selisih holdout -0,0077 dengan CI 95% [-0,0253; +0,0070]; ketiga audit menyatakan klaim \"mengungguli aturan\" tidak tahan uji, tanpa temuan kebocoran. Aturan ambang tetap menjadi pengaman utama."
+ "kesimpulan": "Pendekatan terpilih (model pH berpagar regime) lebih baik dari Random Forest v1 pada holdout (macro F1 0,9081 lawan 0,8951; recall alarm 0,9777 lawan 0,9660) dan menjadi model bawaan layanan AI. Pendekatan ini belum terbukti mengungguli aturan persistensi: selisih holdout -0,0077 dengan CI 95% [-0,0253; +0,0070]; ketiga audit menyatakan klaim \"mengungguli aturan\" tidak tahan uji, tanpa temuan kebocoran. Aturan ambang tetap menjadi pengaman utama.",
+ "eksplorasi_pandangan_kedua": {
+  "modul": "approaches/margins_best.py",
+  "status": "bukan konfirmasi; dievaluasi pada holdout yang sama sesudah hasil context_best terlihat, akibat koreksi pemilihan yang keliru (KOREKSI_PEMILIHAN.md)",
+  "holdout_seed42": {
+   "macro_f1": 0.9194910780276634,
+   "balanced_accuracy": 0.9701643358706555,
+   "recall_alarm": 0.960169941582581,
+   "accuracy": 0.9625292740046838
+  },
+  "bootstrap_blok": {
+   "point_diff_macro_f1": 0.003708663132787504,
+   "ci95_diff_macro_f1": [
+    -0.017716780932264326,
+    0.02418037337934665
+   ],
+   "frac_resamples_diff_gt_0": 0.6425,
+   "rows_model_ne_rule": 69,
+   "model_correct_where_disagree": 32,
+   "rule_correct_where_disagree": 37
+  },
+  "mengapa_tidak_dipakai": "pilihan sah tetap context_best; selain itu setiap perbedaan margins_best dengan aturan berupa alarm yang ditekan (recall alarm 0,9602), tidak cocok untuk alarm keselamatan"
+ }
 }

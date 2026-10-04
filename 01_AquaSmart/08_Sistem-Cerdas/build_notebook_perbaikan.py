@@ -45,8 +45,9 @@ y, rule, train, test = baseline_rows(bins)
 print('Baris latih:', len(train), '| baris uji:', len(test))
 '''), md('''
 ## Validasi silang pada data latih
-Setiap pendekatan dievaluasi dengan seed 42, 0, dan 1 (dasar pemilihan). Fold 5 hanya memiliki satu kelas,
-sehingga ukuran utama adalah rata-rata macro F1 pada fold dua kelas dikurangi milik aturan.
+Setiap pendekatan dievaluasi dengan seed 42, 0, 1, 7, 123, dan 2024 (himpunan seed terluas yang dilaporkan saat
+pemilihan). Fold 5 hanya memiliki satu kelas, sehingga ukuran utama adalah rata-rata macro F1 pada fold dua kelas
+dikurangi milik aturan. Dua teratas praktis seri; urutannya bergantung pada himpunan seed.
 '''), code('''
 APPROACHES = ['baseline', 'context_best', 'margins_best', 'flip_best', 'boost_best', 'calib_best']
 
@@ -65,7 +66,7 @@ summary = []
 for name in APPROACHES:
     mod = load(str(HERE / 'approaches' / f'{name}.py'))
     deltas = []
-    for seed in (42, 0, 1):
+    for seed in (42, 0, 1, 7, 123, 2024):
         two = cv(mod, seed).query('kelas == 2')
         deltas.append(two.model.mean() - two.aturan.mean())
     summary.append({'pendekatan': name, 'kausal': causality(mod, bins)[0],
@@ -114,6 +115,16 @@ for _ in range(2000):
 lo, hi = np.percentile(diffs, [2.5, 97.5])
 print(f'Selisih macro F1 terpilih - aturan: {f1(y_te, p_sel) - f1(y_te, p_rule):+.4f}, CI 95% [{lo:+.4f}; {hi:+.4f}]')
 '''), md('''
+### Eksplorasi pandangan kedua: `margins_best`
+Sempat terjadi koreksi pemilihan yang keliru ke `margins_best` sesudah hasil holdout di atas terlihat
+(`perbaikan_model/KOREKSI_PEMILIHAN.md`). Hasilnya ditampilkan agar transparan, **bukan** sebagai konfirmasi,
+dan tidak dipakai untuk memilih model.
+'''), code('''
+p_mar, s_mar = holdout(load(str(HERE / 'approaches' / 'margins_best.py')))
+display(pd.DataFrame([{'model': 'margins_best (eksplorasi)', **s_mar}]).round(4))
+beda = p_mar != p_rule
+print('Baris berbeda dari aturan:', int(beda.sum()), '| semuanya alarm yang ditekan:', bool((p_mar[beda] == 0).all()))
+'''), md('''
 ## Kesimpulan
 - Pendekatan terpilih **lebih baik dari Random Forest v1** pada holdout dan menjadi model bawaan Layanan AI
   (`01_AquaSmart/Backend-Flask`, algoritma `ph-gated-logistic-v2`).
@@ -121,7 +132,9 @@ print(f'Selisih macro F1 terpilih - aturan: {f1(y_te, p_sel) - f1(y_te, p_rule):
   Keunggulan di CV sebagian besar berasal dari satu episode pH naik-turun di fold 3.
 - Memilih ulang dengan melihat holdout akan merusak independensinya, jadi tidak dilakukan. Bukti yang lebih kuat
   membutuhkan data kolam atau periode lain. Di layanan AI, aturan ambang tetap menjadi pengaman utama.
-- Tiga audit independen tidak menemukan kebocoran data; rinciannya di `perbaikan_model/hasil_perbaikan.json`.
+- `margins_best` hanya eksplorasi: angkanya di atas aturan secara titik, tetapi CI mencakup nol dan ia hanya
+  menekan alarm (recall alarm lebih rendah), sehingga tidak cocok untuk alarm keselamatan.
+- Audit independen tidak menemukan kebocoran data; rinciannya di `perbaikan_model/hasil_perbaikan.json`.
 ''')]
 
 notebook = nbf.v4.new_notebook(cells=cells)
