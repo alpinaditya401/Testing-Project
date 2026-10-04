@@ -3,7 +3,9 @@ import json
 
 import pytest
 
-from aquasmart_ai.config import REPO_AQUASMART
+import hashlib
+
+from aquasmart_ai.config import DEFAULT_DATASET, REPO_AQUASMART
 
 EXPECTED = json.loads((REPO_AQUASMART / '08_Sistem-Cerdas' / 'tugas_mandiri' / 'evaluasi_mandiri.json').read_text())
 
@@ -25,3 +27,9 @@ def test_validation_reports_rule_baseline_honestly(trained):
     # Notebook: Random Forest kalah 0,0207 macro F1 dari aturan ambang terakhir.
     assert model['validation']['beats_rule_baseline'] is False
     assert model['validation']['passed'] is True
+
+
+def test_bundled_dataset_is_identical_to_notebook_output():
+    original = REPO_AQUASMART / '08_Sistem-Cerdas' / 'tugas_mandiri' / 'data_bersih_5menit.csv'
+    digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()  # noqa: E731
+    assert digest(DEFAULT_DATASET) == digest(original)

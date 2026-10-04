@@ -213,7 +213,10 @@ class _RecommendationCardState extends State<RecommendationCard> {
         }
         if (snapshot.hasError) {
           final error = snapshot.error;
-          final text = error is ApiException && error.code == 'ai_unavailable'
+          // ai_unavailable: jembatan ada tetapi belum dikonfigurasi. not_found: backend versi lama tanpa
+          // endpoint rekomendasi (deploy yang belum diperbarui).
+          final aiMissing = error is ApiException && (error.code == 'ai_unavailable' || error.code == 'not_found');
+          final text = aiMissing
               ? 'Layanan AI belum diaktifkan di server. Pemantauan dan peringatan berbasis ambang tetap berjalan.'
               : errorMessage(error!);
           return Column(

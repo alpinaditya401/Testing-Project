@@ -8,12 +8,13 @@
 | Pengaju | Tim pengembang |
 | Kategori perubahan | Major untuk mobile (mengubah teknologi baseline); Minor untuk layanan AI (mengisi komponen yang sudah ada di arsitektur) |
 | Deliverable terdampak | Aplikasi Mobile (SKPL Tabel 15, FR-06–FR-17); Python Sistem Cerdas (FR-16–FR-20) |
-| Status | **Diajukan ke dosen pengampu/sponsor, menunggu keputusan** |
-| Keputusan | Menunggu persetujuan |
-| Tanggal keputusan | Menunggu persetujuan |
+| Status | **Mobile: mengikuti arahan dosen pengampu (Flutter). Layanan AI: diajukan, menunggu keputusan** |
+| Keputusan | Mobile: arahan dosen pengampu memakai Flutter, disampaikan tim pada 4 Oktober 2026. Layanan AI: menunggu persetujuan |
+| Tanggal keputusan | Mobile: arahan disampaikan 4 Oktober 2026 (tanggal arahan asli belum tercatat). Layanan AI: menunggu |
 
-Kolom persetujuan sengaja ditulis menunggu, agar dokumen ini tidak memalsukan
-otorisasi maupun tanggal tanda tangan.
+Arahan dosen untuk memakai Flutter dicatat sebagaimana disampaikan tim; dokumen ini tidak
+memalsukan tanda tangan maupun tanggal arahan aslinya. Kolom paraf tetap kosong sampai
+diisi pihak yang berwenang.
 
 ## 1. Perubahan yang diminta
 
@@ -33,8 +34,9 @@ Yang diminta:
 
 ## 2. Alasan
 
-1. Tim menetapkan Flutter untuk aplikasi mobile dan Flask untuk layanan AI (keputusan
-   4 Oktober 2026). WebView pembungkus PWA hampir tidak memuat logika mobile sendiri.
+1. **Dosen pengampu mengarahkan aplikasi mobile memakai Flutter** (disampaikan tim pada
+   4 Oktober 2026). SKPL v1.0 masih menulis "PWA/Android WebView", jadi baris itu perlu
+   diperbarui pada revisi SKPL berikutnya. Flask dipilih tim untuk layanan AI.
 2. Aplikasi native memberi kontrol penuh atas sesi (cookie dan CSRF di memori, tanpa
    penyimpanan kredensial), status offline, dan aksesibilitas sentuh.
 3. FR-16 sampai FR-20 (rekomendasi, umpan balik, retraining, model registry, aktivasi)
@@ -63,19 +65,20 @@ Yang diminta:
 
 ## 5. Alternatif yang dipertimbangkan
 
-- **Flutter WebView membungkus PWA**: paling dekat dengan SKPL, tetapi hampir tanpa logika
-  mobile. Ditolak oleh tim.
+- **Flutter WebView membungkus PWA**: paling dekat dengan teks SKPL, tetapi hampir tanpa logika
+  mobile. Ditolak; aplikasi native lebih sesuai arahan dosen.
 - **Flask menggantikan seluruh backend PHP**: menduplikasi backend yang sudah lulus 114 test
   dan menyimpang lebih jauh dari SKPL. Ditolak.
 
 ## 6. Rencana bila perubahan ditolak
 
-PWA yang ada tetap memenuhi luaran "PWA/Android WebView"; folder `Mobile-Flutter` dapat
-dikeluarkan dari penilaian tanpa memengaruhi backend atau web. Layanan AI tetap sah
-sebagai implementasi "Python AI Service" SKPL.
+Bagian mobile tidak lagi bergantung pada keputusan ini karena mengikuti arahan dosen. Bila
+bagian layanan AI ditolak, jembatan PHP cukup dibiarkan tanpa `AQUASMART_AI_URL` (endpoint
+rekomendasi menjawab 503) dan fitur lain tidak terpengaruh.
 
 ## 7. Keputusan
 
 | Pihak | Keputusan | Tanggal | Paraf |
 | --- | --- | --- | --- |
-| Dosen pengampu / sponsor | Menunggu | Menunggu | |
+| Dosen pengampu: aplikasi mobile Flutter | Diarahkan memakai Flutter (disampaikan tim) | 4 Oktober 2026 (dicatat) | |
+| Dosen pengampu / sponsor: layanan AI Flask | Menunggu | Menunggu | |

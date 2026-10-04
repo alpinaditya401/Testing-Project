@@ -5,7 +5,10 @@ import os
 
 SERVICE_ROOT = Path(__file__).resolve().parents[1]
 REPO_AQUASMART = SERVICE_ROOT.parent
-DEFAULT_DATASET = REPO_AQUASMART / '08_Sistem-Cerdas' / 'tugas_mandiri' / 'data_bersih_5menit.csv'
+# Salinan 08_Sistem-Cerdas/tugas_mandiri/data_bersih_5menit.csv agar layanan dapat di-build
+# dari foldernya sendiri. tests/test_ml_parity.py memastikan isinya identik dengan aslinya.
+DATASET_DIR = SERVICE_ROOT / 'datasets'
+DEFAULT_DATASET = DATASET_DIR / 'aquasmart-5menit.csv'
 
 # Ambang threshold-rules-v2 dari server/src/ThresholdRules.php. Label latih model
 # memakai versi ini; mengubahnya mengubah target dan skor.
@@ -22,10 +25,8 @@ def _float(name, default):
 def _datasets(directory):
     """Nama dataset -> berkas. Hanya berkas di daftar ini yang boleh dilatih."""
     found = {}
-    if DEFAULT_DATASET.exists():
-        found['aquasmart-5menit'] = DEFAULT_DATASET
-    if directory:
-        for path in sorted(Path(directory).glob('*.csv')):
+    for folder in [DATASET_DIR] + ([Path(directory)] if directory else []):
+        for path in sorted(folder.glob('*.csv')):
             found[path.stem] = path.resolve()
     return found
 

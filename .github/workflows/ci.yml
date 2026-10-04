@@ -104,6 +104,33 @@ jobs:
       - name: Test
         run: python -m pytest -q
 
+      # Image yang sama dengan deploy Railway: bootstrap harus melatih dan mengaktifkan
+      # model, gunicorn berjalan tanpa root, dan /api/predict menjawab dengan model itu.
+      - name: Build dan jalankan image Docker
+        run: |
+          docker build -t aquasmart-ai .
+          docker run -d --name ai -p 8000:8000 -e AQUASMART_AI_BOOTSTRAP=1 \
+            -e AQUASMART_AI_SERVICE_KEY=ci-service-key-0123456789 \
+            -e AQUASMART_AI_ADMIN_KEY=ci-admin-key-0123456789 aquasmart-ai
+          for i in $(seq 1 90); do curl -fs localhost:8000/api/health > /dev/null && break; sleep 2; done
+          docker logs ai
+          curl -fs localhost:8000/api/health | python -c "import json,sys; d=json.load(sys.stdin); print(d); assert d['active_model']"
+          python - <<'PY'
+          import datetime, json, urllib.request
+          now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+          rows = [{'time': (now - datetime.timedelta(minutes=5 * (23 - i))).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                   'ph': 7.2, 'temperature': 27.5} for i in range(24)]
+          req = urllib.request.Request('http://localhost:8000/api/predict', method='POST',
+                                       data=json.dumps({'readings': rows}).encode(),
+                                       headers={'Content-Type': 'application/json',
+                                                'X-AquaSmart-AI-Key': 'ci-service-key-0123456789'})
+          rec = json.load(urllib.request.urlopen(req))['recommendation']
+          print(rec['condition'], rec['source'], rec['model'])
+          assert rec['model'] and rec['actuation'] is False
+          PY
+          docker top ai -o user,args
+          ! docker top ai -o user,args | grep gunicorn | grep -q '^root'
+
   mobile:
     name: Mobile Flutter
     runs-on: ubuntu-latest

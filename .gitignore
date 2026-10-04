@@ -23,6 +23,9 @@
 # ulang, dan LICENSE yang menyatakan batas itu harus ikut terbaca.
 !/LICENSE
 
+# Panduan deploy produksi (tanpa rahasia).
+!/DEPLOY.md
+
 /01_AquaSmart/*
 !/01_AquaSmart/01_Aplikasi-Web/
 !/01_AquaSmart/08_Sistem-Cerdas/

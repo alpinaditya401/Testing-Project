@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_backend.dart';
 
-Future<FakeBackend> pumpApp(WidgetTester tester, {String role = 'admin', bool ai = true}) async {
-  final backend = FakeBackend(role: role, aiConfigured: ai);
+Future<FakeBackend> pumpApp(WidgetTester tester, {String role = 'admin', bool ai = true, bool old = false}) async {
+  final backend = FakeBackend(role: role, aiConfigured: ai, oldBackend: old);
   final state = AppState(
     apiFactory: (url) => AquaSmartApi(ApiClient(baseUrl: url, httpClient: backend.client)),
   );
@@ -60,6 +60,13 @@ void main() {
     await pumpApp(tester, ai: false);
     await login(tester, 'benar');
     expect(find.textContaining('Layanan AI belum diaktifkan di server'), findsOneWidget);
+  });
+
+  testWidgets('backend lama tanpa endpoint rekomendasi tetap dijelaskan', (tester) async {
+    await pumpApp(tester, old: true);
+    await login(tester, 'benar');
+    expect(find.textContaining('Layanan AI belum diaktifkan di server'), findsOneWidget);
+    expect(find.text('7,1'), findsOneWidget);
   });
 
   testWidgets('kontrol aerator meminta konfirmasi dan memakai CSRF', (tester) async {

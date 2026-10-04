@@ -5,10 +5,13 @@ import 'package:http/testing.dart';
 
 /// Backend tiruan dengan bentuk respons dari fixtures PHP asli.
 class FakeBackend {
-  FakeBackend({this.role = 'admin', this.aiConfigured = true});
+  FakeBackend({this.role = 'admin', this.aiConfigured = true, this.oldBackend = false});
 
   final String role;
   final bool aiConfigured;
+
+  /// Backend versi lama (deploy belum diperbarui) tidak punya endpoint rekomendasi.
+  final bool oldBackend;
   final List<http.Request> requests = [];
   bool aerator = true;
 
@@ -79,6 +82,7 @@ class FakeBackend {
       case ('GET', '/api/alerts'):
         return json({'alerts': [], 'unacknowledged_count': 2});
       case ('GET', final p) when p.endsWith('/recommendation'):
+        if (oldBackend) return error(404, 'not_found', 'Endpoint API tidak ditemukan.');
         if (!aiConfigured) return error(503, 'ai_unavailable', 'Layanan AI belum dikonfigurasi di server.');
         return json({
           'recommendation': {
