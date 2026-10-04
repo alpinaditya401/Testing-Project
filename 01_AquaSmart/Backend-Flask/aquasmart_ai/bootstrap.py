@@ -28,7 +28,8 @@ def main():
         if DEFAULT_DATASET_NAME not in config.datasets:
             print(f'bootstrap: dataset {DEFAULT_DATASET_NAME} tidak ditemukan, layanan memakai aturan saja', flush=True)
             return 0
-        model = registry.train_candidate(conn, config, DEFAULT_DATASET_NAME, list(ml.SENSORS), {}, run_cv=True)
+        model = registry.train_candidate(conn, config, DEFAULT_DATASET_NAME, list(ml.SENSORS), {}, run_cv=True,
+                                         algorithm=ml.DEFAULT_ALGORITHM)
         if model['validation']['passed']:
             registry.activate(conn, model['version'])
             print(f"bootstrap: {model['version']} dilatih dan diaktifkan", flush=True)

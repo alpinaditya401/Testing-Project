@@ -40,16 +40,19 @@ def validate(metrics, config):
             'beats_rule_baseline': gap > 0}
 
 
-def train_candidate(conn, config, dataset, sensors, params, run_cv=True):
+def train_candidate(conn, config, dataset, sensors, params, run_cv=True, algorithm=ml.DEFAULT_ALGORITHM):
     path = config.datasets.get(dataset)
     if path is None:
         raise RegistryError('unknown_dataset', 'Dataset tidak terdaftar di layanan.', 422)
     bins = ml.load_bins(path)
     rules = {k: DEFAULT_THRESHOLDS[k] for k in ('ph_min', 'ph_max', 'temperature_min', 'temperature_max')}
-    model, features, metrics = ml.train(bins, sensors, rules, params, run_cv)
+    algorithm = ml.canonical(algorithm)
+    if algorithm != ml.RF_V1:
+        sensors = sorted(ml.REQUIRED_SENSORS)  # v2 hanya memakai pH dan suhu
+    model, features, metrics = ml.train(bins, sensors, rules, params, run_cv, algorithm)
     validation = validate(metrics, config)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
-    version = f'rf-{stamp}-{secrets.token_hex(3)}'
+    version = f"{'rf' if algorithm == ml.RF_V1 else 'v2'}-{stamp}-{secrets.token_hex(3)}"
     models_dir = config.data_dir / 'models'
     models_dir.mkdir(parents=True, exist_ok=True)
     artifact = models_dir / f'{version}.joblib'
@@ -59,10 +62,10 @@ def train_candidate(conn, config, dataset, sensors, params, run_cv=True):
             'INSERT INTO model_versions(version,algorithm,sensors,features,params,metrics,validation,dataset,'
             'dataset_sha256,rules_version,artifact,artifact_sha256,status,trained_at) '
             'VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            (version, 'RandomForestClassifier', json.dumps(sensors), json.dumps(features),
-             json.dumps({**ml.DEFAULT_PARAMS, **params}), json.dumps(metrics), json.dumps(validation),
+            (version, algorithm, json.dumps(sensors), json.dumps(features),
+             json.dumps({**ml.ALGORITHM_DEFAULTS[algorithm], **params}), json.dumps(metrics), json.dumps(validation),
              dataset, _sha256(path), RULES_VERSION, artifact.name, _sha256(artifact), 'candidate', db.now()))
-        db.audit(conn, 'model.trained', 'model_version', version, dataset=dataset,
+        db.audit(conn, 'model.trained', 'model_version', version, dataset=dataset, algorithm=algorithm,
                  passed=validation['passed'])
     return db.model_dto(conn.execute('SELECT * FROM model_versions WHERE version=?', (version,)).fetchone())
 

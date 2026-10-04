@@ -1,0 +1,108 @@
+{
+ "tanggal": "2026-10-04",
+ "protokol": {
+  "data": "tugas_mandiri/data_bersih_5menit.csv (bin median 5 menit)",
+  "target": "status proksi threshold-rules-v2 pada interval t (pH 6,5-8,5; suhu 25-30 C)",
+  "baris": {
+   "latih": 8525,
+   "uji": 2135,
+   "purge_menit": 60
+  },
+  "pemilihan": "TimeSeriesSplit(5, gap=12) pada data latih saja; kriteria: rata-rata selisih macro F1 terhadap aturan persistensi pada fold dua kelas",
+  "holdout": "dikunci (AQUASMART_HOLDOUT_UNLOCK=1); dijalankan sekali untuk pendekatan terpilih dan baseline setelah pemilihan selesai"
+ },
+ "baseline_rf_v1": {
+  "cv_delta_dua_kelas_vs_aturan": -0.035340841785413635,
+  "holdout": {
+   "macro_f1": 0.895124068682883,
+   "balanced_accuracy": 0.9155455242815838,
+   "recall_alarm": 0.9660116834838024,
+   "accuracy": 0.9540983606557377
+  }
+ },
+ "peringkat_cv": [
+  {
+   "nama": "context_best: regime-gated, decomposed pH-out logistic model",
+   "modul": "approaches/context_best.py",
+   "rata_delta_dua_kelas": 0.012921788364774978,
+   "delta_minimum_antar_seed": 0.012921788364774978
+  },
+  {
+   "nama": "margins_best",
+   "modul": "approaches/margins_best.py",
+   "rata_delta_dua_kelas": 0.012766666666666667,
+   "delta_minimum_antar_seed": 0.0121
+  },
+  {
+   "nama": "flip_best (transition model: pH-crossing sub-model + temperature-boundary persistence, status(t-1) XOR flip)",
+   "modul": "approaches/flip_best.py",
+   "rata_delta_dua_kelas": 0.0118,
+   "delta_minimum_antar_seed": 0.0118
+  },
+  {
+   "nama": "boost_best: HGB with hysteresis around persistence",
+   "modul": "approaches/boost_best.py",
+   "rata_delta_dua_kelas": 0.0079,
+   "delta_minimum_antar_seed": 0.0079
+  },
+  {
+   "nama": "calib_best",
+   "modul": "approaches/calib_best.py",
+   "rata_delta_dua_kelas": 0.0070999999999999995,
+   "delta_minimum_antar_seed": 0.0062
+  }
+ ],
+ "terpilih": {
+  "nama": "context_best: regime-gated, decomposed pH-out logistic model",
+  "modul": "approaches/context_best.py",
+  "penyetelan_ambang": "Nothing was tuned inside fit_predict. Three fixed constants were chosen from the harness's training-split CV only: decision threshold 0.5 (0.45 and 0.55 tested, no better); gate of at least 4 status flips over 36 bins (k=3..8 all gave delta +0.011 to +0.014; k=4 was picked from the middle of that plateau before the final feature set, not the k=6 maximum of +0.0138); logistic regression C=1.0 (0.3 and 3 tested). The holdout was never run and AQUASMART_HOLDOUT_UNLOCK was never set."
+ },
+ "holdout_terpilih": {
+  "macro_f1": 0.9080796646406775,
+  "balanced_accuracy": 0.9094825042780433,
+  "recall_alarm": 0.9776951672862454,
+  "accuracy": 0.9615925058548009
+ },
+ "holdout_aturan_persistensi": {
+  "macro_f1": 0.9157824148948759,
+  "balanced_accuracy": 0.9164970201215554,
+  "recall_alarm": 0.9798194370685077,
+  "accuracy": 0.9648711943793911
+ },
+ "bootstrap_blok": {
+  "n_holdout": 2135,
+  "block": 12,
+  "resamples": 2000,
+  "rng": "numpy.random.default_rng(42)",
+  "point_diff_macro_f1": -0.0077027502541984205,
+  "ci95_diff_macro_f1": [
+   -0.02530821146213709,
+   0.006951486125393412
+  ],
+  "frac_resamples_diff_gt_0": 0.163,
+  "rows_model_ne_rule": 39,
+  "model_correct_where_disagree": 16,
+  "rule_correct_where_disagree": 23
+ },
+ "audit": [
+  {
+   "lensa": "kebocoran fitur",
+   "klaim_mengungguli_aturan_dibantah": true,
+   "kebocoran_ditemukan": false,
+   "ringkasan": "Tidak ada kebocoran: semua fitur memakai shift(1) atau lebih, 150 uji kausalitas dengan 25 titik dan 6 jenis gangguan menghasilkan 0 pelanggaran, imputer dan scaler hanya dilatih pada data latih. Klaim tetap dibantah karena keunggulan CV berbalik pada holdout."
+  },
+  {
+   "lensa": "protokol",
+   "klaim_mengungguli_aturan_dibantah": true,
+   "kebocoran_ditemukan": false,
+   "ringkasan": "Mekanisme bersih: target bantu pH_keluar(t) hanya dari baris latih, koefisien tidak berubah bila data evaluasi diganti, holdout tidak disentuh selama pemilihan (cap waktu berkas). Klaim dibantah karena hasil holdout."
+  },
+  {
+   "lensa": "ketahanan",
+   "klaim_mengungguli_aturan_dibantah": true,
+   "kebocoran_ditemukan": false,
+   "ringkasan": "Model deterministik sehingga kesamaan antar-seed tidak bermakna; 71,5% keuntungan CV berasal dari fold 3 (satu episode pH naik-turun sekitar 6,5); tanpa fold 3 selisih tinggal +0,0049; pada holdout selisih -0,0077 dan estimasi CV +0,0129 berada di atas batas atas CI holdout."
+  }
+ ],
+ "kesimpulan": "Pendekatan terpilih (model pH berpagar regime) lebih baik dari Random Forest v1 pada holdout (macro F1 0,9081 lawan 0,8951; recall alarm 0,9777 lawan 0,9660) dan menjadi model bawaan layanan AI. Pendekatan ini belum terbukti mengungguli aturan persistensi: selisih holdout -0,0077 dengan CI 95% [-0,0253; +0,0070]; ketiga audit menyatakan klaim \"mengungguli aturan\" tidak tahan uji, tanpa temuan kebocoran. Aturan ambang tetap menjadi pengaman utama."
+}

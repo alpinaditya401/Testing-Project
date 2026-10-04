@@ -29,8 +29,9 @@ def breaches(latest, thresholds):
     return found
 
 
-def decide(latest, thresholds, model_alarm, confidence):
-    """Gabungkan aturan dan model. model_alarm None berarti tidak ada model aktif."""
+def decide(latest, thresholds, model_alarm, confidence, gated=False):
+    """Gabungkan aturan dan model. model_alarm None: tidak ada model aktif, atau model v2 di luar
+    periode fluktuasi (gated) sehingga keputusannya sama dengan aturan ambang."""
     out_of_range = breaches(latest, thresholds)
     reasons = [f"{LABELS[b['parameter']]} {b['value']:g} di luar ambang {b['min']:g}–{b['max']:g}."
                for b in out_of_range]
@@ -46,6 +47,9 @@ def decide(latest, thresholds, model_alarm, confidence):
         condition, source = 'normal', 'model' if model_alarm is not None else 'aturan'
         reasons.append('Pembacaan terbaru dalam ambang' + (' dan model tidak memperkirakan pelanggaran.'
                                                            if model_alarm is not None else '.'))
+        if gated:
+            reasons.append('Model v2 hanya menilai saat status sering berganti (minimal 4 kali dalam 3 jam); '
+                           'saat stabil, aturan ambang yang memutuskan.')
         actions.append('Tidak perlu tindakan.')
     return {'condition': condition, 'source': source, 'reasons': reasons, 'actions': actions,
             'breaches': out_of_range}

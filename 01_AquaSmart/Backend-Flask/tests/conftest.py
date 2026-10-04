@@ -24,12 +24,15 @@ def make_config(data_dir, **overrides):
 
 @pytest.fixture(scope='session')
 def trained(tmp_path_factory):
-    """Satu pelatihan lengkap (dengan CV) untuk seluruh sesi; dipakai uji paritas dan disalin uji API."""
+    """Pelatihan lengkap (dengan CV) kedua algoritma untuk seluruh sesi; dipakai uji paritas dan disalin uji API."""
     data_dir = tmp_path_factory.mktemp('trained')
     client = create_app(make_config(data_dir)).test_client()
-    response = client.post('/api/models/train', json={}, headers=ADMIN)
-    assert response.status_code == 201, response.json
-    return data_dir, response.json['model']
+    models = {}
+    for key, body in [('v2', {}), ('v1', {'algorithm': 'rf-v1'})]:
+        response = client.post('/api/models/train', json=body, headers=ADMIN)
+        assert response.status_code == 201, response.json
+        models[key] = response.json['model']
+    return data_dir, models
 
 
 @pytest.fixture
